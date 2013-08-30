@@ -1,0 +1,17 @@
+Package: RSocrata
+Title: A tool for downloading Socrata datasets as R data frames
+Description: Provided with a Socrata dataset resource URL, or a Socrata SoDA
+    web API query, returns an R data frame. Converts dates to POSIX format.
+    Supports CSV and JSON. Manages throttling by Socrata.
+Version: 0.1
+Depends:
+    rjson,
+    httr
+Suggests:
+    runit
+Author: Hugh J. Devlin <Hugh.Devlin@cityofchicago.org>
+Maintainer: Hugh J. Devlin <Hugh.Devlin@cityofchicago.org>
+License: MIT
+Collate:
+    'RSocrata.R'
+    'runAllTests.R'

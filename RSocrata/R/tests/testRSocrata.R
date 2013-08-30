@@ -7,10 +7,16 @@ library('RUnit')
 
 source("RSocrata.R")
 
-test.readSocrata <- function() {
+test.readSocrataCsv <- function() {
 	df <- read.socrata('http://soda.demo.socrata.com/resource/4tka-6guv.csv')
 	checkEquals(1007, nrow(df), "rows")
 	checkEquals(9, ncol(df), "columns")
+}
+
+test.readSocrataJson <- function() {
+	df <- read.socrata('http://soda.demo.socrata.com/resource/4tka-6guv.json')
+	checkEquals(1007, nrow(df), "rows")
+	checkEquals(11, ncol(df), "columns")
 }
 
 test.readSoQL <- function() {
@@ -20,9 +26,8 @@ test.readSoQL <- function() {
 }
 
 test.readSoQLColumnNotFound <- function() {
-	df <- read.socrata('http://soda.demo.socrata.com/resource/4tka-6guv.csv?$select=Region')
-	checkEquals(1007, nrow(df), "rows")
-	checkEquals(1, ncol(df), "columns")
+	# SoQL API uses field names, not human names
+	checkException(read.socrata('http://soda.demo.socrata.com/resource/4tka-6guv.csv?$select=Region'))
 }
 
 test.readSocrataCalendarDate <- function() {
