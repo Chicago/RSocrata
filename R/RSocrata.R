@@ -9,7 +9,7 @@ library('rjson')
 # Add CSV parser
 assign("text/csv", function(x) {read.csv(textConnection(x), stringsAsFactors=FALSE)}, envir=httr:::parsers)
 # Replace JSON parser
-assign("application/json", function(x) data.frame(t(sapply(fromJSON(rawToChar(x)) , unlist)), stringsAsFactors=FALSE), envir=httr:::parsers)
+assign("application/json", function(x) data.frame(t(sapply(fromJSON(rawToChar(x)), unlist)), stringsAsFactors=FALSE), envir=httr:::parsers)
 
 #' Convert Socrata human-readable column name,
 #' as appears in the first row of data,
