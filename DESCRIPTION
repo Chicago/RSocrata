@@ -9,7 +9,7 @@ Depends:
     httr
 Suggests:
     runit
-Author: Hugh J. Devlin <Hugh.Devlin@cityofchicago.org>
+Author: Hugh J. Devlin
 Maintainer: Hugh J. Devlin <Hugh.Devlin@cityofchicago.org>
 License: MIT
 Collate:

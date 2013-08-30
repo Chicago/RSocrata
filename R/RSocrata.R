@@ -12,15 +12,16 @@ assign("text/csv", function(x) {read.csv(textConnection(x), stringsAsFactors=FAL
 assign("application/json", function(x) data.frame(t(sapply(fromJSON(rawToChar(x)), unlist)), stringsAsFactors=FALSE), envir=httr:::parsers)
 
 #' Convert Socrata human-readable column name,
-#' as appears in the first row of data,
-#' to field name as appears in HTTP header
+#' as it might appear in the first row of data,
+#' to field name as it might appear in the HTTP header;
+#' that is, lower case, periods replaced with underscores
 #'
 #' @param humanName a Socrata human-readable column name
 #' @return Socrata field name 
 #' @export
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' @examples
-#' fieldName("Number.of.Stations")
+#' fieldName("Number.of.Stations") # number_of_stations
 fieldName <- function(humanName) {
 	tolower(gsub('\\.', '_', as.character(humanName)))	
 }
@@ -58,7 +59,7 @@ read.socrata <- function(url) {
 	names(dataTypes) <- fromJSON(response$headers[['x-soda2-fields']])
 	while (nrow(page) == limit) { # more to come maybe?
 		offset <- offset + limit # next page
-		query <- paste(url, if(regexpr("\\?", url)[1] == -1){'?$offset='} else {"&$offset="}, offset, sep='')
+		query <- paste(url, if(regexpr("\\?", url)[1] == -1){'?'} else {"&"}, '$offset=', offset, sep='')
 		response <- GET(query)
 		stop_for_status(response)
 		page <- content(response)
