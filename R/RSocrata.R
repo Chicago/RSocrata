@@ -28,7 +28,6 @@ fieldName <- function(humanName) {
 
 #' Convert Socrata calendar_date string to POSIX
 #'
-#' Issue a time-stamped log message. 
 #' @param x a string in Socrata calendar_date format
 #' @return a POSIX date
 #' @export
@@ -46,7 +45,7 @@ posixify <- function(x) {
 #' @export
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' @examples 
-#' earthquakesDataFrame <- read.socrata("http://soda.demo.socrata.com/resource/4tka-6guv.json")
+#' earthquakes <- read.socrata("http://soda.demo.socrata.com/resource/4tka-6guv.json")
 read.socrata <- function(url) {
 	url <- as.character(url)
 	limit <- 1000
