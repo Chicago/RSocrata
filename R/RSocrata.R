@@ -11,6 +11,16 @@ assign("text/csv", function(x) {read.csv(textConnection(x), stringsAsFactors=FAL
 # Replace JSON parser
 assign("application/json", function(x) data.frame(t(sapply(fromJSON(rawToChar(x)), unlist)), stringsAsFactors=FALSE), envir=httr:::parsers)
 
+#' Time-stamped message
+#'
+#' Issue a time-stamped, origin-stamped log message. 
+#' @param s a string
+#' @return None (invisible NULL) as per cat
+#' @author Hugh J. Devlin \email{Hugh.Devlin@@cityofchicago.org}
+logMsg <- function(s) {
+	cat(format(Sys.time(), "%Y-%m-%d %H:%M:%OS3 "), as.character(sys.call(-1))[1], ": ", s, '\n', sep='')
+}
+
 #' Convert Socrata human-readable column name,
 #' as it might appear in the first row of data,
 #' to field name as it might appear in the HTTP header;
@@ -36,6 +46,27 @@ posixify <- function(x) {
 	strptime(as.character(x), format="%m/%d/%Y %I:%M:%S %p")
 }
 
+#' Wrap httr GET with some diagnostics
+#' 
+#' In case of failure, report error details from Socrata
+#' 
+#' @param url Socrata Open Data Application Program Interface (SODA) query
+#' @return httr response object
+#' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
+get <- function(url) {
+	response <- GET(url)
+	status <- http_status(response)
+	if(status$category != "success") {
+		details <- content(response)
+		if(nrow(details) > 0 ) {
+			detail = details[1,]
+			logMsg(paste("Error detail:", detail$code, detail$message))
+		}
+	}
+	stop_for_status(response)
+	response
+}
+
 #' Get a full Socrata data set as an R data frame
 #'
 #' Manages throttling and POSIX date-time conversions
@@ -50,8 +81,7 @@ read.socrata <- function(url) {
 	url <- as.character(url)
 	limit <- 1000
 	offset <- 0
-	response <- GET(url)
-	stop_for_status(response)
+	response <- get(url)
 	page <- content(response)
 	result <- page
 	dataTypes <- fromJSON(response$headers[['x-soda2-types']])
@@ -59,7 +89,7 @@ read.socrata <- function(url) {
 	while (nrow(page) == limit) { # more to come maybe?
 		offset <- offset + limit # next page
 		query <- paste(url, if(regexpr("\\?", url)[1] == -1){'?'} else {"&"}, '$offset=', offset, sep='')
-		response <- GET(query)
+		response <- get(query)
 		stop_for_status(response)
 		page <- content(response)
 		result <- rbind(result, page) # accumulate

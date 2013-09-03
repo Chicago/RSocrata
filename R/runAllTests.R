@@ -5,6 +5,9 @@
 
 library('RUnit')
 
+source('RSocrata.R')
+source('tests/testRSocrata.R')
+
 test.suite <- defineTestSuite("test Socrata SODA interface",
 		dirs = file.path("tests"),
 		testFileRegexp = '^test.*\\.R')
