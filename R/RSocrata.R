@@ -7,9 +7,24 @@ library('httr') # for access to the HTTP header
 library('rjson')
 
 # Add CSV parser
-assign("text/csv", function(x) {read.csv(textConnection(x), stringsAsFactors=FALSE)}, envir=httr:::parsers)
+assign("text/csv", 
+		function(x) {
+			read.csv(textConnection(x), stringsAsFactors=FALSE)
+		}, 
+		envir=httr:::parsers
+)
+
 # Replace JSON parser
-assign("application/json", function(x) data.frame(t(sapply(fromJSON(rawToChar(x)), unlist)), stringsAsFactors=FALSE), envir=httr:::parsers)
+assign("application/json",
+		function(x) {
+			content = rawToChar(x)
+			if(content=="[ ]") # empty JSON?
+				data.frame() # empty data frame
+			else
+				data.frame(t(sapply(fromJSON(content), unlist)), stringsAsFactors=FALSE)
+		}, 
+		envir=httr:::parsers
+)
 
 #' Time-stamped message
 #'
@@ -21,6 +36,8 @@ logMsg <- function(s) {
 	cat(format(Sys.time(), "%Y-%m-%d %H:%M:%OS3 "), as.character(sys.call(-1))[1], ": ", s, '\n', sep='')
 }
 
+#' Convert Socrata human-readable column name to field name
+#' 
 #' Convert Socrata human-readable column name,
 #' as it might appear in the first row of data,
 #' to field name as it might appear in the HTTP header;
@@ -46,7 +63,7 @@ posixify <- function(x) {
 	strptime(as.character(x), format="%m/%d/%Y %I:%M:%S %p")
 }
 
-#' Wrap httr GET with some diagnostics
+#' Wrap httr GET in some diagnostics
 #' 
 #' In case of failure, report error details from Socrata
 #' 
@@ -56,7 +73,7 @@ posixify <- function(x) {
 get <- function(url) {
 	response <- GET(url)
 	status <- http_status(response)
-	if(status$category != "success") {
+	if(response$status_code != 200) {
 		details <- content(response)
 		if(nrow(details) > 0 ) {
 			detail = details[1,]
@@ -79,16 +96,13 @@ get <- function(url) {
 #' earthquakes <- read.socrata("http://soda.demo.socrata.com/resource/4tka-6guv.json")
 read.socrata <- function(url) {
 	url <- as.character(url)
-	limit <- 1000
-	offset <- 0
 	response <- get(url)
 	page <- content(response)
 	result <- page
 	dataTypes <- fromJSON(response$headers[['x-soda2-types']])
 	names(dataTypes) <- fromJSON(response$headers[['x-soda2-fields']])
-	while (nrow(page) == limit) { # more to come maybe?
-		offset <- offset + limit # next page
-		query <- paste(url, if(regexpr("\\?", url)[1] == -1){'?'} else {"&"}, '$offset=', offset, sep='')
+	while (nrow(page) > 0) { # more to come maybe?
+		query <- paste(url, if(regexpr("\\?", url)[1] == -1){'?'} else {"&"}, '$offset=', nrow(result), sep='')
 		response <- get(query)
 		stop_for_status(response)
 		page <- content(response)
