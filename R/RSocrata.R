@@ -75,9 +75,8 @@ get <- function(url) {
 	status <- http_status(response)
 	if(response$status_code != 200) {
 		details <- content(response)
-		if(nrow(details) > 0 ) {
-			detail = details[1,]
-			logMsg(paste("Error detail:", detail$code, detail$message))
+		if(nrow(details) > 0) {
+			logMsg(paste("Error detail:", details$code[1], details$message[1]))
 		}
 	}
 	stop_for_status(response)

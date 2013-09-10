@@ -4,6 +4,7 @@ Description: Provided with a Socrata dataset resource URL, or a Socrata SoDA
     web API query, returns an R data frame. Converts dates to POSIX format.
     Supports CSV and JSON. Manages throttling by Socrata.
 Version: 0.1
+LazyLoad: no
 Depends:
     rjson,
     httr
