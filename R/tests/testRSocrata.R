@@ -5,7 +5,7 @@
 
 library('RUnit')
 
-source("RSocrata.R")
+source("R/RSocrata.R")
 
 test.readSocrataCsv <- function() {
 	df <- read.socrata('http://soda.demo.socrata.com/resource/4tka-6guv.csv')
@@ -40,4 +40,13 @@ test.readSocrataCalendarDate <- function() {
 	checkEquals(22, dt$hour, "hours")
 	checkEquals(38, dt$min, "minutes")
 	checkEquals(1, dt$sec, "seconds")
+}
+
+test.suite <- defineTestSuite("test Socrata SODA interface",
+		dirs = file.path("R/tests"),
+		testFileRegexp = '^test.*\\.R')
+
+runAllTests <- function() {
+	test.result <- runTestSuite(test.suite)
+	printTextProtocol(test.result) 
 }

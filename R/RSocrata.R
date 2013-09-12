@@ -6,25 +6,35 @@
 library('httr') # for access to the HTTP header
 library('rjson')
 
-# Add CSV parser
-assign("text/csv", 
-		function(x) {
-			read.csv(textConnection(x), stringsAsFactors=FALSE)
-		}, 
-		envir=httr:::parsers
-)
-
-# Replace JSON parser
-assign("application/json",
-		function(x) {
-			content = rawToChar(x)
-			if(content=="[ ]") # empty JSON?
-				data.frame() # empty data frame
-			else
-				data.frame(t(sapply(fromJSON(content), unlist)), stringsAsFactors=FALSE)
-		}, 
-		envir=httr:::parsers
-)
+#' Customize httr content parsers
+#'
+#' Add csv support to httr and return a data frame for csv and json content
+#'
+#' @return an R data frame, 0 observations on errors
+#' @author Hugh J. Devlin \email{Hugh.Devlin@@cityofchicago.org}
+assignParsers <- function() {
+	
+	# Add CSV parser
+	assign("text/csv", 
+			function(x) {
+				read.csv(textConnection(x), stringsAsFactors=FALSE)
+			}, 
+			envir=httr:::parsers
+	)
+	
+	# Replace JSON parser
+	assign("application/json",
+			function(x) {
+				content = rawToChar(x)
+				if(content=="[ ]") # empty JSON?
+					data.frame() # empty data frame
+				else
+					data.frame(t(sapply(fromJSON(content), unlist)), stringsAsFactors=FALSE)
+			}, 
+			envir=httr:::parsers
+	)
+	
+}
 
 #' Time-stamped message
 #'
@@ -41,8 +51,7 @@ logMsg <- function(s) {
 #' Convert Socrata human-readable column name,
 #' as it might appear in the first row of data,
 #' to field name as it might appear in the HTTP header;
-#' that is, lower case, periods replaced with underscores
-#'
+#' that is, lower case, periods replaced with underscores#'
 #' @param humanName a Socrata human-readable column name
 #' @return Socrata field name 
 #' @export
@@ -91,13 +100,15 @@ get <- function(url) {
 #' @return an R data frame with POSIX dates
 #' @export
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
-#' @examples 
-#' earthquakes <- read.socrata("http://soda.demo.socrata.com/resource/4tka-6guv.json")
-read.socrata <- function(url) {
+#' @examples
+#' earthquakes <- read.socrata("http://soda.demo.socrata.com/resource/4tka-6guv.json") # data.frame with 1007 observations
+	read.socrata <- function(url) {
+	assignParsers()
 	url <- as.character(url)
 	response <- get(url)
 	page <- content(response)
 	result <- page
+	# create a named vector mapping field names to data types
 	dataTypes <- fromJSON(response$headers[['x-soda2-types']])
 	names(dataTypes) <- fromJSON(response$headers[['x-soda2-fields']])
 	while (nrow(page) > 0) { # more to come maybe?
