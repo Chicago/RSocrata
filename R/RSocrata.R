@@ -6,12 +6,11 @@
 library('httr') # for access to the HTTP header
 library('rjson')
 
-#' Customize httr content parsers
-#'
-#' Add csv support to httr and return a data frame for csv and json content
-#'
-#' @return an R data frame, 0 observations on errors
-#' @author Hugh J. Devlin \email{Hugh.Devlin@@cityofchicago.org}
+# Customize httr content parsers
+#
+# Add csv support to httr and return a data frame for csv and json content
+#
+# @author Hugh J. Devlin \email{Hugh.Devlin@@cityofchicago.org}
 assignParsers <- function() {
 	
 	# Add CSV parser
@@ -72,13 +71,13 @@ posixify <- function(x) {
 	strptime(as.character(x), format="%m/%d/%Y %I:%M:%S %p")
 }
 
-#' Wrap httr GET in some diagnostics
-#' 
-#' In case of failure, report error details from Socrata
-#' 
-#' @param url Socrata Open Data Application Program Interface (SODA) query
-#' @return httr response object
-#' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
+# Wrap httr GET in some diagnostics
+# 
+# In case of failure, report error details from Socrata
+# 
+# @param url Socrata Open Data Application Program Interface (SODA) query
+# @return httr response object
+# @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 get <- function(url) {
 	response <- GET(url)
 	status <- http_status(response)
@@ -101,10 +100,10 @@ get <- function(url) {
 #' @export
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' @examples
-#' earthquakes <- read.socrata("http://soda.demo.socrata.com/resource/4tka-6guv.json") # data.frame with 1007 observations
-	read.socrata <- function(url) {
-	assignParsers()
+#' earthquakes <- read.socrata("http://soda.demo.socrata.com/resource/4tka-6guv.json")
+read.socrata <- function(url) {
 	url <- as.character(url)
+	assignParsers()
 	response <- get(url)
 	page <- content(response)
 	result <- page

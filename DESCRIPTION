@@ -3,15 +3,15 @@ Title: Download Socrata datasets as R data frames
 Description: Provided with a Socrata dataset resource URL, or a Socrata SoDA
     web API query, returns an R data frame. Converts dates to POSIX format.
     Supports CSV and JSON. Manages throttling by Socrata.
-Version: 0.1
+Version: 1.0
 Date: 2013-09-11
 Depends:
     rjson,
     httr
 Suggests:
-    runit
+    RUnit
 Author: Hugh J. Devlin
 Maintainer: Hugh J. Devlin <Hugh.Devlin@cityofchicago.org>
-License: MIT
+License: MIT + file LICENSE
 Collate:
     'RSocrata.R'
