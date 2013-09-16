@@ -72,7 +72,8 @@ getResponse <- function(url) {
 # @author Hugh J. Devlin \email{Hugh.Devlin@@cityofchicago.org}
 # @param an httr response object
 # @return data frame, possibly empty
-contentAsDataFrame <- function(response) {
+getContentAsDataFrame <- function(response) { UseMethod('response') }
+getContentAsDataFrame <- function(response) {
 	mimeType <- response$header$'content-type'
 	# skip optional parameters
 	sep <- regexpr(';', mimeType)[1]
@@ -94,9 +95,10 @@ contentAsDataFrame <- function(response) {
 # @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 # @param responseHeaders headers attribute from an httr response object
 # @return a named vector mapping field names to data types
-getSodaTypes <- function(responseHeaders) {
-	result <- fromJSON(responseHeaders[['x-soda2-types']])
-	names(result) <- fromJSON(responseHeaders[['x-soda2-fields']])
+getSodaTypes <- function(response) { UseMethod('response') }
+getSodaTypes <- function(response) {
+	result <- fromJSON(response$headers[['x-soda2-types']])
+	names(result) <- fromJSON(response$headers[['x-soda2-fields']])
 	result
 }
 
@@ -119,13 +121,13 @@ read.socrata <- function(url) {
 	if(mimeType != 'text/csv' && mimeType != 'application/json')
 		stop("Error in read.socrata: ", mimeType, " not a supported data format.")
 	response <- getResponse(url)
-	page <- contentAsDataFrame(response)
+	page <- getContentAsDataFrame(response)
 	result <- page
-	dataTypes <- getSodaTypes(response$headers)
+	dataTypes <- getSodaTypes(response)
 	while (nrow(page) > 0) { # more to come maybe?
 		query <- paste(url, if(is.null(parsedUrl$query)) {'?'} else {"&"}, '$offset=', nrow(result), sep='')
 		response <- getResponse(query)
-		page <- contentAsDataFrame(response)
+		page <- getContentAsDataFrame(response)
 		result <- rbind(result, page) # accumulate
 	}	
 	# convert Socrata calendar dates to posix format
