@@ -49,7 +49,7 @@ posixify <- function(x) {
 # @param url Socrata Open Data Application Program Interface (SODA) query
 # @return httr response object
 # @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
-get <- function(url) {
+getResponse <- function(url) {
 	response <- GET(url)
 	status <- http_status(response)
 	if(response$status_code != 200) {
@@ -101,7 +101,7 @@ read.socrata <- function(url) {
 	mimeType <- guess_media(parsedUrl$path)
 	if(mimeType != 'text/csv' && mimeType != 'application/json')
 		stop("Error in read.socrata: ", mimeType, " not a supported data format.")
-	response <- get(url)
+	response <- getResponse(url)
 	page <- contentAsDataFrame(response)
 	result <- page
 	# create a named vector mapping field names to data types
@@ -109,7 +109,7 @@ read.socrata <- function(url) {
 	names(dataTypes) <- fromJSON(response$headers[['x-soda2-fields']])
 	while (nrow(page) > 0) { # more to come maybe?
 		query <- paste(url, if(is.null(parsedUrl$query)) {'?'} else {"&"}, '$offset=', nrow(result), sep='')
-		response <- get(query)
+		response <- getResponse(query)
 		page <- contentAsDataFrame(response)
 		result <- rbind(result, page) # accumulate
 	}	
