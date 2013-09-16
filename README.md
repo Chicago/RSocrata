@@ -1,4 +1,4 @@
-RSocrata version 0.1
+RSocrata version 1.0
 ====================
 
 A tool for downloading Socrata datasets as R data frames

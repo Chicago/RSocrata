@@ -103,6 +103,9 @@ get <- function(url) {
 #' earthquakes <- read.socrata("http://soda.demo.socrata.com/resource/4tka-6guv.json")
 read.socrata <- function(url) {
 	url <- as.character(url)
+	parsedUrl <- parse_url(url)
+	if(substr(parsedUrl$path, 1, 9) != 'resource/')
+		stop("Error in read.socrata: url ", url, " is not a Socrata SoDA resource.")
 	assignParsers()
 	response <- get(url)
 	page <- content(response)
@@ -111,7 +114,7 @@ read.socrata <- function(url) {
 	dataTypes <- fromJSON(response$headers[['x-soda2-types']])
 	names(dataTypes) <- fromJSON(response$headers[['x-soda2-fields']])
 	while (nrow(page) > 0) { # more to come maybe?
-		query <- paste(url, if(regexpr("\\?", url)[1] == -1){'?'} else {"&"}, '$offset=', nrow(result), sep='')
+		query <- paste(url, if(regexpr("\\?", url)[1] == -1) {'?'} else {"&"}, '$offset=', nrow(result), sep='')
 		response <- get(query)
 		stop_for_status(response)
 		page <- content(response)
