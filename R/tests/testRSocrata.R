@@ -7,6 +7,28 @@ library('RUnit')
 
 source("R/RSocrata.R")
 
+test.posixifyLong <- function() {
+	dt <- posixify("09/14/2012 10:38:01 PM")
+	checkEquals("POSIXlt", class(dt)[1], "first data type of a date")
+	checkEquals(2012, dt$year + 1900, "year")
+	checkEquals(9, dt$mon + 1, "month")
+	checkEquals(14, dt$mday, "day")
+	checkEquals(22, dt$hour, "hours")
+	checkEquals(38, dt$min, "minutes")
+	checkEquals(1, dt$sec, "seconds")
+}
+
+test.posixifyShort <- function() {
+	dt <- posixify("09/14/2012")
+	checkEquals("POSIXlt", class(dt)[1], "first data type of a date")
+	checkEquals(2012, dt$year + 1900, "year")
+	checkEquals(9, dt$mon + 1, "month")
+	checkEquals(14, dt$mday, "day")
+	checkEquals(0, dt$hour, "hours")
+	checkEquals(0, dt$min, "minutes")
+	checkEquals(0, dt$sec, "seconds")
+}
+
 test.readSocrataCsv <- function() {
 	df <- read.socrata('http://soda.demo.socrata.com/resource/4tka-6guv.csv')
 	checkEquals(1007, nrow(df), "rows")
@@ -40,7 +62,7 @@ test.readSocrataFormatNotSupported <- function() {
 	checkException(read.socrata('http://soda.demo.socrata.com/resource/4tka-6guv.xml'))
 }
 
-test.readSocrataCalendarDate <- function() {
+test.readSocrataCalendarDateLong <- function() {
 	df <- read.socrata('http://soda.demo.socrata.com/resource/4tka-6guv.csv')
 	dt <- df$Datetime[1] # "2012-09-14 22:38:01"
 	checkEquals("POSIXlt", class(dt)[1], "data type of a date")
@@ -50,6 +72,18 @@ test.readSocrataCalendarDate <- function() {
 	checkEquals(22, dt$hour, "hours")
 	checkEquals(38, dt$min, "minutes")
 	checkEquals(1, dt$sec, "seconds")
+}
+
+test.readSocrataCalendarDateShort <- function() {
+	df <- read.socrata('http://data.cityofchicago.org/resource/y93d-d9e3.csv?$order=debarment_date')
+	dt <- df$DEBARMENT.DATE[1] # "05/21/1981"
+	checkEquals("POSIXlt", class(dt)[1], "data type of a date")
+	checkEquals(81, dt$year, "year")
+	checkEquals(5, dt$mon + 1, "month")
+	checkEquals(21, dt$mday, "day")
+	checkEquals(0, dt$hour, "hours")
+	checkEquals(0, dt$min, "minutes")
+	checkEquals(0, dt$sec, "seconds")
 }
 
 test.suite <- defineTestSuite("test Socrata SODA interface",

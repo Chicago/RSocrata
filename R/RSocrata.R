@@ -39,7 +39,12 @@ fieldName <- function(humanName) {
 #' @export
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 posixify <- function(x) {
-	strptime(as.character(x), format="%m/%d/%Y %I:%M:%S %p")
+	x <- as.character(x)
+	# Two calendar date formats supplied by Socrata
+	if(regexpr("^[[:digit:]]{2}/[[:digit:]]{2}/[[:digit:]]{4}$", x[1])[1] == 1) 
+		strptime(x, format="%m/%d/%Y")
+	else
+		strptime(x, format="%m/%d/%Y %I:%M:%S %p")
 }
 
 # Wrap httr GET in some diagnostics
@@ -64,9 +69,9 @@ getResponse <- function(url) {
 #
 # Return a data frame for csv and json
 #
+# @author Hugh J. Devlin \email{Hugh.Devlin@@cityofchicago.org}
 # @param an httr response object
 # @return data frame, possibly empty
-# @author Hugh J. Devlin \email{Hugh.Devlin@@cityofchicago.org}
 contentAsDataFrame <- function(response) {
 	mimeType <- response$header$'content-type'
 	# skip optional parameters
@@ -81,6 +86,18 @@ contentAsDataFrame <- function(response) {
 				else
 					data.frame(t(sapply(fromJSON(rawToChar(content(response, as='raw'))), unlist)), stringsAsFactors=FALSE)
 	) # end switch
+}
+
+# Get the SoDA 2 data types
+#
+# Get the Socrata Open Data Application Program Interface data types from the http response header
+# @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
+# @param responseHeaders headers attribute from an httr response object
+# @return a named vector mapping field names to data types
+getSodaTypes <- function(responseHeaders) {
+	result <- fromJSON(responseHeaders[['x-soda2-types']])
+	names(result) <- fromJSON(responseHeaders[['x-soda2-fields']])
+	result
 }
 
 #' Get a full Socrata data set as an R data frame
@@ -104,9 +121,7 @@ read.socrata <- function(url) {
 	response <- getResponse(url)
 	page <- contentAsDataFrame(response)
 	result <- page
-	# create a named vector mapping field names to data types
-	dataTypes <- fromJSON(response$headers[['x-soda2-types']])
-	names(dataTypes) <- fromJSON(response$headers[['x-soda2-fields']])
+	dataTypes <- getSodaTypes(response$headers)
 	while (nrow(page) > 0) { # more to come maybe?
 		query <- paste(url, if(is.null(parsedUrl$query)) {'?'} else {"&"}, '$offset=', nrow(result), sep='')
 		response <- getResponse(query)
