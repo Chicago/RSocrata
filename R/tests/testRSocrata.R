@@ -35,6 +35,11 @@ test.readSocrataNotResource <- function() {
 	checkException(read.socrata('https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4tka-6guv'))
 }
 
+test.readSocrataFormatNotSupported <- function() {
+	# Unsupported data format
+	checkException(read.socrata('http://soda.demo.socrata.com/resource/4tka-6guv.xml'))
+}
+
 test.readSocrataCalendarDate <- function() {
 	df <- read.socrata('http://soda.demo.socrata.com/resource/4tka-6guv.csv')
 	dt <- df$Datetime[1] # "2012-09-14 22:38:01"

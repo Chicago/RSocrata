@@ -6,35 +6,6 @@
 library('httr') # for access to the HTTP header
 library('rjson')
 
-# Customize httr content parsers
-#
-# Add csv support to httr and return a data frame for csv and json content
-#
-# @author Hugh J. Devlin \email{Hugh.Devlin@@cityofchicago.org}
-assignParsers <- function() {
-	
-	# Add CSV parser
-	assign("text/csv", 
-			function(x) {
-				read.csv(textConnection(x), stringsAsFactors=FALSE)
-			}, 
-			envir=httr:::parsers
-	)
-	
-	# Replace JSON parser
-	assign("application/json",
-			function(x) {
-				content = rawToChar(x)
-				if(content=="[ ]") # empty JSON?
-					data.frame() # empty data frame
-				else
-					data.frame(t(sapply(fromJSON(content), unlist)), stringsAsFactors=FALSE)
-			}, 
-			envir=httr:::parsers
-	)
-	
-}
-
 #' Time-stamped message
 #'
 #' Issue a time-stamped, origin-stamped log message. 
@@ -83,12 +54,33 @@ get <- function(url) {
 	status <- http_status(response)
 	if(response$status_code != 200) {
 		details <- content(response)
-		if(nrow(details) > 0) {
-			logMsg(paste("Error detail:", details$code[1], details$message[1]))
-		}
+		logMsg(paste("Error in httr GET:", details$code[1], details$message[1]))
 	}
 	stop_for_status(response)
 	response
+}
+
+# Content parsers
+#
+# Return a data frame for csv and json
+#
+# @param an httr response object
+# @return data frame, possibly empty
+# @author Hugh J. Devlin \email{Hugh.Devlin@@cityofchicago.org}
+contentAsDataFrame <- function(response) {
+	mimeType <- response$header$'content-type'
+	# skip optional parameters
+	sep <- regexpr(';', mimeType)[1]
+	if(sep != -1) mimeType <- substr(mimeType, 0, sep[1] - 1)
+	switch(mimeType,
+		'text/csv' = 
+				read.csv(textConnection(content(response)), stringsAsFactors=FALSE),
+		'application/json' = 
+				if(content(response, as='text') == "[ ]") # empty json?
+					data.frame() # empty data frame
+				else
+					data.frame(t(sapply(fromJSON(rawToChar(content(response, as='raw'))), unlist)), stringsAsFactors=FALSE)
+	) # end switch
 }
 
 #' Get a full Socrata data set as an R data frame
@@ -106,18 +98,19 @@ read.socrata <- function(url) {
 	parsedUrl <- parse_url(url)
 	if(substr(parsedUrl$path, 1, 9) != 'resource/')
 		stop("Error in read.socrata: url ", url, " is not a Socrata SoDA resource.")
-	assignParsers()
+	mimeType <- guess_media(parsedUrl$path)
+	if(mimeType != 'text/csv' && mimeType != 'application/json')
+		stop("Error in read.socrata: ", mimeType, " not a supported data format.")
 	response <- get(url)
-	page <- content(response)
+	page <- contentAsDataFrame(response)
 	result <- page
 	# create a named vector mapping field names to data types
 	dataTypes <- fromJSON(response$headers[['x-soda2-types']])
 	names(dataTypes) <- fromJSON(response$headers[['x-soda2-fields']])
 	while (nrow(page) > 0) { # more to come maybe?
-		query <- paste(url, if(regexpr("\\?", url)[1] == -1) {'?'} else {"&"}, '$offset=', nrow(result), sep='')
+		query <- paste(url, if(is.null(parsedUrl$query)) {'?'} else {"&"}, '$offset=', nrow(result), sep='')
 		response <- get(query)
-		stop_for_status(response)
-		page <- content(response)
+		page <- contentAsDataFrame(response)
 		result <- rbind(result, page) # accumulate
 	}	
 	# convert Socrata calendar dates to posix format
