@@ -1,5 +1,5 @@
-RSocrata version 1.0
-====================
+RSocrata
+========
 
 A tool for downloading Socrata datasets as R data frames
 --------------------------------------------------------	
@@ -19,3 +19,7 @@ earthquakesDataFrame &lt;- read.socrata("http://soda.demo.socrata.com/resource/4
 nrow(earthquakesDataFrame) # 1007 (two "pages")<br>
 class(earthquakesDataFrame$Datetime[1]) # POSIXlt
 </code></pre>
+
+### Change log
+
+1.1 Add check for valid Socrata resource URL. Add check for supported download file format. Add support for Socrata short dates. 

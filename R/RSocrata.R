@@ -34,7 +34,7 @@ fieldName <- function(humanName) {
 
 #' Convert Socrata calendar_date string to POSIX
 #'
-#' @param x a string in Socrata calendar_date format
+#' @param x char in Socrata calendar_date format
 #' @return a POSIX date
 #' @export
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
