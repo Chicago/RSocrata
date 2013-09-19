@@ -41,7 +41,7 @@ fieldName <- function(humanName) {
 posixify <- function(x) {
 	x <- as.character(x)
 	# Two calendar date formats supplied by Socrata
-	if(regexpr("^[[:digit:]]{2}/[[:digit:]]{2}/[[:digit:]]{4}$", x[1])[1] == 1) 
+	if(regexpr("^[[:digit:]]{1,2}/[[:digit:]]{1,2}/[[:digit:]]{4}$", x[1])[1] == 1) 
 		strptime(x, format="%m/%d/%Y")
 	else
 		strptime(x, format="%m/%d/%Y %I:%M:%S %p")
