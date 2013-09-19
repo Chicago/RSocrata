@@ -20,6 +20,10 @@ nrow(earthquakesDataFrame) # 1007 (two "pages")<br>
 class(earthquakesDataFrame$Datetime[1]) # POSIXlt
 </code></pre>
 
+### Issues
+
+Please report issues, request enhancements or fork us at the [City of Chicago github](https://github.com/Chicago/RSocrata/issues).
+
 ### Change log
 
 1.1 Add check for valid Socrata resource URL. Add check for supported download file format. Add support for Socrata short dates. 
