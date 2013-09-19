@@ -3,8 +3,8 @@
 /.README.md.html
 /man
 /.git
-/RSocrata_0.1.tar.gz
+/RSocrata_*.tar.gz
 /RCheck
 /out
-/RSocrata_1.0.tar.gz
 /RSocrata.Rcheck
+*.pdf
