@@ -1,4 +1,4 @@
-# An interface to data hosted online in Socrata data repositories 
+# An interface to data hosted online in Socrata data repositories
 # 
 # Author: Hugh J. Devlin, Ph. D. 2013-08-28
 ###############################################################################
@@ -115,7 +115,7 @@ getSodaTypes <- function(response) {
 #' @export
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' @examples
-#' earthquakes <- read.socrata("http://soda.demo.socrata.com/resource/4tka-6guv.csv")
+#' earthquakes <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv")
 read.socrata <- function(url) {
 	url <- as.character(url)
 	parsedUrl <- parse_url(url)

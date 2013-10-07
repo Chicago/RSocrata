@@ -15,7 +15,7 @@ Manages the throttling of data returned from Socrata.
 ### Usage example
 
 <pre><code>
-earthquakesDataFrame &lt;- read.socrata("http://soda.demo.socrata.com/resource/4tka-6guv.csv")<br>
+earthquakesDataFrame &lt;- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv")<br>
 nrow(earthquakesDataFrame) # 1007 (two "pages")<br>
 class(earthquakesDataFrame$Datetime[1]) # POSIXlt
 </code></pre>
