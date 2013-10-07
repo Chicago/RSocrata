@@ -31,19 +31,13 @@ test.posixifyShort <- function() {
 
 test.readSocrataCsv <- function() {
 	df <- read.socrata('http://soda.demo.socrata.com/resource/4tka-6guv.csv')
-	checkEquals(1007, nrow(df), "rows")
+	checkEquals(1009, nrow(df), "rows")
 	checkEquals(9, ncol(df), "columns")
-}
-
-test.readSocrataJson <- function() {
-	df <- read.socrata('http://soda.demo.socrata.com/resource/4tka-6guv.json')
-	checkEquals(1007, nrow(df), "rows")
-	checkEquals(11, ncol(df), "columns")
 }
 
 test.readSoQL <- function() {
 	df <- read.socrata('http://soda.demo.socrata.com/resource/4tka-6guv.csv?$select=region')
-	checkEquals(1007, nrow(df), "rows")
+	checkEquals(1008, nrow(df), "rows")
 	checkEquals(1, ncol(df), "columns")
 }
 
@@ -60,6 +54,7 @@ test.readSocrataNotResource <- function() {
 test.readSocrataFormatNotSupported <- function() {
 	# Unsupported data format
 	checkException(read.socrata('http://soda.demo.socrata.com/resource/4tka-6guv.xml'))
+	checkException(read.socrata('http://soda.demo.socrata.com/resource/4tka-6guv.json'))
 }
 
 test.readSocrataCalendarDateLong <- function() {

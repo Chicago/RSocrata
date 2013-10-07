@@ -2,9 +2,9 @@ Package: RSocrata
 Title: Download Socrata datasets as R data frames
 Description: Provided with a Socrata dataset resource URL, or a Socrata SoDA
     web API query, returns an R data frame. Converts dates to POSIX format.
-    Supports CSV and JSON. Manages throttling by Socrata.
-Version: 1.1
-Date: 2013-09-17
+    Manages throttling by Socrata.
+Version: 1.2
+Date: 2013-10-07
 Depends:
     rjson,
     httr

@@ -58,8 +58,12 @@ getResponse <- function(url) {
 	response <- GET(url)
 	status <- http_status(response)
 	if(response$status_code != 200) {
-		details <- content(response)
-		logMsg(paste("Error in httr GET:", details$code[1], details$message[1]))
+		msg <- paste("Error in httr GET:", response$status_code, response$headers$statusmessage, url)
+		if(response$headers$`content-length` > 0) {
+			details <- content(response)
+			msg <- paste(msg, details$code[1], details$message[1])	
+		}
+		logMsg(msg)
 	}
 	stop_for_status(response)
 	response
@@ -67,7 +71,7 @@ getResponse <- function(url) {
 
 # Content parsers
 #
-# Return a data frame for csv and json
+# Return a data frame for csv
 #
 # @author Hugh J. Devlin \email{Hugh.Devlin@@cityofchicago.org}
 # @param an httr response object
@@ -111,14 +115,14 @@ getSodaTypes <- function(response) {
 #' @export
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' @examples
-#' earthquakes <- read.socrata("http://soda.demo.socrata.com/resource/4tka-6guv.json")
+#' earthquakes <- read.socrata("http://soda.demo.socrata.com/resource/4tka-6guv.csv")
 read.socrata <- function(url) {
 	url <- as.character(url)
 	parsedUrl <- parse_url(url)
 	if(substr(parsedUrl$path, 1, 9) != 'resource/')
 		stop("Error in read.socrata: url ", url, " is not a Socrata SoDA resource.")
 	mimeType <- guess_media(parsedUrl$path)
-	if(mimeType != 'text/csv' && mimeType != 'application/json')
+	if(mimeType != 'text/csv')
 		stop("Error in read.socrata: ", mimeType, " not a supported data format.")
 	response <- getResponse(url)
 	page <- getContentAsDataFrame(response)

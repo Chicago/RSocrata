@@ -8,14 +8,14 @@ Provided with a URL to a dataset resource published on a [Socrata](http://www.so
 or a Socrata [SoDA (Socrata Open Data Application Program Interface) web API](http://dev.socrata.com) query,
 returns an [R data frame](http://stat.ethz.ch/R-manual/R-devel/library/base/html/data.frame.html).
 Converts dates to [POSIX](http://stat.ethz.ch/R-manual/R-devel/library/base/html/DateTimeClasses.html) format.
-Supports CSV and [JSON](http://www.json.org/) download file formats from Socrata.
+Supports CSV download file formats from Socrata.
 Manages the throttling of data returned from Socrata.
 [RUnit](http://cran.r-project.org/web/packages/RUnit/index.html) test coverage.
 
 ### Usage example
 
 <pre><code>
-earthquakesDataFrame &lt;- read.socrata("http://soda.demo.socrata.com/resource/4tka-6guv.json")<br>
+earthquakesDataFrame &lt;- read.socrata("http://soda.demo.socrata.com/resource/4tka-6guv.csv")<br>
 nrow(earthquakesDataFrame) # 1007 (two "pages")<br>
 class(earthquakesDataFrame$Datetime[1]) # POSIXlt
 </code></pre>
@@ -26,4 +26,5 @@ Please report issues, request enhancements or fork us at the [City of Chicago gi
 
 ### Change log
 
-1.1 Add check for valid Socrata resource URL. Add check for supported download file format. Add support for Socrata short dates. 
+1.1 Add check for valid Socrata resource URL. Add check for supported download file format. Add support for Socrata short dates.
+1.2 Use comma-separated file format for Socrata downlaods. 
