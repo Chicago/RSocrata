@@ -110,7 +110,10 @@ getSodaTypes <- function(response) {
 #'
 #' Manages throttling and POSIX date-time conversions
 #'
-#' @param url Socrata Open Data Application Program Interface (SODA) query, which may include SoQL parameters, but is assumed to not contain an offset parameter
+#' @param url Socrata Open Data Application Program Interface (SODA) query
+#' requesting a comma-separated download format (.csv suffix), 
+#' which may include SoQL parameters,
+#' but is assumed to not include a SODA offset parameter
 #' @return an R data frame with POSIX dates
 #' @export
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
