@@ -27,4 +27,5 @@ Please report issues, request enhancements or fork us at the [City of Chicago gi
 ### Change log
 
 1.1 Add check for valid Socrata resource URL. Add check for supported download file format. Add support for Socrata short dates.
-1.2 Use comma-separated file format for Socrata downlaods. 
+
+1.2 Use comma-separated file format for Socrata downloads. 
