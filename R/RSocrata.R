@@ -34,9 +34,8 @@ readUrl <- function(url) {
 		validUrl <- build_url(userUrl)
 		return(validUrl)
 	}
-	httpCheck <- regexpr("^http", url)
-	if(httpCheck == -1)
-		url <- paste("http://", url, sep="")
+	if(is.null(userUrl$scheme))
+		userUrl$scheme <- "http://"
 	fourByFourCheck <- regexpr("/...[[:alnum:]]-[[:alnum:]]...($)?(/)?",userUrl$path)
 	if(attr(fourByFourCheck, which="useBytes") == -1) 
 		stop("Could not find 4x4 in ", url)
