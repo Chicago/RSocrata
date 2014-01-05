@@ -37,11 +37,28 @@ readUrl <- function(url) {
 	if(is.null(userUrl$scheme))
 		userUrl$scheme <- "http://"
 	fourByFourCheck <- regexpr("/...[[:alnum:]]-[[:alnum:]]...($)?(/)?",userUrl$path)
-	if(attr(fourByFourCheck, which="useBytes") == -1) 
-		stop("Could not find 4x4 in ", url)
-	fourByFour <- substring(userUrl$path, fourByFourCheck[1], fourByFourCheck[1]+9)
+	fourByFourCheck <- basename(userUrl$path)	
+	fourByFour <- isFourByFour(fourByFourCheck)
 	validUrl <- paste("http://", userUrl$hostname, "/resource", fourByFour, ".csv", sep="")
 	return(validUrl)
+}
+
+#' Checks the validity of the syntax for a potential Socrata dataset Unique Identifier, also known as a 4x4.
+#'
+#' Will check the validity of a potential dataset unique identifier
+#' supported by Socrata. It will provide an exception if the syntax
+#' does not align to Socrata unique identifiers. It only checks for
+#' the validity of the syntax, but does not check if it actually exists.
+#' @param fourByFour a Socrata unique identifier 
+#' @return fourByFour returned if is valid Socrata unique identifier
+#' @author Tom Schenk Jr \email{tom.schenk@@cityofchicago.org}
+isFourByFour <- function(fourByFour){
+	fourByFour <- as.character(fourByFour)
+	if(nchar(fourByFour) != 9)
+		stop(fourByFour, " is not a valid Socrata dataset unique identifier.")
+	if(regexpr("[[:alnum:]][[:alnum:]][[:alnum:]][[:alnum:]]-[[:alnum:]][[:alnum:]][[:alnum:]][[:alnum:]]",fourByFour) == -1)
+		stop(fourByFour, " is not a valid Socrata dataset unique identifier.")
+	return(fourByFour)	
 }
 
 #' Convert Socrata human-readable column name to field name
