@@ -16,6 +16,30 @@ logMsg <- function(s) {
 	cat(format(Sys.time(), "%Y-%m-%d %H:%M:%OS3 "), as.character(sys.call(-1))[1], ": ", s, '\n', sep='')
 }
 
+#' Convert, if necessary, URL to valid REST API URL supported by Socrata.
+#'
+#' Will convert a human-readable URL to a valid REST API call
+#' supported by Socrata. It will ignore a valid API URL if provided
+#' by users, but will convert a human-readable URL.
+#' @param 
+#' @return url
+#' @author Tom Schenk Jr \email{tom.schenk@@cityofchicago.org}
+readUrl <- function(url) {
+	url <- as.character(url)
+	userUrl <- parse_url(url)
+	if(substr(userUrl$path, 1, 9) == 'resource/')
+		print(userUrl)
+	httpCheck <- regexpr("^http", url)
+	if(httpCheck == -1)
+		url <- paste("http://", url, sep="")
+	fourByFourCheck <- regexpr("/...[[:alnum:]]-[[:alnum:]]...($)?(/)?",userUrl$path)
+	if(attr(fourByFourCheck, which="useBytes") == -1) 
+		stop("Could not find 4x4 in ", url)
+	fourByFour <- substring(userUrl$path, fourByFourCheck[1], fourByFourCheck[1]+9)
+	validUrl <- paste("http://", userUrl$hostname, "/resource", fourByFour, ".csv", sep="")
+	print(validUrl)
+}
+
 #' Convert Socrata human-readable column name to field name
 #' 
 #' Convert Socrata human-readable column name,
@@ -120,19 +144,17 @@ getSodaTypes <- function(response) {
 #' @examples
 #' earthquakes <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv")
 read.socrata <- function(url) {
-	url <- as.character(url)
-	parsedUrl <- parse_url(url)
-	if(substr(parsedUrl$path, 1, 9) != 'resource/')
-		stop("Error in read.socrata: url ", url, " is not a Socrata SoDA resource.")
+	validUrl <- readUrl(url)
+	parsedUrl <- parse_url(validUrl)
 	mimeType <- guess_media(parsedUrl$path)
 	if(mimeType != 'text/csv')
 		stop("Error in read.socrata: ", mimeType, " not a supported data format.")
-	response <- getResponse(url)
+	response <- getResponse(validUrl)
 	page <- getContentAsDataFrame(response)
 	result <- page
 	dataTypes <- getSodaTypes(response)
 	while (nrow(page) > 0) { # more to come maybe?
-		query <- paste(url, if(is.null(parsedUrl$query)) {'?'} else {"&"}, '$offset=', nrow(result), sep='')
+		query <- paste(validUrl, if(is.null(parsedUrl$query)) {'?'} else {"&"}, '$offset=', nrow(result), sep='')
 		response <- getResponse(query)
 		page <- getContentAsDataFrame(response)
 		result <- rbind(result, page) # accumulate
