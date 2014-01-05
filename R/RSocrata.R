@@ -39,7 +39,7 @@ readUrl <- function(url) {
 	fourByFourCheck <- regexpr("/...[[:alnum:]]-[[:alnum:]]...($)?(/)?",userUrl$path)
 	fourByFourCheck <- basename(userUrl$path)	
 	fourByFour <- isFourByFour(fourByFourCheck)
-	validUrl <- paste("http://", userUrl$hostname, "/resource", fourByFour, ".csv", sep="")
+	validUrl <- build_url(userUrl)
 	return(validUrl)
 }
 
