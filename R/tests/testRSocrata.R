@@ -48,10 +48,16 @@ test.readSoQLColumnNotFound <- function() {
 	checkException(read.socrata('http://soda.demo.socrata.com/resource/4334-bgaj.csv?$select=Region'))
 }
 
-test.readSocrataNotResource <- function() {
-	# URL not a SoDA resource
-	checkException(read.socrata('https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4tka-6guv'))
+test.readSocrataHumanReadable <- function() {
+	df <- read.socrata('https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj')
+	checkEquals(1007, nrow(df), "rows")
+	checkEquals(9, ncol(df), "columns")
 }
+
+# test.readSocrataNotResource <- function() {
+#	# URL not a SoDA resource
+#	checkException(read.socrata('https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4tka-6guv'))
+# }
 
 test.readSocrataFormatNotSupported <- function() {
 	# Unsupported data format
