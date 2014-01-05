@@ -94,6 +94,11 @@ test.isFourByFour <- function() {
 	checkException(read.socrata(invalid.fourByFour.char))
 }
 
+test.readSocrataInvalidUrl <- function() {
+	invalidUrl <- "a.fake.url.being.tested"
+	checkException(read.socrata(invalidUrl))
+}
+
 test.suite <- defineTestSuite("test Socrata SODA interface",
 		dirs = file.path("R/tests"),
 		testFileRegexp = '^test.*\\.R')
