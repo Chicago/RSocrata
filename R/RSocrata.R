@@ -30,8 +30,10 @@ readUrl <- function(url) {
 	userUrl <- parse_url(url)
 	if(is.null(userUrl$hostname))
 		stop(url, " does not appear to be a valid URL.")
-	if(substr(userUrl$path, 1, 9) == 'resource/')
-		print(userUrl)
+	if(substr(userUrl$path, 1, 9) == 'resource/') {
+		validUrl <- build_url(userUrl)
+		return(validUrl)
+	}
 	httpCheck <- regexpr("^http", url)
 	if(httpCheck == -1)
 		url <- paste("http://", url, sep="")
@@ -40,7 +42,7 @@ readUrl <- function(url) {
 		stop("Could not find 4x4 in ", url)
 	fourByFour <- substring(userUrl$path, fourByFourCheck[1], fourByFourCheck[1]+9)
 	validUrl <- paste("http://", userUrl$hostname, "/resource", fourByFour, ".csv", sep="")
-	print(validUrl)
+	return(validUrl)
 }
 
 #' Convert Socrata human-readable column name to field name
