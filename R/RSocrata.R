@@ -27,6 +27,8 @@ logMsg <- function(s) {
 readUrl <- function(url) {
 	url <- as.character(url)
 	userUrl <- parse_url(url)
+	if(is.null(userUrl$hostname))
+		stop(url, " does not appear to be a valid URL.")
 	if(substr(userUrl$path, 1, 9) == 'resource/')
 		print(userUrl)
 	httpCheck <- regexpr("^http", url)
