@@ -16,6 +16,52 @@ logMsg <- function(s) {
 	cat(format(Sys.time(), "%Y-%m-%d %H:%M:%OS3 "), as.character(sys.call(-1))[1], ": ", s, '\n', sep='')
 }
 
+#' Convert, if necessary, URL to valid REST API URL supported by Socrata.
+#'
+#' Will convert a human-readable URL to a valid REST API call
+#' supported by Socrata. It will accept a valid API URL if provided
+#' by users and will also convert a human-readable URL to a valid API
+#' URL.
+#' @param url
+#' @return validUrl
+#' @author Tom Schenk Jr \email{tom.schenk@@cityofchicago.org}
+readUrl <- function(url) {
+	url <- as.character(url)
+	userUrl <- parse_url(url)
+	if(is.null(userUrl$hostname))
+		stop(url, " does not appear to be a valid URL.")
+	if(substr(userUrl$path, 1, 9) == 'resource/') {
+		validUrl <- build_url(userUrl)
+		return(validUrl)
+	}
+	if(is.null(userUrl$scheme))
+		userUrl$scheme <- "http://"
+	fourByFourCheck <- regexpr("/...[[:alnum:]]-[[:alnum:]]...($)?(/)?",userUrl$path)
+	fourByFourCheck <- basename(userUrl$path)	
+	fourByFour <- isFourByFour(fourByFourCheck)
+	userUrl$path <- paste("resource/",fourByFour,".csv", sep="")
+	validUrl <- build_url(userUrl)
+	return(validUrl)
+}
+
+#' Checks the validity of the syntax for a potential Socrata dataset Unique Identifier, also known as a 4x4.
+#'
+#' Will check the validity of a potential dataset unique identifier
+#' supported by Socrata. It will provide an exception if the syntax
+#' does not align to Socrata unique identifiers. It only checks for
+#' the validity of the syntax, but does not check if it actually exists.
+#' @param fourByFour a Socrata unique identifier 
+#' @return fourByFour returned if is valid Socrata unique identifier
+#' @author Tom Schenk Jr \email{tom.schenk@@cityofchicago.org}
+isFourByFour <- function(fourByFour){
+	fourByFour <- as.character(fourByFour)
+	if(nchar(fourByFour) != 9)
+		stop(fourByFour, " is not a valid Socrata dataset unique identifier.")
+	if(regexpr("[[:alnum:]][[:alnum:]][[:alnum:]][[:alnum:]]-[[:alnum:]][[:alnum:]][[:alnum:]][[:alnum:]]",fourByFour) == -1)
+		stop(fourByFour, " is not a valid Socrata dataset unique identifier.")
+	return(fourByFour)	
+}
+
 #' Convert Socrata human-readable column name to field name
 #' 
 #' Convert Socrata human-readable column name,
@@ -120,19 +166,17 @@ getSodaTypes <- function(response) {
 #' @examples
 #' earthquakes <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv")
 read.socrata <- function(url) {
-	url <- as.character(url)
-	parsedUrl <- parse_url(url)
-	if(substr(parsedUrl$path, 1, 9) != 'resource/')
-		stop("Error in read.socrata: url ", url, " is not a Socrata SoDA resource.")
+	validUrl <- readUrl(url)
+	parsedUrl <- parse_url(validUrl)
 	mimeType <- guess_media(parsedUrl$path)
 	if(mimeType != 'text/csv')
 		stop("Error in read.socrata: ", mimeType, " not a supported data format.")
-	response <- getResponse(url)
+	response <- getResponse(validUrl)
 	page <- getContentAsDataFrame(response)
 	result <- page
 	dataTypes <- getSodaTypes(response)
 	while (nrow(page) > 0) { # more to come maybe?
-		query <- paste(url, if(is.null(parsedUrl$query)) {'?'} else {"&"}, '$offset=', nrow(result), sep='')
+		query <- paste(validUrl, if(is.null(parsedUrl$query)) {'?'} else {"&"}, '$offset=', nrow(result), sep='')
 		response <- getResponse(query)
 		page <- getContentAsDataFrame(response)
 		result <- rbind(result, page) # accumulate
