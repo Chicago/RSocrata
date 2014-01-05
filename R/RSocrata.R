@@ -19,10 +19,11 @@ logMsg <- function(s) {
 #' Convert, if necessary, URL to valid REST API URL supported by Socrata.
 #'
 #' Will convert a human-readable URL to a valid REST API call
-#' supported by Socrata. It will ignore a valid API URL if provided
-#' by users, but will convert a human-readable URL.
-#' @param 
-#' @return url
+#' supported by Socrata. It will accept a valid API URL if provided
+#' by users and will also convert a human-readable URL to a valid API
+#' URL.
+#' @param url
+#' @return validUrl
 #' @author Tom Schenk Jr \email{tom.schenk@@cityofchicago.org}
 readUrl <- function(url) {
 	url <- as.character(url)
