@@ -39,4 +39,4 @@ Please report issues, request enhancements or fork us at the [City of Chicago gi
 
 1.2 Use comma-separated file format for Socrata downloads.
 
-1.3 Added support for human-readable URL
+1.3 Added support for human-readable URL.

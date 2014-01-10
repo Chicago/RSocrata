@@ -37,6 +37,10 @@ test.readSocrataCsv <- function() {
 	checkEquals(9, ncol(df), "columns")
 }
 
+test.readSocrataNoScheme <- function() {
+	checkException(read.socrata('soda.demo.socrata.com/resource/4334-bgaj.csv'))
+}
+
 test.readSoQL <- function() {
 	df <- read.socrata('http://soda.demo.socrata.com/resource/4334-bgaj.csv?$select=region')
 	checkEquals(1007, nrow(df), "rows")
@@ -54,13 +58,8 @@ test.readSocrataHumanReadable <- function() {
 	checkEquals(9, ncol(df), "columns")
 }
 
-# test.readSocrataNotResource <- function() {
-#	# URL not a SoDA resource
-#	checkException(read.socrata('https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4tka-6guv'))
-# }
-
 test.readSocrataFormatNotSupported <- function() {
-	# Unsupported data format
+	# Unsupported data formats
 	checkException(read.socrata('http://soda.demo.socrata.com/resource/4334-bgaj.xml'))
 	checkException(read.socrata('http://soda.demo.socrata.com/resource/4334-bgaj.json'))
 }
@@ -90,14 +89,18 @@ test.readSocrataCalendarDateShort <- function() {
 }
 
 test.isFourByFour <- function() {
-	invalidFourByFour.long <- "https://soda.demo.socrata.com/api/views/4334c-bgajc" # 11 characters instead of 9
-	invalidFourByFour.short <- "https://soda.demo.socrata.com/api/views/433-bga" # 7 characters instead of 9
-	invalidFourByFour.unbalanced <- "https://soda.demo.socrata.com/api/views/433-bgaj" # 3 characters before dash instead of 4
-	invalidFourByFour.char <- "https://soda.demo.socrata.com/api/views/4334-!gaj" # Contains non-alphanumeric character in 4x4
-	checkException(read.socrata(invalidFourByFour.long))
-	checkException(read.socrata(invalidFourByFour.short))
-	checkException(read.socrata(invalidFourByFour.unbalanced))
-	checkException(read.socrata(invalidFourByFour.char))
+	checkTrue(isFourByFour("4334-bgaj"), "ok")
+	checkTrue(!isFourByFour("4334c-bgajc"), "11 characters instead of 9")
+	checkTrue(!isFourByFour("433-bga"), "7 characters instead of 9")
+	checkTrue(!isFourByFour("433-bgaj"), "3 characters before dash instead of 4")
+	checkTrue(!isFourByFour("4334-!gaj"), "non-alphanumeric character")
+}
+
+test.isFourByFourUrl <- function() {
+	checkException(read.socrata("https://soda.demo.socrata.com/api/views/4334c-bgajc"), "11 characters instead of 9")
+	checkException(read.socrata("https://soda.demo.socrata.com/api/views/433-bga"), "7 characters instead of 9")
+	checkException(read.socrata("https://soda.demo.socrata.com/api/views/433-bgaj"), "3 characters before dash instead of 4")
+	checkException(read.socrata("https://soda.demo.socrata.com/api/views/4334-!gaj"), "non-alphanumeric character")
 }
 
 test.readSocrataInvalidUrl <- function() {
