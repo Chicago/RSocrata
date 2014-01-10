@@ -6,6 +6,7 @@ A tool for downloading Socrata datasets as R data frames
 
 Provided with a URL to a dataset resource published on a [Socrata](http://www.socrata.com) webserver,
 or a Socrata [SoDA (Socrata Open Data Application Program Interface) web API](http://dev.socrata.com) query,
+or a Socrata "human-friendly" URL, 
 returns an [R data frame](http://stat.ethz.ch/R-manual/R-devel/library/base/html/data.frame.html).
 Converts dates to [POSIX](http://stat.ethz.ch/R-manual/R-devel/library/base/html/DateTimeClasses.html) format.
 Supports CSV download file formats from Socrata.
