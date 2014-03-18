@@ -126,12 +126,12 @@ getContentAsDataFrame <- function(response) {
 	if(sep != -1) mimeType <- substr(mimeType, 0, sep[1] - 1)
 	switch(mimeType,
 		'text/csv' = 
-				read.csv(textConnection(content(response)), stringsAsFactors=FALSE),
+				content(response), # automatic parsing
 		'application/json' = 
 				if(content(response, as='text') == "[ ]") # empty json?
 					data.frame() # empty data frame
 				else
-					data.frame(t(sapply(fromJSON(rawToChar(content(response, as='raw'))), unlist)), stringsAsFactors=FALSE)
+					data.frame(t(sapply(content(response), unlist)), stringsAsFactors=FALSE)
 	) # end switch
 }
 
@@ -167,7 +167,7 @@ read.socrata <- function(url) {
 	validUrl <- validateUrl(url) # check url syntax, allow human-readable Socrata url
 	parsedUrl <- parse_url(validUrl)
 	mimeType <- guess_media(parsedUrl$path)
-	if(mimeType != 'text/csv')
+	if(!(mimeType %in% c('text/csv','application/json')))
 		stop("Error in read.socrata: ", mimeType, " not a supported data format.")
 	response <- getResponse(validUrl)
 	page <- getContentAsDataFrame(response)

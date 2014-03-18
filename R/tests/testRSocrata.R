@@ -37,6 +37,12 @@ test.readSocrataCsv <- function() {
 	checkEquals(9, ncol(df), "columns")
 }
 
+test.readSocrataJson <- function() {
+	df <- read.socrata('https://soda.demo.socrata.com/resource/4334-bgaj.json')
+	checkEquals(1007, nrow(df), "rows")
+	checkEquals(11, ncol(df), "columns")
+}
+
 test.readSocrataNoScheme <- function() {
 	checkException(read.socrata('soda.demo.socrata.com/resource/4334-bgaj.csv'))
 }
@@ -61,7 +67,6 @@ test.readSocrataHumanReadable <- function() {
 test.readSocrataFormatNotSupported <- function() {
 	# Unsupported data formats
 	checkException(read.socrata('http://soda.demo.socrata.com/resource/4334-bgaj.xml'))
-	checkException(read.socrata('http://soda.demo.socrata.com/resource/4334-bgaj.json'))
 }
 
 test.readSocrataCalendarDateLong <- function() {
@@ -104,8 +109,7 @@ test.isFourByFourUrl <- function() {
 }
 
 test.readSocrataInvalidUrl <- function() {
-	invalidUrl <- "a.fake.url.being.tested"
-	checkException(read.socrata(invalidUrl))
+	checkException(read.socrata("a.fake.url.being.tested"), "invalid url")
 }
 
 test.suite <- defineTestSuite("test Socrata SODA interface",

@@ -29,7 +29,6 @@ nrow(earthquakesDataFrame) # 1007 (two "pages")<br>
 class(earthquakesDataFrame$Datetime[1]) # POSIXlt
 </code></pre>
 
-
 ### Issues
 
 Please report issues, request enhancements or fork us at the [City of Chicago github](https://github.com/Chicago/RSocrata/issues).
@@ -41,3 +40,5 @@ Please report issues, request enhancements or fork us at the [City of Chicago gi
 1.2 Use comma-separated file format for Socrata downloads.
 
 1.3 Added support for human-readable URL.
+
+1.4 Add json file format for Socrata downloads.
