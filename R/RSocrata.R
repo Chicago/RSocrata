@@ -4,7 +4,7 @@
 ###############################################################################
 
 library('httr') # for access to the HTTP header
-library('rjson')
+library('RJSONIO') # for parsing data types from Socrata
 
 #' Time-stamped message
 #'
