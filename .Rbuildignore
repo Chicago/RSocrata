@@ -1,0 +1,8 @@
+\.gitignore
+\.project
+\.settings
+\.Rbuildignore
+.*\.tar\.gz
+\.Rbuildignore.Rcheck
+RSocrata.Rcheck
+RSocrata.pdf

@@ -1,3 +1,5 @@
 export(fieldName)
 export(posixify)
 export(read.socrata)
+import(RJSONIO)
+import(httr)

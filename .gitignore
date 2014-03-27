@@ -9,3 +9,4 @@
 /RSocrata.Rcheck
 *.pdf
 /DESCRIPTION.Rcheck
+/.Rbuildignore.Rcheck
