@@ -5,4 +5,3 @@
 .*\.tar\.gz
 \.Rbuildignore.Rcheck
 RSocrata.Rcheck
-RSocrata.pdf
