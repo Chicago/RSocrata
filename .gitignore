@@ -10,3 +10,6 @@
 *.pdf
 /DESCRIPTION.Rcheck
 /.Rbuildignore.Rcheck
+.Rproj.user
+*.Rproj
+.Rhistory

@@ -112,6 +112,12 @@ test.readSocrataInvalidUrl <- function() {
 	checkException(read.socrata("a.fake.url.being.tested"), "invalid url")
 }
 
+test.copeWithMissingColumns <- function(){
+    url <- "http://data.undp.org/resource/wxub-qc5k.json"
+    df <- read.socrata(url)
+    checkTrue(class(df) == "data.frame", "builds dataframe with missing columns")
+}
+
 test.suite <- defineTestSuite("test Socrata SODA interface",
 		dirs = file.path("R/tests"),
 		testFileRegexp = '^test.*\\.R')
