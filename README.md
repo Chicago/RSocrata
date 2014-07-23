@@ -43,4 +43,4 @@ Please report issues, request enhancements or fork us at the [City of Chicago gi
 
 1.4 Add json file format for Socrata downloads. Switch to RJSONIO rom rjson. 
 
-1.5 Add function to allow conversion to df of files with some missing columns
+1.5 Add function to allow conversion to df of files with some missing columns. Switch to jsonlite from RJSONIO.
