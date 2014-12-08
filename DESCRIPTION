@@ -16,7 +16,7 @@ Depends:
     mime
 Suggests:
     RUnit
-Authors@R: c(person("Hugh", "Devlin, Ph. D.", role = c("cre","aut")),
+Authors@R: c(person("Hugh", "Devlin, Ph. D.", role = c("cre","aut"), email="hugh.devlin@cityofchicago.org"),
   person("Tom", "Schenk, Jr.", role="aut", email="tom.schenk@cityofchicago.org"),
   person("City of Chicago", role="cph", email="developers@cityofchicago.org"))
 Maintainer: person("City of Chicago", email="developers@cityofchicago.org")
