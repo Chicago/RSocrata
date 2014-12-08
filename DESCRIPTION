@@ -8,11 +8,13 @@ Description: Provided with a Socrata dataset resource URL,
     Manages throttling by Socrata.
 Version: 1.4
 Date: 2014-03-18
+URL: https://github.com/Chicago/RSocrata
+BugReports: https://github.com/Chicago/RSocrata/issues
 Depends:
     httr (>= 0.3),
     RJSONIO
 Suggests:
     RUnit
 Author: Hugh J. Devlin, Ph. D. and Tom Schenk, Jr.
-Maintainer: Hugh J. Devlin <Hugh.Devlin@cityofchicago.org>
+Maintainer: Tom Schenk Jr. <tom.schenk@cityofchicago.org>
 License: MIT + file LICENSE
