@@ -12,7 +12,8 @@ URL: https://github.com/Chicago/RSocrata
 BugReports: https://github.com/Chicago/RSocrata/issues
 Depends:
     httr (>= 0.3),
-    RJSONIO
+    RJSONIO,
+    mime
 Suggests:
     RUnit
 Authors@R: as.person(c( 

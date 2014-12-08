@@ -5,6 +5,7 @@
 
 library('httr') # for access to the HTTP header
 library('RJSONIO') # for parsing data types from Socrata
+library('mime') # for guessing mime type
 
 #' Time-stamped message
 #'
