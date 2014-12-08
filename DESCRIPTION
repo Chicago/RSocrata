@@ -16,10 +16,9 @@ Depends:
     mime
 Suggests:
     RUnit
-Authors@R: as.person(c( 
-  "Hugh J. Devlin, Ph. D. <hugh.devlin@cityofchicago.org> [cre, aut]",
-  "Tom Schenk, Jr. <tom.schenk@cityofchicago.org> [aut]",
-  "City of Chicago <developers@cityofchicago.org> [cph]"
-  ))
+Author: Hugh Devlin, Ph. D. and Tom Schenk, Jr.
+Authors@R: c(person(given="Hugh J.", family="Devlin, Ph. D.", role=c("cre","aut")),
+  person(given="Tom", family="Schenk, Jr.", role="aut", email="tom.schenk@cityofchicago.org"),
+  person("City of Chicago", email="developers@cityofchicago.org", role="cph"))
 Maintainer: Tom Schenk, Jr. <developers@cityofchicago.org>
 License: MIT + file LICENSE
