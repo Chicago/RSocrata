@@ -166,7 +166,7 @@ getSodaTypes <- function(response) {
 read.socrata <- function(url) {
 	validUrl <- validateUrl(url) # check url syntax, allow human-readable Socrata url
 	parsedUrl <- parse_url(validUrl)
-	mimeType <- guess_media(parsedUrl$path)
+	mimeType <- guess_type(parsedUrl$path)
 	if(!(mimeType %in% c('text/csv','application/json')))
 		stop("Error in read.socrata: ", mimeType, " not a supported data format.")
 	response <- getResponse(validUrl)
