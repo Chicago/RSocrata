@@ -15,6 +15,10 @@ Depends:
     RJSONIO
 Suggests:
     RUnit
-Author: Hugh J. Devlin, Ph. D. and Tom Schenk, Jr.
-Maintainer: Tom Schenk Jr. <tom.schenk@cityofchicago.org>
+Authors@R: as.person(c( 
+  "Hugh J. Devlin, Ph. D. <hugh.devlin@cityofchicago.org> [cre, aut]",
+  "Tom Schenk, Jr. <tom.schenk@cityofchicago.org> [aut]",
+  "City of Chicago <developers@cityofchicago.org> [cph]"
+  ))
+Maintainer: as.person(c("City of Chicago <developers@cityofchicago.org>"))
 License: MIT + file LICENSE
