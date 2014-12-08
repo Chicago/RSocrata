@@ -5,3 +5,5 @@
 .*\.tar\.gz
 \.Rbuildignore.Rcheck
 RSocrata.Rcheck
+^.*\.Rproj$
+^\.Rproj\.user$
