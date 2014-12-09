@@ -1,6 +1,6 @@
 export(fieldName)
 export(posixify)
 export(read.socrata)
-import(RJSONIO)
+import(jsonlite)
 import(httr)
 import(mime)
