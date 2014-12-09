@@ -58,6 +58,10 @@ test.readSoQLColumnNotFound <- function() {
 	checkException(read.socrata('http://soda.demo.socrata.com/resource/4334-bgaj.csv?$select=Region'))
 }
 
+test.readPrivate <- function() {
+  checkException(read.socrata('http://data.cityofchicago.org/resource/j8vp-2qpg.json'))
+}
+
 test.readSocrataHumanReadable <- function() {
 	df <- read.socrata('https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj')
 	checkEquals(1007, nrow(df), "rows")
