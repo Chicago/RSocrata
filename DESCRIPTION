@@ -1,5 +1,5 @@
 Package: RSocrata
-Title: Download Socrata datasets as R data frames
+Title: Download Socrata Datasets as R Data Frames
 Description: Provided with a Socrata dataset resource URL,
     or a Socrata SoDA web API query,
     or a Socrata "human-friendly" URL,
