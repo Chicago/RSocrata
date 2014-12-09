@@ -12,3 +12,5 @@
 /.Rbuildignore.Rcheck
 *.Rproj.user
 *.Rproj
+*.Rproj.user
+*.Rhistory
