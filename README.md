@@ -43,4 +43,9 @@ Please report issues, request enhancements or fork us at the [City of Chicago gi
 
 1.4 Add json file format for Socrata downloads. Switch to RJSONIO rom rjson. 
 
-1.4.1 Deprecated ```httr::guess_media()``` and implemented ```httr::guess_type()```
+1.5 Several changes:
+* Swapped ```jsonlite``` to ```RJSONIO```
+* Added handling for long and short dates
+* Added unit test for reading private datasets
+
+1.5.1 Deprecated ```httr::guess_media()``` and implemented ```httr::guess_type()```
