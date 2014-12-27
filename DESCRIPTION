@@ -17,8 +17,5 @@ Depends:
 Suggests:
     RUnit
 Author: Hugh Devlin, Ph. D. and Tom Schenk, Jr.
-Authors@R: c(person(given="Hugh J.", family="Devlin, Ph. D.", role=c("cre","aut")),
-  person(given="Tom", family="Schenk, Jr.", role="aut", email="tom.schenk@cityofchicago.org"),
-  person("City of Chicago", email="developers@cityofchicago.org", role="cph"))
 Maintainer: "Tom Schenk, Jr." <developers@cityofchicago.org>
 License: MIT + file LICENSE
