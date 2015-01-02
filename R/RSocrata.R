@@ -206,8 +206,8 @@ ls.socrata <- function(url) {
     if(is.null(parsedUrl$scheme) | is.null(parsedUrl$hostname))
         stop(url, " does not appear to be a valid URL.")
     parsedUrl$path <- "OData.svc"
-    odurl <- build_url(parsedUrl)
-    doc.r <- xmlRoot(xmlParse(odurl, isURL=TRUE))
+    resp <- getResponse(build_url(parsedUrl))
+    doc.r <- xmlRoot(xmlParse(resp, asText=TRUE))
     datasets <- doc.r[['workspace']]['collection']
     title.df <- xmlToDataFrame(datasets) # Titles of datasets
     name.vec <- unlist(lapply(datasets, xmlAttrs)) # Names of datasets
