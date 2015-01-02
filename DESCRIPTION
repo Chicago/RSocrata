@@ -6,8 +6,8 @@ Description: Provided with a Socrata dataset resource URL,
     returns an R data frame.
     Converts dates to POSIX format.
     Manages throttling by Socrata.
-Version: 1.5.1
-Date: 2014-12-08
+Version: 1.5.2
+Date: 2015-1-02
 URL: https://github.com/Chicago/RSocrata
 BugReports: https://github.com/Chicago/RSocrata/issues
 Depends:
