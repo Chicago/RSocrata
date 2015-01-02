@@ -12,8 +12,9 @@ URL: https://github.com/Chicago/RSocrata
 BugReports: https://github.com/Chicago/RSocrata/issues
 Depends:
     httr (>= 0.3),
-    jsonlite,
-    mime
+    jsonlite (>= 0.9.14),
+    mime (>= 0.2),
+    XML (>= 3.98-1.1)
 Suggests:
     RUnit
 Author: Hugh Devlin, Ph. D. and Tom Schenk, Jr.
