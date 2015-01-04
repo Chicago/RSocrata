@@ -40,23 +40,40 @@ isFourByFour <- function(fourByFour) {
 #' Will convert a human-readable URL to a valid REST API call
 #' supported by Socrata. It will accept a valid API URL if provided
 #' by users and will also convert a human-readable URL to a valid API
-#' URL.
+#' URL. Will accept queries with optional API token as a separate
+#' argument or will also accept API token in the URL query. Will
+#' resolve conflicting API token by deferring to original URL.
 #' @param url  a string; character vector of length one
 #' @return a valid Url
 #' @author Tom Schenk Jr \email{tom.schenk@@cityofchicago.org}
-validateUrl <- function(url) {
+validateUrl <- function(url, api.token) {
 	url <- as.character(url)
-	parsedUrl <- parse_url(url)
+  parsedUrl <- parse_url(url)
 	if(is.null(parsedUrl$scheme) | is.null(parsedUrl$hostname) | is.null(parsedUrl$path))
 		stop(url, " does not appear to be a valid URL.")
-	if(substr(parsedUrl$path, 1, 9) == 'resource/') {
+  if(!missing(api.token)) { # Handles the addition of API token and resolves invalid uses
+    if(is.null(parsedUrl$query[["$$app_token"]])==FALSE) {
+      token_inclusion <- "already_included"
+    } else {
+      token_inclusion <- "valid_use" }
+    switch(token_inclusion,
+      "already_included"={ # Token already included in url argument
+        warning(url, " already contains an API token in url. Ignoring user-defined token.")
+      },
+      "valid_use"={ # api.token argument is used, not duplicative.
+        parsedUrl$query[["app_token"]] <- as.character(paste("%24%24app_token=", api.token, sep=""))
+      })
+  } 
+  if(substr(parsedUrl$path, 1, 9) == 'resource/') {
 		return(build_url(parsedUrl)) # resource url already
 	}
 	fourByFour <- basename(parsedUrl$path)
-	if(!isFourByFour(fourByFour))
+  if(!isFourByFour(fourByFour))
 		stop(fourByFour, " is not a valid Socrata dataset unique identifier.")
-	parsedUrl$path <- paste("resource/", fourByFour, ".csv", sep="")
-	build_url(parsedUrl)
+  else {
+    parsedUrl$path <- paste('resource/', fourByFour, '.csv', sep="")
+	  build_url(parsedUrl) 
+  }
 }
 
 #' Convert Socrata human-readable column name to field name
@@ -164,8 +181,8 @@ getSodaTypes <- function(response) {
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' @examples
 #' df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv")
-read.socrata <- function(url) {
-	validUrl <- validateUrl(url) # check url syntax, allow human-readable Socrata url
+read.socrata <- function(url, api.token) {
+	validUrl <- validateUrl(url, api.token) # check url syntax, allow human-readable Socrata url
 	parsedUrl <- parse_url(validUrl)
 	mimeType <- guess_type(parsedUrl$path)
 	if(!(mimeType %in% c('text/csv','application/json')))
