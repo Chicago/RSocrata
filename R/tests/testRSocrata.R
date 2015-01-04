@@ -116,9 +116,55 @@ test.readSocrataInvalidUrl <- function() {
 	checkException(read.socrata("a.fake.url.being.tested"), "invalid url")
 }
 
+test.readSocrataToken <- function(){
+  df <- read.socrata('https://soda.demo.socrata.com/resource/4334-bgaj.csv', api.token="ew2rEMuESuzWPqMkyPfOSGJgE")
+  checkEquals(1007, nrow(df), "rows")
+  checkEquals(9, ncol(df), "columns")  
+}
+
+test.readSocrataHumanReadableToken <- function(){
+  df <- read.socrata('https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj', api.token="ew2rEMuESuzWPqMkyPfOSGJgE")
+  checkEquals(1007, nrow(df), "rows")
+  checkEquals(9, ncol(df), "columns")  
+}
+
+test.readAPIConflict <- function(){
+  df <- read.socrata('https://soda.demo.socrata.com/resource/4334-bgaj.csv?$$app.token=ew2rEMuESuzWPqMkyPfOSGJgE', api.token="ew2rEMuESuzWPqMkyPfOSUSER")
+  checkEquals(1007, nrow(df), "rows")
+  checkEquals(9, ncol(df), "columns")
+  # Check that function is calling the API token specified in url
+  checkTrue(substr(validateUrl('https://soda.demo.socrata.com/resource/4334-bgaj.csv?$$app.token=ew2rEMuESuzWPqMkyPfOSGJgE', api.token="ew2rEMuESuzWPqMkyPfOSUSER"), 70, 94)=="ew2rEMuESuzWPqMkyPfOSGJgE")
+}
+
+test.readAPIConflictHumanReadable <- function(){
+  df <- read.socrata('https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj?$$app.token=ew2rEMuESuzWPqMkyPfOSGJgE', api.token="ew2rEMuESuzWPqMkyPfOSUSER")
+  checkEquals(1007, nrow(df), "rows")
+  checkEquals(9, ncol(df), "columns")
+  # Check that function is calling the API token specified in url
+  checkTrue(substr(validateUrl('https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj?$$app.token=ew2rEMuESuzWPqMkyPfOSGJgE', api.token="ew2rEMuESuzWPqMkyPfOSUSER"), 70, 94)=="ew2rEMuESuzWPqMkyPfOSGJgE")
+}
+
+test.incorrectAPIQuery <- function(){
+  # The query below is missing a $ before app_token.
+  checkException(read.socrata("https://soda.demo.socrata.com/resource/4334-bgaj.csv?$app_token=ew2rEMuESuzWPqMkyPfOSGJgE"))
+  # Check that it was only because of missing $  
+  df <- read.socrata("https://soda.demo.socrata.com/resource/4334-bgaj.csv?$$app_token=ew2rEMuESuzWPqMkyPfOSGJgE")
+  checkEquals(1007, nrow(df), "rows")
+  checkEquals(9, ncol(df), "columns") 
+}
+
+test.incorrectAPIQueryHumanReadable <- function(){
+  # The query below is missing a $ before app_token.
+  checkException(read.socrata("https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj?$app_token=ew2rEMuESuzWPqMkyPfOSGJgE"))
+  # Check that it was only because of missing $  
+  df <- read.socrata("https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj?$$app_token=ew2rEMuESuzWPqMkyPfOSGJgE")
+  checkEquals(1007, nrow(df), "rows")
+  checkEquals(9, ncol(df), "columns") 
+}
+
 test.suite <- defineTestSuite("test Socrata SODA interface",
-		dirs = file.path("R/tests"),
-		testFileRegexp = '^test.*\\.R')
+                              dirs = file.path("R/tests"),
+                              testFileRegexp = '^test.*\\.R')
 
 runAllTests <- function() {
 	test.result <- runTestSuite(test.suite)
