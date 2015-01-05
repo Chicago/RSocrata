@@ -9,3 +9,4 @@ RSocrata.Rcheck
 ^\.Rproj\.user$
 .DS_Store
 README.md
+^\.travis\.yml$

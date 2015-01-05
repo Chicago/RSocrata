@@ -1,6 +1,8 @@
 RSocrata
 ========
 
+[![Build Status](https://api.travis-ci.org/tomschenkjr/RSocrata.png)](https://travis-ci.org/tomschenkjr/RSocrata)
+
 A tool for downloading Socrata datasets as R data frames
 --------------------------------------------------------	
 
