@@ -6,6 +6,9 @@
 
 language: c
 
+env:
+  - R_MY_PKG="$(basename $TRAVIS_REPO_SLUG)"
+
 before_install:
   - curl -OL http://raw.github.com/craigcitro/r-travis/master/scripts/travis-tool.sh
   - chmod 755 ./travis-tool.sh
@@ -14,7 +17,7 @@ install:
   - ./travis-tool.sh install_deps
 script: 
   - ./travis-tool.sh run_tests
-  - Rscript -e 'source("~/Documents/git/RSocrata/R/tests/testRSocrata.R"); runAllTestsCI()'
+  - ls; cd $R_MY_PKG; Rscript -e 'source("R/tests/testRSocrata.R"); runAllTestsCI()'
 
 after_failure:
   - ./travis-tool.sh dump_logs
