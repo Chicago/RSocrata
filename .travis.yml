@@ -17,7 +17,7 @@ install:
   - ./travis-tool.sh install_deps
 script: 
   - ./travis-tool.sh run_tests
-  - ls; cd $R_MY_PKG; Rscript -e 'source("R/tests/testRSocrata.R"); runAllTestsCI()'
+  - Rscript -e 'source("R/tests/testRSocrata.R"); runAllTestsCI()'
 
 after_failure:
   - ./travis-tool.sh dump_logs
