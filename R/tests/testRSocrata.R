@@ -173,5 +173,5 @@ runAllTests <- function() {
 
 runAllTestsCI <- function() {
   test.result <- runTestSuite(test.suite)
-  if(getErrors(tests)$nErr > 0 | getErrors(tests)$nFail > 0) stop("TEST HAD ERRORS!")
+  if(getErrors(test.result)$nErr > 0 | getErrors(test.result)$nFail > 0) stop("TEST HAD ERRORS!")
 }
