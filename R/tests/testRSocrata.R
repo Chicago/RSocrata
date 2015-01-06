@@ -170,3 +170,8 @@ runAllTests <- function() {
 	test.result <- runTestSuite(test.suite)
 	printTextProtocol(test.result) 
 }
+
+runAllTestsCI <- function() {
+  test.result <- runTestSuite(test.suite)
+  if(getErrors(tests)$nErr > 0 | getErrors(tests)$nFail > 0) stop("TEST HAD ERRORS!")
+}
