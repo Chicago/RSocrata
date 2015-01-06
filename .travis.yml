@@ -12,7 +12,9 @@ before_install:
   - ./travis-tool.sh bootstrap
 install:
   - ./travis-tool.sh install_deps
-script: ./travis-tool.sh run_tests
+script: 
+  - ./travis-tool.sh run_tests
+  - Rscript -e 'source("~/Documents/git/RSocrata/R/tests/testRSocrata.R"); runAllTestsCI()'
 
 after_failure:
   - ./travis-tool.sh dump_logs
