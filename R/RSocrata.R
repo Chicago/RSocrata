@@ -6,7 +6,6 @@
 library('httr')       # for access to the HTTP header
 library('jsonlite')   # for parsing data types from Socrata
 library('mime')       # for guessing mime type
-library('XML')        # for OData responses
 
 #' Time-stamped message
 #'
@@ -192,24 +191,19 @@ read.socrata <- function(url) {
 #' List datasets available from a Socrata domain
 #'
 #' @param url A Socrata URL. This simply points to the site root. 
-#' @return an R data frame containing dataset names and their descriptions
+#' @return an R data frame containing a listing of datasets along with
+#' various metadata.
 #' @export
 #' @author Peter Schmiedeskamp \email{pschmied@@uw.edu}
 #' @examples
 #' df <- ls.socrata("http://soda.demo.socrata.com")
 ls.socrata <- function(url) {
-    # Listing Socrata datasets only appears possible using the OData
-    # mechanism. An OData R API would likely simplify this somewhat
-    # case-specific hack.
     url <- as.character(url)
     parsedUrl <- parse_url(url)
     if(is.null(parsedUrl$scheme) | is.null(parsedUrl$hostname))
         stop(url, " does not appear to be a valid URL.")
-    parsedUrl$path <- "OData.svc"
-    resp <- getResponse(build_url(parsedUrl))
-    doc.r <- xmlRoot(xmlParse(resp, asText=TRUE))
-    datasets <- doc.r[['workspace']]['collection']
-    title.df <- xmlToDataFrame(datasets) # Titles of datasets
-    name.vec <- unlist(lapply(datasets, xmlAttrs)) # Names of datasets
-    data.frame(name=name.vec, title.df)
+    parsedUrl$path <- "data.json"
+    df <- fromJSON(build_url(parsedUrl))
+    df
 }
+

@@ -121,7 +121,7 @@ test.ls.socrata <- function() {
     # of soda.demo.socrata.com
     df <- ls.socrata("https://soda.demo.socrata.com")
     checkEquals(TRUE, nrow(df) > 0)
-    checkEquals(c("name","title"), names(df))
+    checkEquals(TRUE, c("identifier","description") %in% names(df))
 }
 
 test.suite <- defineTestSuite("test Socrata SODA interface",
