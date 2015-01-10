@@ -51,11 +51,11 @@ validateUrl <- function(url, app_token) {
   parsedUrl <- parse_url(url)
 	if(is.null(parsedUrl$scheme) | is.null(parsedUrl$hostname) | is.null(parsedUrl$path))
 		stop(url, " does not appear to be a valid URL.")
-  if(!missing(app_token)) { # Handles the addition of API token and resolves invalid uses
-    if(is.null(parsedUrl$query[["$$app_token"]])==FALSE) {
-      token_inclusion <- "already_included"
+  if(!is.null(app_token)) { # Handles the addition of API token and resolves invalid uses
+    if(is.null(parsedUrl$query[["$$app_token"]])) {
+      token_inclusion <- "valid_use"
     } else {
-      token_inclusion <- "valid_use" }
+      token_inclusion <- "already_included" }
     switch(token_inclusion,
       "already_included"={ # Token already included in url argument
         warning(url, " already contains an API token in url. Ignoring user-defined token.")
@@ -181,7 +181,7 @@ getSodaTypes <- function(response) {
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' @examples
 #' df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv")
-read.socrata <- function(url, app_token) {
+read.socrata <- function(url, app_token = NULL) {
 	validUrl <- validateUrl(url, app_token) # check url syntax, allow human-readable Socrata url
 	parsedUrl <- parse_url(validUrl)
 	mimeType <- guess_type(parsedUrl$path)
