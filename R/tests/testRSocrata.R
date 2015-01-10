@@ -162,6 +162,14 @@ test.incorrectAPIQueryHumanReadable <- function(){
   checkEquals(9, ncol(df), "columns") 
 }
 
+test.ls.socrata <- function() {
+    # Makes some potentially erroneous assumptions about availability
+    # of soda.demo.socrata.com
+    df <- ls.socrata("https://soda.demo.socrata.com")
+    checkEquals(TRUE, nrow(df) > 0)
+    checkEquals(TRUE, c("identifier","description") %in% names(df))
+}
+
 test.suite <- defineTestSuite("test Socrata SODA interface",
                               dirs = file.path("R/tests"),
                               testFileRegexp = '^test.*\\.R')
