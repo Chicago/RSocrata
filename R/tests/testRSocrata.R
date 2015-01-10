@@ -129,19 +129,19 @@ test.readSocrataHumanReadableToken <- function(){
 }
 
 test.readAPIConflict <- function(){
-  df <- read.socrata('https://soda.demo.socrata.com/resource/4334-bgaj.csv?$$app.token=ew2rEMuESuzWPqMkyPfOSGJgE', api.token="ew2rEMuESuzWPqMkyPfOSUSER")
+  df <- read.socrata('https://soda.demo.socrata.com/resource/4334-bgaj?$$api_token=ew2rEMuESuzWPqMkyPfOSGJgE', api.token="ew2rEMuESuzWPqMkyPfOSUSER")
   checkEquals(1007, nrow(df), "rows")
   checkEquals(9, ncol(df), "columns")
   # Check that function is calling the API token specified in url
-  checkTrue(substr(validateUrl('https://soda.demo.socrata.com/resource/4334-bgaj.csv?$$app.token=ew2rEMuESuzWPqMkyPfOSGJgE', api.token="ew2rEMuESuzWPqMkyPfOSUSER"), 70, 94)=="ew2rEMuESuzWPqMkyPfOSGJgE")
+  checkTrue(substr(validateUrl('https://soda.demo.socrata.com/resource/4334-bgaj.csv?$$api.token=ew2rEMuESuzWPqMkyPfOSGJgE', api.token="ew2rEMuESuzWPqMkyPfOSUSER"), 70, 94)=="ew2rEMuESuzWPqMkyPfOSGJgE")
 }
 
 test.readAPIConflictHumanReadable <- function(){
-  df <- read.socrata('https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj?$$app.token=ew2rEMuESuzWPqMkyPfOSGJgE', api.token="ew2rEMuESuzWPqMkyPfOSUSER")
+  df <- read.socrata('https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj?$$api_token=ew2rEMuESuzWPqMkyPfOSGJgE', api.token="ew2rEMuESuzWPqMkyPfOSUSER")
   checkEquals(1007, nrow(df), "rows")
   checkEquals(9, ncol(df), "columns")
   # Check that function is calling the API token specified in url
-  checkTrue(substr(validateUrl('https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj?$$app.token=ew2rEMuESuzWPqMkyPfOSGJgE', api.token="ew2rEMuESuzWPqMkyPfOSUSER"), 70, 94)=="ew2rEMuESuzWPqMkyPfOSGJgE")
+  checkTrue(substr(validateUrl('https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj?$$api.token=ew2rEMuESuzWPqMkyPfOSGJgE', api.token="ew2rEMuESuzWPqMkyPfOSUSER"), 70, 94)=="ew2rEMuESuzWPqMkyPfOSGJgE")
 }
 
 test.incorrectAPIQuery <- function(){
