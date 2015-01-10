@@ -167,7 +167,15 @@ test.ls.socrata <- function() {
     # of soda.demo.socrata.com
     df <- ls.socrata("https://soda.demo.socrata.com")
     checkEquals(TRUE, nrow(df) > 0)
-    checkEquals(TRUE, c("identifier","description") %in% names(df))
+    # Test comparing columns against data.json specifications:
+    # https://project-open-data.cio.gov/metadata-resources/
+    core_names <- as.character(c("title","description","keyword","modified","publisher","contactPoint","identifier","accessLevel"))
+    checkEquals(as.logical(rep(TRUE, length(core_names))), core_names %in% names(df))
+    # Test comparing columns not in core requirements.
+    socrata_names <- as.character(c("license", "accessURL", "format", "landingPage", "distribution", "theme"))
+    checkEquals(as.logical(rep(TRUE, length(socrata_names))), socrata_names %in% names(df))
+    # Check that all names in data.json are accounted for in ls.socrata return
+    checkEquals(as.logical(rep(TRUE, length(names(df)))), names(df) %in% c(core_names, socrata_names))
 }
 
 test.suite <- defineTestSuite("test Socrata SODA interface",
