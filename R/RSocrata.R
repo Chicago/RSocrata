@@ -46,12 +46,12 @@ isFourByFour <- function(fourByFour) {
 #' @param url  a string; character vector of length one
 #' @return a valid Url
 #' @author Tom Schenk Jr \email{tom.schenk@@cityofchicago.org}
-validateUrl <- function(url, api.token) {
+validateUrl <- function(url, app_token) {
 	url <- as.character(url)
   parsedUrl <- parse_url(url)
 	if(is.null(parsedUrl$scheme) | is.null(parsedUrl$hostname) | is.null(parsedUrl$path))
 		stop(url, " does not appear to be a valid URL.")
-  if(!missing(api.token)) { # Handles the addition of API token and resolves invalid uses
+  if(!missing(app_token)) { # Handles the addition of API token and resolves invalid uses
     if(is.null(parsedUrl$query[["$$app_token"]])==FALSE) {
       token_inclusion <- "already_included"
     } else {
@@ -60,8 +60,8 @@ validateUrl <- function(url, api.token) {
       "already_included"={ # Token already included in url argument
         warning(url, " already contains an API token in url. Ignoring user-defined token.")
       },
-      "valid_use"={ # api.token argument is used, not duplicative.
-        parsedUrl$query[["app_token"]] <- as.character(paste("%24%24app_token=", api.token, sep=""))
+      "valid_use"={ # app_token argument is used, not duplicative.
+        parsedUrl$query[["app_token"]] <- as.character(paste("%24%24app_token=", app_token, sep=""))
       })
   } 
   if(substr(parsedUrl$path, 1, 9) == 'resource/') {
@@ -181,8 +181,8 @@ getSodaTypes <- function(response) {
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' @examples
 #' df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv")
-read.socrata <- function(url, api.token) {
-	validUrl <- validateUrl(url, api.token) # check url syntax, allow human-readable Socrata url
+read.socrata <- function(url, app_token) {
+	validUrl <- validateUrl(url, app_token) # check url syntax, allow human-readable Socrata url
 	parsedUrl <- parse_url(validUrl)
 	mimeType <- guess_type(parsedUrl$path)
 	if(!(mimeType %in% c('text/csv','application/json')))
