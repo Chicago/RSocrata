@@ -221,5 +221,6 @@ ls.socrata <- function(url) {
     parsedUrl$path <- "data.json"
     df <- fromJSON(build_url(parsedUrl))
     df$modified <- as.POSIXct(df$modified)
+    df$theme <- as.character(df$theme)
     df
 }
