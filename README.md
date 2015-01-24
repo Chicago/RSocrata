@@ -44,7 +44,7 @@ nrow(earthquakesDataFrame)
 
 ### Example: List all datasets on portal
 ```r
-allSitesDataFrame <- read.socrata("https://soda.demo.socrata.com")
+allSitesDataFrame <- ls.socrata("https://soda.demo.socrata.com")
 nrow(allSitesDataFrame) # Number of datasets
 allSitesDataFrame$title # Names of each dataset
 ```
