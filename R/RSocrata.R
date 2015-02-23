@@ -220,6 +220,8 @@ ls.socrata <- function(url) {
         stop(url, " does not appear to be a valid URL.")
     parsedUrl$path <- "data.json"
     df <- fromJSON(build_url(parsedUrl))
+    df <- as.data.frame(df$dataset)
+    df$issued <- as.POSIXct(df$issued)
     df$modified <- as.POSIXct(df$modified)
     df$theme <- as.character(df$theme)
     df
