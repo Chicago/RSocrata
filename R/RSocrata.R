@@ -100,6 +100,7 @@ fieldName <- function(humanName) {
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 posixify <- function(x) {
 	x <- as.character(x)
+	if (length(x)==0) return(x)
 	# Two calendar date formats supplied by Socrata
 	if(any(regexpr("^[[:digit:]]{1,2}/[[:digit:]]{1,2}/[[:digit:]]{4}$", x[1])[1] == 1))
 	  strptime(x, format="%m/%d/%Y") # short date format
@@ -220,5 +221,9 @@ ls.socrata <- function(url) {
         stop(url, " does not appear to be a valid URL.")
     parsedUrl$path <- "data.json"
     df <- fromJSON(build_url(parsedUrl))
+    df <- as.data.frame(df$dataset)
+    df$issued <- as.POSIXct(df$issued)
+    df$modified <- as.POSIXct(df$modified)
+    df$theme <- as.character(df$theme)
     df
 }
