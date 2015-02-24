@@ -44,6 +44,8 @@ isFourByFour <- function(fourByFour) {
 #' argument or will also accept API token in the URL query. Will
 #' resolve conflicting API token by deferring to original URL.
 #' @param url  a string; character vector of length one
+#' @param app_token a string; SODA API token used to query the data 
+#' portal \url{http://dev.socrata.com/consumers/getting-started.html}
 #' @return a valid Url
 #' @author Tom Schenk Jr \email{tom.schenk@@cityofchicago.org}
 validateUrl <- function(url, app_token) {
@@ -177,6 +179,8 @@ getSodaTypes <- function(response) {
 #' requesting a comma-separated download format (.csv suffix), 
 #' May include SoQL parameters, 
 #' but is assumed to not include a SODA offset parameter
+#' @param app_token a string; SODA API token used to query the data 
+#' portal \url{http://dev.socrata.com/consumers/getting-started.html}
 #' @return an R data frame with POSIX dates
 #' @export
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
