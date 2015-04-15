@@ -69,3 +69,8 @@ Please report issues, request enhancements or fork us at the [City of Chicago gi
 * Added unit test for reading private datasets
 
 1.5.1 Deprecated ```httr::guess_media()``` and implemented ```httr::guess_type()```
+
+1.6.0 Several changes:
+* New function, ```ls.socrata``` to list all datasets on a Socrata portal.
+* New optional argument, ```app_token```, which lets users supply an API token while using ```read.socrata() to minimize throttling.
+* Repairs a bug where ```read.socrata``` failed when reading in a date with a column, but there are null values in that column.
