@@ -15,7 +15,8 @@ BugReports: https://github.com/Chicago/RSocrata/issues
 Depends:
     httr (>= 0.3),
     jsonlite (>= 0.9.14),
-    mime (>= 0.2),
+    mime (>= 0.2)
+Imports:
     curl (>= 0.5)
 Suggests:
     RUnit
