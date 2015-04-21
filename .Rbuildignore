@@ -10,3 +10,4 @@ RSocrata.Rcheck
 .DS_Store
 README.md
 ^\.travis\.yml$
+appveyor.yml
