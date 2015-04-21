@@ -14,6 +14,7 @@ build_script:
 
 test_script:
   - travis-tool.sh run_tests
+  - cmd: echo %cd%
   - cmd: Rscript -e 'source("R/tests/testRSocrata.R"); runAllTestsCI()'
 
 on_failure:
