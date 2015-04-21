@@ -8,6 +8,8 @@ language: c
 
 env:
   - R_MY_PKG="$(basename $TRAVIS_REPO_SLUG)"
+  - global:
+    - WARNINGS_ARE_ERRORS=1
 
 before_install:
   - curl -OL http://raw.github.com/craigcitro/r-travis/master/scripts/travis-tool.sh
