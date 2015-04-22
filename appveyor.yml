@@ -10,6 +10,7 @@ build_script:
   - travis-tool.sh install_deps
 
 test_script:
+  - Rscript -e "install.packages('roxygen2'); library('roxygen2'); roxygen2::roxygenize('.', roclets=c('rd', 'collate', 'namespace'))"
   - travis-tool.sh run_tests
   - Rscript -e "source('R/tests/testRSocrata.R'); runAllTestsCI()"
 
