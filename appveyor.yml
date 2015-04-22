@@ -1,6 +1,3 @@
-environment:
-  WARNINGS_ARE_ERRORS: 0
-
 init:
   ps: |
         $ErrorActionPreference = "Stop"
