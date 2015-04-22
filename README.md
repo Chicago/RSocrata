@@ -1,9 +1,9 @@
 RSocrata
 ========
 
-Master: [![Build Status - Master](https://api.travis-ci.org/Chicago/RSocrata.png?branch=master)](https://travis-ci.org/Chicago/RSocrata)
+Master: [![Build Status - Master](https://api.travis-ci.org/Chicago/RSocrata.png?branch=master)](https://travis-ci.org/Chicago/RSocrata) [![Build status](https://ci.appveyor.com/api/projects/status/vcvxeiw9eop6ngcn/branch/master?svg=true)](https://ci.appveyor.com/project/tomschenkjr/rsocrata/branch/master)
 
-Dev: [![Build Status - Dev](https://api.travis-ci.org/Chicago/RSocrata.png?branch=dev)](https://travis-ci.org/Chicago/RSocrata)
+Dev: [![Build Status - Dev](https://api.travis-ci.org/Chicago/RSocrata.png?branch=dev)](https://travis-ci.org/Chicago/RSocrata) [![Build status](https://ci.appveyor.com/api/projects/status/vcvxeiw9eop6ngcn/branch/dev?svg=true)](https://ci.appveyor.com/project/tomschenkjr/rsocrata/branch/dev)
 
 A tool for downloading Socrata datasets as R data frames
 --------------------------------------------------------	
