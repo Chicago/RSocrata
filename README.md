@@ -1,9 +1,13 @@
 RSocrata
 ========
 
-Master: [![Build Status - Master](https://api.travis-ci.org/Chicago/RSocrata.png?branch=master)](https://travis-ci.org/Chicago/RSocrata) [![Build status](https://ci.appveyor.com/api/projects/status/vcvxeiw9eop6ngcn/branch/master?svg=true)](https://ci.appveyor.com/project/tomschenkjr/rsocrata/branch/master)
+**Master** 
 
-Dev: [![Build Status - Dev](https://api.travis-ci.org/Chicago/RSocrata.png?branch=dev)](https://travis-ci.org/Chicago/RSocrata) [![Build status](https://ci.appveyor.com/api/projects/status/vcvxeiw9eop6ngcn/branch/dev?svg=true)](https://ci.appveyor.com/project/tomschenkjr/rsocrata/branch/dev)
+[![Linux build](https://img.shields.io/travis/Chicago/RSocrata/master.svg?style=flat-square&label=Linux build)](https://travis-ci.org/Chicago/RSocrata) [![Windows build](https://img.shields.io/appveyor/ci/Chicago/RSocrata/master.svg?style=flat-square&label=Windows build)](https://ci.appveyor.com/project/tomschenkjr/rsocrata/branch/master)
+
+**Dev**
+
+[![Build Status - Dev](https://img.shields.io/travis/Chicago/RSocrata/dev.svg?style=flat-square&label=Linux build)](https://travis-ci.org/Chicago/RSocrata) [![Build status](https://img.shields.io/appveyor/ci/Chicago/RSocrata/dev.svg?style=flat-square&label=Windows build)](https://ci.appveyor.com/project/tomschenkjr/rsocrata/branch/dev)
 
 A tool for downloading Socrata datasets as R data frames
 --------------------------------------------------------	
