@@ -50,7 +50,7 @@ isFourByFour <- function(fourByFour) {
 #' @author Tom Schenk Jr \email{tom.schenk@@cityofchicago.org}
 validateUrl <- function(url, app_token) {
 	url <- as.character(url)
-  parsedUrl <- parse_url(url)
+  parsedUrl <- httr::parse_url(url)
 	if(is.null(parsedUrl$scheme) | is.null(parsedUrl$hostname) | is.null(parsedUrl$path))
 		stop(url, " does not appear to be a valid URL.")
   if(!is.null(app_token)) { # Handles the addition of API token and resolves invalid uses
@@ -188,7 +188,7 @@ getSodaTypes <- function(response) {
 #' df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv")
 read.socrata <- function(url, app_token = NULL) {
 	validUrl <- validateUrl(url, app_token) # check url syntax, allow human-readable Socrata url
-	parsedUrl <- parse_url(validUrl)
+	parsedUrl <- httr::parse_url(validUrl)
 	mimeType <- guess_type(parsedUrl$path)
 	if(!(mimeType %in% c('text/csv','application/json')))
 		stop("Error in read.socrata: ", mimeType, " not a supported data format.")
@@ -220,7 +220,7 @@ read.socrata <- function(url, app_token = NULL) {
 #' df <- ls.socrata("http://soda.demo.socrata.com")
 ls.socrata <- function(url) {
     url <- as.character(url)
-    parsedUrl <- parse_url(url)
+    parsedUrl <- httr::parse_url(url)
     if(is.null(parsedUrl$scheme) | is.null(parsedUrl$hostname))
         stop(url, " does not appear to be a valid URL.")
     parsedUrl$path <- "data.json"
