@@ -67,14 +67,14 @@ validateUrl <- function(url, app_token) {
       })
   } 
   if(substr(parsedUrl$path, 1, 9) == 'resource/') {
-		return(build_url(parsedUrl)) # resource url already
+		return(httr::build_url(parsedUrl)) # resource url already
 	}
 	fourByFour <- basename(parsedUrl$path)
   if(!isFourByFour(fourByFour))
 		stop(fourByFour, " is not a valid Socrata dataset unique identifier.")
   else {
     parsedUrl$path <- paste('resource/', fourByFour, '.csv', sep="")
-	  build_url(parsedUrl) 
+	  httr::build_url(parsedUrl) 
   }
 }
 
@@ -118,17 +118,17 @@ posixify <- function(x) {
 # @return httr response object
 # @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 getResponse <- function(url) {
-	response <- GET(url)
-	status <- http_status(response)
+	response <- httr::GET(url)
+	status <- httr::http_status(response)
 	if(response$status_code != 200) {
 		msg <- paste("Error in httr GET:", response$status_code, response$headers$statusmessage, url)
 		if(!is.null(response$headers$`content-length`) && (response$headers$`content-length` > 0)) {
-			details <- content(response)
+			details <- httr::content(response)
 			msg <- paste(msg, details$code[1], details$message[1])	
 		}
 		logMsg(msg)
 	}
-	stop_for_status(response)
+	httr::stop_for_status(response)
 	response
 }
 
@@ -164,8 +164,8 @@ getContentAsDataFrame <- function(response) {
 # @return a named vector mapping field names to data types
 getSodaTypes <- function(response) { UseMethod('response') }
 getSodaTypes <- function(response) {
-	result <- fromJSON(response$headers[['x-soda2-types']])
-	names(result) <- fromJSON(response$headers[['x-soda2-fields']])
+	result <- jsonlite::fromJSON(response$headers[['x-soda2-types']])
+	names(result) <- jsonlite::fromJSON(response$headers[['x-soda2-fields']])
 	result
 }
 
@@ -189,7 +189,7 @@ getSodaTypes <- function(response) {
 read.socrata <- function(url, app_token = NULL) {
 	validUrl <- validateUrl(url, app_token) # check url syntax, allow human-readable Socrata url
 	parsedUrl <- httr::parse_url(validUrl)
-	mimeType <- guess_type(parsedUrl$path)
+	mimeType <- mime::guess_type(parsedUrl$path)
 	if(!(mimeType %in% c('text/csv','application/json')))
 		stop("Error in read.socrata: ", mimeType, " not a supported data format.")
 	response <- getResponse(validUrl)
@@ -224,7 +224,7 @@ ls.socrata <- function(url) {
     if(is.null(parsedUrl$scheme) | is.null(parsedUrl$hostname))
         stop(url, " does not appear to be a valid URL.")
     parsedUrl$path <- "data.json"
-    df <- fromJSON(build_url(parsedUrl))
+    df <- jsonlite::fromJSON(httr::build_url(parsedUrl))
     df <- as.data.frame(df$dataset)
     df$issued <- as.POSIXct(df$issued)
     df$modified <- as.POSIXct(df$modified)
