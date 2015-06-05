@@ -3,9 +3,9 @@
 # Author: Hugh J. Devlin, Ph. D. 2013-08-28
 ###############################################################################
 
-library('httr')       # for access to the HTTP header
-library('jsonlite')   # for parsing data types from Socrata
-library('mime')       # for guessing mime type
+# library('httr')       # for access to the HTTP header
+# library('jsonlite')   # for parsing data types from Socrata
+# library('mime')       # for guessing mime type
 
 #' Time-stamped message
 #'
@@ -89,7 +89,7 @@ validateUrl <- function(url, app_token) {
 #' @export
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' @examples
-#' fieldName("Number.of.Stations") # number_of_stations
+#' #fieldName("Number.of.Stations") # number_of_stations
 fieldName <- function(humanName) {
 	tolower(gsub('\\.', '_', as.character(humanName)))	
 }
