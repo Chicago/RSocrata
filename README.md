@@ -3,11 +3,11 @@ RSocrata
 
 **Master** 
 
-[![Linux build](https://img.shields.io/travis/Chicago/RSocrata/master.svg?style=flat-square&label=Linux build)](https://travis-ci.org/Chicago/RSocrata) [![Windows build](https://img.shields.io/appveyor/ci/tomschenkjr/RSocrata/master.svg?style=flat-square&label=Windows build)](https://ci.appveyor.com/project/tomschenkjr/rsocrata/branch/master)
+[![Linux build - Master](https://img.shields.io/travis/Chicago/RSocrata/master.svg?style=flat-square&label=Linux build)](https://travis-ci.org/Chicago/RSocrata)[![Windows build - Master](https://img.shields.io/appveyor/ci/tomschenkjr/RSocrata/master.svg?style=flat-square&label=Windows build)](https://ci.appveyor.com/project/tomschenkjr/rsocrata/branch/master)
 
 **Dev**
 
-[![Build Status - Dev](https://img.shields.io/travis/Chicago/RSocrata/dev.svg?style=flat-square&label=Linux build)](https://travis-ci.org/Chicago/RSocrata) [![Build status](https://img.shields.io/appveyor/ci/tomschenkjr/RSocrata/dev.svg?style=flat-square&label=Windows build)](https://ci.appveyor.com/project/tomschenkjr/rsocrata/branch/dev)
+[![Linux build - Dev](https://img.shields.io/travis/Chicago/RSocrata/dev.svg?style=flat-square&label=Linux build)](https://travis-ci.org/Chicago/RSocrata)[![Windows build - Dev](https://img.shields.io/appveyor/ci/tomschenkjr/RSocrata/dev.svg?style=flat-square&label=Windows build)](https://ci.appveyor.com/project/tomschenkjr/rsocrata/branch/dev)
 
 A tool for downloading Socrata datasets as R data frames
 --------------------------------------------------------	
@@ -27,15 +27,15 @@ Use ```ls.socrata()``` to list all datasets available on a Socrata webserver.
 
 ### Example: Reading SoDA valid URLs
 ```r
-earthquakesDataFrame <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv")<br>
-nrow(earthquakesDataFrame) # 1007 (two "pages")<br>
+earthquakesDataFrame <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv")
+nrow(earthquakesDataFrame) # 1007 (two "pages")
 class(earthquakesDataFrame$Datetime[1]) # POSIXlt
 ```
 
 ### Example: Reading "human-readable" URLs
 ```r
-earthquakesDataFrame <- read.socrata("https://soda.demo.socrata.com/dataset/USGS-Earthquakes-for-2012-11-01-API-School-Demo/4334-bgaj")<br>
-nrow(earthquakesDataFrame) # 1007 (two "pages")<br>
+earthquakesDataFrame <- read.socrata("https://soda.demo.socrata.com/dataset/USGS-Earthquakes-for-2012-11-01-API-School-Demo/4334-bgaj")
+nrow(earthquakesDataFrame) # 1007 (two "pages")
 class(earthquakesDataFrame$Datetime[1]) # POSIXlt
 ```
 
@@ -76,5 +76,5 @@ Please report issues, request enhancements or fork us at the [City of Chicago gi
 
 1.6.0 Several changes:
 * New function, ```ls.socrata``` to list all datasets on a Socrata portal.
-* New optional argument, ```app_token```, which lets users supply an API token while using ```read.socrata() to minimize throttling.
+* New optional argument, ```app_token```, which lets users supply an API token while using ```read.socrata()``` to minimize throttling.
 * Repairs a bug where ```read.socrata``` failed when reading in a date with a column, but there are null values in that column.
