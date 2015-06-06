@@ -82,3 +82,7 @@ If you would like to contribute to this project, please see the [contributing do
 * New function, ```ls.socrata``` to list all datasets on a Socrata portal.
 * New optional argument, ```app_token```, which lets users supply an API token while using ```read.socrata()``` to minimize throttling.
 * Repairs a bug where ```read.socrata``` failed when reading in a date with a column, but there are null values in that column.
+
+1.6.1 Bug fixes:
+* Resolved potential [name collision issue](https://github.com/Chicago/RSocrata/issues/42)
+* Cleaned-up documentation with contributor instructions
