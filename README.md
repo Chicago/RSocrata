@@ -57,6 +57,10 @@ allSitesDataFrame$title # Names of each dataset
 
 Please report issues, request enhancements or fork us at the [City of Chicago github](https://github.com/Chicago/RSocrata/issues).
 
+### Contributing
+
+If you would like to contribute to this project, please see the [contributing documentation](CONTRIBUTING.md)
+
 ### Change log
 
 1.1 Add check for valid Socrata resource URL. Add check for supported download file format. Add support for Socrata short dates.

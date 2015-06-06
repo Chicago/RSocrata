@@ -11,3 +11,4 @@ RSocrata.Rcheck
 README.md
 ^\.travis\.yml$
 appveyor.yml
+CONTRIBUTING.md
