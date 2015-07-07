@@ -14,8 +14,10 @@ r_github_packages:
   - jeroenooms/curl
   - klutometis/roxygen
 
-after_success: 
+before_install: 
   - Rscript -e "library(roxygen2); roxygen2::roxygenize(package.dir='.', roclets=c('rd', 'collate', 'namespace'))"
+  
+after_success:  
   - Rscript -e 'source("R/tests/testRSocrata.R"); runAllTestsCI()'
 
 notifications:
