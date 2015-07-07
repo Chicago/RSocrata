@@ -15,7 +15,7 @@ r_github_packages:
   - klutometis/roxygen
 
 before_install: 
-  - Rscript -e "library(roxygen2); roxygen2::roxygenize(package.dir='.', roclets=c('rd', 'collate', 'namespace'))"
+  - Rscript -e "install.packages('roxygen2'); library(roxygen2); roxygen2::roxygenize(package.dir='.', roclets=c('rd', 'collate', 'namespace'))"
   
 after_success:  
   - Rscript -e 'source("R/tests/testRSocrata.R"); runAllTestsCI()'
