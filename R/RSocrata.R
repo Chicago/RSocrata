@@ -47,7 +47,7 @@ isFourByFour <- function(fourByFour) {
 #' @param app_token a string; SODA API token used to query the data 
 #' portal \url{http://dev.socrata.com/consumers/getting-started.html}
 #' @return a valid Url
-#' @importFrom httr parse_url build_url
+#' @import httr
 #' @author Tom Schenk Jr \email{tom.schenk@@cityofchicago.org}
 validateUrl <- function(url, app_token) {
 	url <- as.character(url)
@@ -117,7 +117,7 @@ posixify <- function(x) {
 #' 
 #' @param url Socrata Open Data Application Program Interface (SODA) query
 #' @return httr response object
-#' @importFrom httr http_status GET stop_for_status content
+#' @import httr
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 getResponse <- function(url) {
 	response <- GET(url)
@@ -139,7 +139,7 @@ getResponse <- function(url) {
 #' Return a data frame for csv
 #'
 #' @author Hugh J. Devlin \email{Hugh.Devlin@@cityofchicago.org}
-#' @importFrom httr content
+#' @import httr
 #' @param an httr response object
 #' @return data frame, possibly empty
 #' @noRd
@@ -166,7 +166,7 @@ getContentAsDataFrame <- function(response) {
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' @param responseHeaders headers attribute from an httr response object
 #' @return a named vector mapping field names to data types
-#' @importFrom jsonlite fromJSON
+#' @import jsonlite
 #' @noRd
 getSodaTypes <- function(response) { UseMethod('response') }
 getSodaTypes <- function(response) {
@@ -191,8 +191,9 @@ getSodaTypes <- function(response) {
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' @examples
 #' df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv")
-#' @importFrom httr parse_url
-#' @importFrom mime guess_type
+#' @import httr 
+#' @import mime 
+#' @import curl
 #' @export
 read.socrata <- function(url, app_token = NULL) {
 	validUrl <- validateUrl(url, app_token) # check url syntax, allow human-readable Socrata url
@@ -225,8 +226,8 @@ read.socrata <- function(url, app_token = NULL) {
 #' @author Peter Schmiedeskamp \email{pschmied@@uw.edu}
 #' @examples
 #' df <- ls.socrata("http://soda.demo.socrata.com")
-#' @importFrom jsonlite fromJSON
-#' @importFrom httr parse_url build_url
+#' @import jsonlite 
+#' @import httr 
 #' @export
 ls.socrata <- function(url) {
     url <- as.character(url)
