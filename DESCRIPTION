@@ -8,18 +8,18 @@ Description: Provides easier interaction with
     returns an R data frame.
     Converts dates to 'POSIX' format.
     Manages throttling by 'Socrata'.
-Version: 1.6.1-3
-Date: 2015-6-7
+Version: 1.6.1-4
+Date: 2015-7-10
 URL: https://github.com/Chicago/RSocrata
 BugReports: https://github.com/Chicago/RSocrata/issues
-Imports:
+Imports: 
     httr (>= 0.3),
     jsonlite (>= 0.9.14),
     mime (>= 0.2),
-Depends:
+Depends: 
     curl (>= 0.5)
-Suggests:
-    RUnit
+Suggests: 
+    testthat (>= 0.10.0)
 Author: Hugh Devlin, Ph. D. and Tom Schenk, Jr.
 Maintainer: Tom Schenk Jr <developers@cityofchicago.org>
 License: MIT + file LICENSE
