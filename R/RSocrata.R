@@ -193,7 +193,6 @@ getSodaTypes <- function(response) {
 #' df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv")
 #' @import httr 
 #' @import mime 
-#' @import curl
 #' @export
 read.socrata <- function(url, app_token = NULL) {
 	validUrl <- validateUrl(url, app_token) # check url syntax, allow human-readable Socrata url

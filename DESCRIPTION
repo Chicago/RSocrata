@@ -11,21 +11,20 @@ Description: Provides easier interaction with
     Manages throttling by 'Socrata'.
 Version: 1.6.1-3
 Date: 2015-6-8
-Depends:
-    R (>= 3.0.0)
-Imports:
-    httr (>= 1.0.0),
-    jsonlite (>= 0.9.16),
-    mime (>= 0.3),
-    curl (>= 0.9.1)
-Suggests:
-    RUnit,
-    roxygen2 (>= 4.1.0)
 Authors@R: c(
     person("Hugh", "Devlin, Ph. D.", role = c("aut")),
     person("Tom", "Schenk, Jr.", role = c("cre"), email = "developers@cityofchicago.org")
   )
 Maintainer: Tom Schenk Jr <developers@cityofchicago.org>
+Depends:
+    R (>= 3.0.0)
+Imports:
+    httr (>= 1.0.0),
+    jsonlite (>= 0.9.16),
+    mime (>= 0.3)
+Suggests:
+    RUnit,
+    roxygen2 (>= 4.1.0)
 License: MIT + file LICENSE
 URL: https://github.com/Chicago/RSocrata
 BugReports: https://github.com/Chicago/RSocrata/issues
