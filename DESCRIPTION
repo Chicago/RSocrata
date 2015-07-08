@@ -25,8 +25,7 @@ Imports:
     mime (>= 0.3)
 Suggests:
     RUnit,
-    roxygen2 (>= 4.1.0), 
-    testthat (>= 0.10.0)
+    roxygen2 (>= 4.1.0)
 License: MIT + file LICENSE
 URL: https://github.com/Chicago/RSocrata
 BugReports: https://github.com/Chicago/RSocrata/issues
