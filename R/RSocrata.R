@@ -191,7 +191,7 @@ getSodaTypes <- function(response) {
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' @examples
 #' df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv")
-#' @import httr 
+#' @importFrom httr parse_url build_url
 #' @import mime 
 #' @export
 read.socrata <- function(url, app_token = NULL) {
