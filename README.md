@@ -72,10 +72,10 @@ If you would like to contribute to this project, please see the [contributing do
 
 1.3 Added support for human-readable URL.
 
-1.4 Add json file format for Socrata downloads. Switch to RJSONIO rom rjson. 
+1.4 Add json file format for Socrata downloads. Switch from `RJSONIO` to ```rjson`. 
 
 1.5 Several changes:
-* Swapped ```jsonlite``` to ```RJSONIO```
+* Swapped ```jsonlite``` from ```RJSONIO```
 * Added handling for long and short dates
 * Added unit test for reading private datasets
 
