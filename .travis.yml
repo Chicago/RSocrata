@@ -15,9 +15,6 @@ r_github_packages:
   - klutometis/roxygen
   - jimhester/covr
 
-# before_install: 
-#  - Rscript -e "install.packages('roxygen2', repos='http://cran.us.r-project.org'); library(roxygen2); roxygen2::roxygenize(package.dir='.', roclets=c('rd', 'collate', 'namespace'))"
-
 after_success:
   - Rscript -e 'library(covr);coveralls()'
 

@@ -13,6 +13,7 @@
 #' @param s - a string
 #' @return None (invisible NULL) as per cat
 #' @author Hugh J. Devlin \email{Hugh.Devlin@@cityofchicago.org}
+#' @noRd
 logMsg <- function(s) {
 	cat(format(Sys.time(), "%Y-%m-%d %H:%M:%OS3 "), as.character(sys.call(-1))[1], ": ", s, '\n', sep='')
 }
@@ -26,6 +27,7 @@ logMsg <- function(s) {
 #' @param fourByFour - a string; character vector of length one
 #' @return TRUE if is valid Socrata unique identifier, FALSE otherwise
 #' @author Tom Schenk Jr \email{tom.schenk@@cityofchicago.org}
+#' @export
 isFourByFour <- function(fourByFour) {
 	fourByFour <- as.character(fourByFour)
 	if(nchar(fourByFour) != 9)
@@ -49,6 +51,7 @@ isFourByFour <- function(fourByFour) {
 #' @return a - valid Url
 #' @importFrom httr parse_url build_url
 #' @author Tom Schenk Jr \email{tom.schenk@@cityofchicago.org}
+#' @export
 validateUrl <- function(url, app_token) {
 	url <- as.character(url)
   parsedUrl <- httr::parse_url(url)
@@ -132,7 +135,7 @@ getResponse <- function(url) {
 		logMsg(msg)
 	}
 	httr::stop_for_status(response)
-	response
+	return(response)
 }
 
 #' Content parsers
@@ -173,7 +176,7 @@ getSodaTypes <- function(response) { UseMethod('response') }
 getSodaTypes <- function(response) {
 	result <- jsonlite::fromJSON(response$headers[['x-soda2-types']])
 	names(result) <- jsonlite::fromJSON(response$headers[['x-soda2-fields']])
-	result
+	return(result)
 }
 
 #' Get a full Socrata data set as an R data frame
@@ -215,7 +218,7 @@ read.socrata <- function(url, app_token = NULL) {
 	for(columnName in colnames(page)[!is.na(dataTypes[fieldName(colnames(page))]) & dataTypes[fieldName(colnames(page))] == 'calendar_date']) {
 		result[[columnName]] <- posixify(result[[columnName]])
 	}
-	result
+	return(result)
 }
 
 #' List datasets available from a Socrata domain
@@ -240,5 +243,5 @@ ls.socrata <- function(url) {
     df$issued <- as.POSIXct(df$issued)
     df$modified <- as.POSIXct(df$modified)
     df$theme <- as.character(df$theme)
-    df
+    return(df)
 }
