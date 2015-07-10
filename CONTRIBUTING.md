@@ -21,5 +21,5 @@ When you want to make a change, either to fix a bug or introduce a new feature, 
 * Create a branch or fork of the project based off of the `dev` branch.
 * Make commits of logical units
 * Add unit tests for any new features
-* Run all tests in `R/tests/testRSocrata.R`
+* Run all tests in `tests/testthat/`
 * Create a pull request with a robust description or [reference the issue number](https://github.com/Chicago/RSocrata/issues)
