@@ -59,4 +59,4 @@ Please report issues, request enhancements or fork us at the [City of Chicago gi
 
 ### Contributing
 
-If you would like to contribute to this project, please see the [contributing documentation](CONTRIBUTING.md)
+If you would like to contribute to this project, please see the [contributing documentation](CONTRIBUTING.md) and the [product roadmap](https://github.com/Chicago/RSocrata/wiki/Roadmap#planned-releases).
