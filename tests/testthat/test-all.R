@@ -1,6 +1,5 @@
 library(testthat)
 library(RSocrata)
-library(curl)
 library(httr)
 library(jsonlite)
 library(mime)
