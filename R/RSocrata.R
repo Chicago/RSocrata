@@ -3,16 +3,17 @@
 # Author: Hugh J. Devlin, Ph. D. 2013-08-28
 ###############################################################################
 
-library('httr')       # for access to the HTTP header
-library('jsonlite')   # for parsing data types from Socrata
-library('mime')       # for guessing mime type
+# library('httr')       # for access to the HTTP header
+# library('jsonlite')   # for parsing data types from Socrata
+# library('mime')       # for guessing mime type
 
 #' Time-stamped message
 #'
 #' Issue a time-stamped, origin-stamped log message. 
-#' @param s a string
+#' @param s - a string
 #' @return None (invisible NULL) as per cat
 #' @author Hugh J. Devlin \email{Hugh.Devlin@@cityofchicago.org}
+#' @noRd
 logMsg <- function(s) {
 	cat(format(Sys.time(), "%Y-%m-%d %H:%M:%OS3 "), as.character(sys.call(-1))[1], ": ", s, '\n', sep='')
 }
@@ -23,9 +24,10 @@ logMsg <- function(s) {
 #' supported by Socrata. It will provide an exception if the syntax
 #' does not align to Socrata unique identifiers. It only checks for
 #' the validity of the syntax, but does not check if it actually exists.
-#' @param fourByFour a string; character vector of length one
+#' @param fourByFour - a string; character vector of length one
 #' @return TRUE if is valid Socrata unique identifier, FALSE otherwise
 #' @author Tom Schenk Jr \email{tom.schenk@@cityofchicago.org}
+#' @export
 isFourByFour <- function(fourByFour) {
 	fourByFour <- as.character(fourByFour)
 	if(nchar(fourByFour) != 9)
@@ -43,14 +45,16 @@ isFourByFour <- function(fourByFour) {
 #' URL. Will accept queries with optional API token as a separate
 #' argument or will also accept API token in the URL query. Will
 #' resolve conflicting API token by deferring to original URL.
-#' @param url  a string; character vector of length one
-#' @param app_token a string; SODA API token used to query the data 
+#' @param url - a string; character vector of length one
+#' @param app_token - a string; SODA API token used to query the data 
 #' portal \url{http://dev.socrata.com/consumers/getting-started.html}
-#' @return a valid Url
+#' @return a - valid Url
+#' @importFrom httr parse_url build_url
 #' @author Tom Schenk Jr \email{tom.schenk@@cityofchicago.org}
+#' @export
 validateUrl <- function(url, app_token) {
 	url <- as.character(url)
-  parsedUrl <- parse_url(url)
+  parsedUrl <- httr::parse_url(url)
 	if(is.null(parsedUrl$scheme) | is.null(parsedUrl$hostname) | is.null(parsedUrl$path))
 		stop(url, " does not appear to be a valid URL.")
   if(!is.null(app_token)) { # Handles the addition of API token and resolves invalid uses
@@ -67,14 +71,14 @@ validateUrl <- function(url, app_token) {
       })
   } 
   if(substr(parsedUrl$path, 1, 9) == 'resource/') {
-		return(build_url(parsedUrl)) # resource url already
+		return(httr::build_url(parsedUrl)) # resource url already
 	}
 	fourByFour <- basename(parsedUrl$path)
   if(!isFourByFour(fourByFour))
 		stop(fourByFour, " is not a valid Socrata dataset unique identifier.")
   else {
     parsedUrl$path <- paste('resource/', fourByFour, '.csv', sep="")
-	  build_url(parsedUrl) 
+    httr::build_url(parsedUrl) 
   }
 }
 
@@ -84,7 +88,7 @@ validateUrl <- function(url, app_token) {
 #' as it might appear in the first row of data,
 #' to field name as it might appear in the HTTP header;
 #' that is, lower case, periods replaced with underscores#'
-#' @param humanName a Socrata human-readable column name
+#' @param humanName - a Socrata human-readable column name
 #' @return Socrata field name 
 #' @export
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
@@ -96,7 +100,7 @@ fieldName <- function(humanName) {
 
 #' Convert Socrata calendar_date string to POSIX
 #'
-#' @param x character vector in one of two Socrata calendar_date formats
+#' @param x - character vector in one of two Socrata calendar_date formats
 #' @return a POSIX date
 #' @export
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
@@ -110,35 +114,39 @@ posixify <- function(x) {
 	  strptime(x, format="%m/%d/%Y %I:%M:%S %p") # long date-time format 
 }
 
-# Wrap httr GET in some diagnostics
-# 
-# In case of failure, report error details from Socrata
-# 
-# @param url Socrata Open Data Application Program Interface (SODA) query
-# @return httr response object
-# @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
+#' Wrap httr GET in some diagnostics
+#' 
+#' In case of failure, report error details from Socrata
+#' 
+#' @param url - Socrata Open Data Application Program Interface (SODA) query
+#' @return httr response object
+#' @importFrom httr http_status GET content stop_for_status
+#' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
+#' @noRd
 getResponse <- function(url) {
-	response <- GET(url)
-	status <- http_status(response)
+	response <- httr::GET(url)
+	# status <- httr::http_status(response)
 	if(response$status_code != 200) {
 		msg <- paste("Error in httr GET:", response$status_code, response$headers$statusmessage, url)
 		if(!is.null(response$headers$`content-length`) && (response$headers$`content-length` > 0)) {
-			details <- content(response)
+			details <- httr::content(response)
 			msg <- paste(msg, details$code[1], details$message[1])	
 		}
 		logMsg(msg)
 	}
-	stop_for_status(response)
-	response
+	httr::stop_for_status(response)
+	return(response)
 }
 
-# Content parsers
-#
-# Return a data frame for csv
-#
-# @author Hugh J. Devlin \email{Hugh.Devlin@@cityofchicago.org}
-# @param an httr response object
-# @return data frame, possibly empty
+#' Content parsers
+#'
+#' Return a data frame for csv
+#'
+#' @author Hugh J. Devlin \email{Hugh.Devlin@@cityofchicago.org}
+#' @importFrom httr content
+#' @param response - an httr response object
+#' @return data frame, possibly empty
+#' @noRd
 getContentAsDataFrame <- function(response) { UseMethod('response') }
 getContentAsDataFrame <- function(response) {
 	mimeType <- response$header$'content-type'
@@ -156,40 +164,44 @@ getContentAsDataFrame <- function(response) {
 	) # end switch
 }
 
-# Get the SoDA 2 data types
-#
-# Get the Socrata Open Data Application Program Interface data types from the http response header
-# @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
-# @param responseHeaders headers attribute from an httr response object
-# @return a named vector mapping field names to data types
+#' Get the SoDA 2 data types
+#'
+#' Get the Socrata Open Data Application Program Interface data types from the http response header
+#' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
+#' @param response - headers attribute from an httr response object
+#' @return a named vector mapping field names to data types
+#' @importFrom jsonlite fromJSON
+#' @noRd
 getSodaTypes <- function(response) { UseMethod('response') }
 getSodaTypes <- function(response) {
-	result <- fromJSON(response$headers[['x-soda2-types']])
-	names(result) <- fromJSON(response$headers[['x-soda2-fields']])
-	result
+	result <- jsonlite::fromJSON(response$headers[['x-soda2-types']])
+	names(result) <- jsonlite::fromJSON(response$headers[['x-soda2-fields']])
+	return(result)
 }
 
 #' Get a full Socrata data set as an R data frame
 #'
 #' Manages throttling and POSIX date-time conversions
 #'
-#' @param url A Socrata resource URL, 
+#' @param url - A Socrata resource URL, 
 #' or a Socrata "human-friendly" URL, 
 #' or Socrata Open Data Application Program Interface (SODA) query 
 #' requesting a comma-separated download format (.csv suffix), 
 #' May include SoQL parameters, 
 #' but is assumed to not include a SODA offset parameter
-#' @param app_token a string; SODA API token used to query the data 
+#' @param app_token - a string; SODA API token used to query the data 
 #' portal \url{http://dev.socrata.com/consumers/getting-started.html}
 #' @return an R data frame with POSIX dates
-#' @export
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' @examples
 #' df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv")
+#' @importFrom httr parse_url build_url
+#' @importFrom mime guess_type
+#' @export
 read.socrata <- function(url, app_token = NULL) {
 	validUrl <- validateUrl(url, app_token) # check url syntax, allow human-readable Socrata url
-	parsedUrl <- parse_url(validUrl)
-	mimeType <- guess_type(parsedUrl$path)
+	parsedUrl <- httr::parse_url(validUrl)
+	mimeType <- mime::guess_type(parsedUrl$path)
 	if(!(mimeType %in% c('text/csv','application/json')))
 		stop("Error in read.socrata: ", mimeType, " not a supported data format.")
 	response <- getResponse(validUrl)
@@ -206,28 +218,30 @@ read.socrata <- function(url, app_token = NULL) {
 	for(columnName in colnames(page)[!is.na(dataTypes[fieldName(colnames(page))]) & dataTypes[fieldName(colnames(page))] == 'calendar_date']) {
 		result[[columnName]] <- posixify(result[[columnName]])
 	}
-	result
+	return(result)
 }
 
 #' List datasets available from a Socrata domain
 #'
-#' @param url A Socrata URL. This simply points to the site root. 
+#' @param url - A Socrata URL. This simply points to the site root. 
 #' @return an R data frame containing a listing of datasets along with
 #' various metadata.
-#' @export
 #' @author Peter Schmiedeskamp \email{pschmied@@uw.edu}
 #' @examples
 #' df <- ls.socrata("http://soda.demo.socrata.com")
+#' @importFrom jsonlite fromJSON
+#' @importFrom httr parse_url
+#' @export
 ls.socrata <- function(url) {
     url <- as.character(url)
-    parsedUrl <- parse_url(url)
+    parsedUrl <- httr::parse_url(url)
     if(is.null(parsedUrl$scheme) | is.null(parsedUrl$hostname))
         stop(url, " does not appear to be a valid URL.")
     parsedUrl$path <- "data.json"
-    df <- fromJSON(build_url(parsedUrl))
+    df <- jsonlite::fromJSON(httr::build_url(parsedUrl))
     df <- as.data.frame(df$dataset)
     df$issued <- as.POSIXct(df$issued)
     df$modified <- as.POSIXct(df$modified)
     df$theme <- as.character(df$theme)
-    df
+    return(df)
 }
