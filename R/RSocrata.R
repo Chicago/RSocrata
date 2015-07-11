@@ -7,16 +7,6 @@
 # library('jsonlite')   # for parsing data types from Socrata
 # library('mime')       # for guessing mime type
 
-#' Time-stamped message
-#'
-#' Issue a time-stamped, origin-stamped log message. 
-#' @param s - a string
-#' @return None (invisible NULL) as per cat
-#' @author Hugh J. Devlin \email{Hugh.Devlin@@cityofchicago.org}
-#' @noRd
-logMsg <- function(s) {
-	cat(format(Sys.time(), "%Y-%m-%d %H:%M:%OS3 "), as.character(sys.call(-1))[1], ": ", s, '\n', sep='')
-}
 
 #' Checks the validity of the syntax for a potential Socrata dataset Unique Identifier, also known as a 4x4.
 #'
@@ -28,9 +18,8 @@ logMsg <- function(s) {
 #' @return TRUE if is valid Socrata unique identifier, FALSE otherwise
 #' @author Tom Schenk Jr \email{tom.schenk@@cityofchicago.org}
 #' @export
-isFourByFour <- function(fourByFour) {
-	fourByFour <- as.character(fourByFour)
-	
+isFourByFour <- function(fourByFour = "") {
+
 	if(nchar(fourByFour) != 9) {
 		return(FALSE)
 	}
@@ -176,12 +165,12 @@ getContentAsDataFrame <- function(response) {
 
 	switch(mimeType,
 		'text/csv' = 
-				content(response), # automatic parsing
+				httr::content(response), # automatic parsing
 		'application/json' = 
-				if(content(response, as ='text') == "[ ]") { # empty json?
+				if(httr::content(response, as ='text') == "[ ]") { # empty json?
 					data.frame() # empty data frame
 				}	else {
-					data.frame(t(sapply(content(response), unlist)), stringsAsFactors = FALSE)
+					data.frame(t(sapply(httr::content(response), unlist)), stringsAsFactors = FALSE)
 				}
 	) # end switch
 }
@@ -235,7 +224,7 @@ read.socrata <- function(url, app_token = NULL) {
 	dataTypes <- getSodaTypes(response)
 	
 	while (nrow(page) > 0) { # more to come maybe?
-		query <- paste(validUrl, if(is.null(parsedUrl$query)) {'?'} else {"&"}, '$offset=', nrow(result), sep = '')
+		query <- paste0(validUrl, ifelse(is.null(parsedUrl$query), '?', "&"), '$offset=', nrow(result))
 		response <- getResponse(query)
 		page <- getContentAsDataFrame(response)
 		result <- rbind(result, page) # accumulate

@@ -4,7 +4,7 @@
 \alias{isFourByFour}
 \title{Checks the validity of the syntax for a potential Socrata dataset Unique Identifier, also known as a 4x4.}
 \usage{
-isFourByFour(fourByFour)
+isFourByFour(fourByFour = "")
 }
 \arguments{
 \item{fourByFour}{- a string; character vector of length one}
