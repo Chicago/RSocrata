@@ -9,8 +9,8 @@ Description: Provides easier interaction with
     returns an R data frame.
     Converts dates to 'POSIX' format.
     Manages throttling by 'Socrata'.
-Version: 1.6.2-9
-Date: 2015-7-10
+Version: 1.6.2-10
+Date: 2015-7-12
 Author: Hugh Devlin, Ph. D., Tom Schenk, Jr., and John Malc
 Maintainer: "Tom Schenk Jr." <developers@cityofchicago.org>
 Depends:
