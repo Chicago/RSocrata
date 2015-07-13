@@ -23,7 +23,7 @@ Supports [SoDA query parameters](http://dev.socrata.com/docs/queries.html) in th
 
 Use ```ls.socrata()``` to list all datasets available on a Socrata webserver.
 
-[testthat](http://cran.r-project.org/web/packages/testthat/index.html) test coverage.
+[testthat](http://cran.r-project.org/package=testthat) test coverage.
 
 ### Example: Reading SoDA valid URLs
 ```r
