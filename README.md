@@ -7,7 +7,7 @@ RSocrata
 
 **Dev**
 
-[![Linux build - Dev](https://img.shields.io/travis/Chicago/RSocrata/dev.svg?style=flat-square&label=Linux build)](https://travis-ci.org/Chicago/RSocrata)[![Windows build - Dev](https://img.shields.io/appveyor/ci/tomschenkjr/RSocrata/dev.svg?style=flat-square&label=Windows build)](https://ci.appveyor.com/project/tomschenkjr/rsocrata/branch/dev)[![Coverage - Dev](https://img.shields.io/coveralls/Chicago/RSocrata/dev.svg?style=flat-square&label=Coverage status - Dev)](https://coveralls.io/r/Chicago/RSocrata?branch=dev)
+[![Linux build - Dev](https://img.shields.io/travis/Chicago/RSocrata/dev.svg?style=flat-square&label=Linux build)](https://travis-ci.org/Chicago/RSocrata)[![Windows build - Dev](https://img.shields.io/appveyor/ci/tomschenkjr/RSocrata/dev.svg?style=flat-square&label=Windows build)](https://ci.appveyor.com/project/tomschenkjr/rsocrata/branch/dev)[![Coverage - Dev](https://img.shields.io/coveralls/Chicago/RSocrata/dev.svg?style=flat-square&label=Coverage - Dev)](https://coveralls.io/r/Chicago/RSocrata?branch=dev)
 
 A tool for downloading Socrata datasets as R data frames
 --------------------------------------------------------	
@@ -23,7 +23,7 @@ Supports [SoDA query parameters](http://dev.socrata.com/docs/queries.html) in th
 
 Use ```ls.socrata()``` to list all datasets available on a Socrata webserver.
 
-[testthat](http://cran.r-project.org/web/packages/testthat/index.html) test coverage.
+[testthat](http://cran.r-project.org/package=testthat) test coverage.
 
 ### Example: Reading SoDA valid URLs
 ```r
