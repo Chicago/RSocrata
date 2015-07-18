@@ -7,29 +7,6 @@
 # library('jsonlite')   # for parsing data types from Socrata
 # library('mime')       # for guessing mime type
 
-
-#' Checks the validity of the syntax for a potential Socrata dataset Unique Identifier, also known as a 4x4.
-#'
-#' Will check the validity of a potential dataset unique identifier
-#' supported by Socrata. It will provide an exception if the syntax
-#' does not align to Socrata unique identifiers. It only checks for
-#' the validity of the syntax, but does not check if it actually exists.
-#' @param fourByFour - a string; character vector of length one
-#' @return TRUE if is valid Socrata unique identifier, FALSE otherwise
-#' @author Tom Schenk Jr \email{tom.schenk@@cityofchicago.org}
-#' @export
-isFourByFour <- function(fourByFour = "") {
-
-	if(nchar(fourByFour) != 9) {
-		return(FALSE)
-	}
-	
-	if(regexpr("[[:alnum:]]{4}-[[:alnum:]]{4}", fourByFour) == -1) {
-		return(FALSE)
-	}
-	TRUE	
-}
-
 #' Convert, if necessary, URL to valid REST API URL supported by Socrata.
 #'
 #' Will convert a human-readable URL to a valid REST API call
@@ -85,42 +62,6 @@ validateUrl <- function(url, app_token) {
   }
 }
 
-#' Convert Socrata human-readable column name to field name
-#' 
-#' Convert Socrata human-readable column name,
-#' as it might appear in the first row of data,
-#' to field name as it might appear in the HTTP header;
-#' that is, lower case, periods replaced with underscores#'
-#' @param humanName - a Socrata human-readable column name
-#' @return Socrata field name 
-#' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
-#' @examples
-#' fieldName("Number.of.Stations") # number_of_stations
-#' @export
-fieldName <- function(humanName) {
-	tolower(gsub('\\.', '_', as.character(humanName)))	
-}
-
-#' Convert Socrata calendar_date string to POSIX
-#'
-#' @param x - character vector in one of two Socrata calendar_date formats
-#' @return a POSIX date
-#' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
-#' @export
-posixify <- function(x) {
-	x <- as.character(x)
-	
-	if (length(x) == 0) {
-	  return(x)
-	}
-	
-	# Two calendar date formats supplied by Socrata
-	if(any(regexpr("^[[:digit:]]{1,2}/[[:digit:]]{1,2}/[[:digit:]]{4}$", x[1])[1] == 1)) {
-	  strptime(x, format="%m/%d/%Y") # short date format
-	} else {
-	  strptime(x, format="%m/%d/%Y %I:%M:%S %p") # long date-time format 
-	}
-}
 
 #' Wrap httr GET in some diagnostics
 #' 
@@ -183,7 +124,6 @@ getContentAsDataFrame <- function(response) {
 #' @return a named vector mapping field names to data types
 #' @importFrom jsonlite fromJSON
 #' @noRd
-getSodaTypes <- function(response) { UseMethod('response') }
 getSodaTypes <- function(response) {
 	result <- jsonlite::fromJSON(response$headers[['x-soda2-types']])
 	names(result) <- jsonlite::fromJSON(response$headers[['x-soda2-fields']])
@@ -238,32 +178,3 @@ read.socrata <- function(url, app_token = NULL) {
 	return(result)
 }
 
-#' List datasets available from a Socrata domain
-#'
-#' @param url - A Socrata URL. This simply points to the site root. 
-#' @return an R data frame containing a listing of datasets along with
-#' various metadata.
-#' @author Peter Schmiedeskamp \email{pschmied@@uw.edu}
-#' @examples
-#' df <- ls.socrata("http://soda.demo.socrata.com")
-#' @importFrom jsonlite fromJSON
-#' @importFrom httr parse_url
-#' @export
-ls.socrata <- function(url) {
-    url <- as.character(url)
-    
-    parsedUrl <- httr::parse_url(url)
-    
-    if(is.null(parsedUrl$scheme) | is.null(parsedUrl$hostname)) {
-        stop(url, " does not appear to be a valid URL.")
-    }
-    parsedUrl$path <- "data.json"
-    
-    df <- jsonlite::fromJSON(httr::build_url(parsedUrl))
-    df <- as.data.frame(df$dataset)
-    df$issued <- as.POSIXct(df$issued)
-    df$modified <- as.POSIXct(df$modified)
-    df$theme <- as.character(df$theme)
-    
-    return(df)
-}

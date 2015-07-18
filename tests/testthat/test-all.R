@@ -4,31 +4,6 @@ library(httr)
 library(jsonlite)
 library(mime)
 
-context("posixify function")
-
-test_that("posixify returns Long format", {
-  dt <- posixify("09/14/2012 10:38:01 PM")
-  expect_equal("POSIXlt", class(dt)[1], label="first data type of a date")
-  expect_equal(2012, dt$year + 1900, label="year")
-  expect_equal(9, dt$mon + 1, label="month")
-  expect_equal(14, dt$mday, label="day")
-  expect_equal(22, dt$hour, label="hours")
-  expect_equal(38, dt$min, label="minutes")
-  expect_equal(1, dt$sec, label="seconds")
-})
-
-
-test_that("posixify returns Short format", {
-  dt <- posixify("09/14/2012")
-  expect_equal("POSIXlt", class(dt)[1], label="first data type of a date")
-  expect_equal(2012, dt$year + 1900, label="year")
-  expect_equal(9, dt$mon + 1, label="month")
-  expect_equal(14, dt$mday, label="day")
-  expect_equal(0, dt$hour, label="hours")
-  expect_equal(0, dt$min, label="minutes")
-  expect_equal(0, dt$sec, label="seconds")
-})
-
 context("read Socrata")
 
 test_that("read Socrata CSV", {
@@ -99,24 +74,6 @@ test_that("Calendar Date Short", {
   expect_equal(0, dt$sec, label="seconds")
 })
 
-context("Checks the validity of 4x4")
-
-test_that("is 4x4", {
-  expect_true(isFourByFour("4334-bgaj"), label="ok")
-  expect_false(isFourByFour("4334c-bgajc"), label="11 characters instead of 9")
-  expect_false(isFourByFour("433-bga"), label="7 characters instead of 9")
-  expect_false(isFourByFour("433-bgaj"), label="3 characters before dash instead of 4")
-  expect_false(isFourByFour("4334-!gaj"), label="non-alphanumeric character")
-})
-
-
-test_that("is 4x4 URL", {
-  expect_error(read.socrata("https://soda.demo.socrata.com/api/views/4334c-bgajc"), "4334c-bgajc is not a valid Socrata dataset unique identifier", label="11 characters instead of 9")
-  expect_error(read.socrata("https://soda.demo.socrata.com/api/views/433-bga"), "433-bga is not a valid Socrata dataset unique identifier", label="7 characters instead of 9")
-  expect_error(read.socrata("https://soda.demo.socrata.com/api/views/433-bgaj"), "433-bgaj is not a valid Socrata dataset unique identifier", label="3 characters before dash instead of 4")
-  expect_error(read.socrata("https://soda.demo.socrata.com/api/views/4334-!gaj"), "4334-!gaj is not a valid Socrata dataset unique identifier", label="non-alphanumeric character")
-})
-
 test_that("Invalid URL", {
   expect_error(read.socrata("a.fake.url.being.tested"), "a.fake.url.being.tested does not appear to be a valid URL", label="invalid url")
 })
@@ -170,27 +127,5 @@ test_that("incorrect API Query Human Readable", {
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(9, ncol(df), label="columns") 
 })
-
-test_that("List datasets available from a Socrata domain", {
-  # Makes some potentially erroneous assumptions about availability
-  # of soda.demo.socrata.com
-  df <- ls.socrata("https://soda.demo.socrata.com")
-  expect_equal(TRUE, nrow(df) > 0)
-  # Test comparing columns against data.json specifications:
-  # https://project-open-data.cio.gov/v1.1/schema/
-  core_names <- as.character(c("issued", "modified", "keyword", "landingPage", "theme", 
-                               "title", "accessLevel", "distribution", "description", 
-                               "identifier", "publisher", "contactPoint", "license"))
-  expect_equal(as.logical(rep(TRUE, length(core_names))), core_names %in% names(df))
-  # Check that all names in data.json are accounted for in ls.socrata return
-  expect_equal(as.logical(rep(TRUE, length(names(df)))), names(df) %in% c(core_names))
-})
-
-
-
-
-
-
-
 
 
