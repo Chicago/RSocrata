@@ -74,10 +74,6 @@ test_that("Calendar Date Short", {
   expect_equal(0, dt$sec, label="seconds")
 })
 
-test_that("Invalid URL", {
-  expect_error(read.socrata("a.fake.url.being.tested"), "a.fake.url.being.tested does not appear to be a valid URL", label="invalid url")
-})
-
 context("Test Socrata with Token")
 
 test_that("CSV with Token", {

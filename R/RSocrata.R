@@ -7,62 +7,6 @@
 # library('jsonlite')   # for parsing data types from Socrata
 # library('mime')       # for guessing mime type
 
-#' Convert, if necessary, URL to valid REST API URL supported by Socrata.
-#'
-#' Will convert a human-readable URL to a valid REST API call
-#' supported by Socrata. It will accept a valid API URL if provided
-#' by users and will also convert a human-readable URL to a valid API
-#' URL. Will accept queries with optional API token as a separate
-#' argument or will also accept API token in the URL query. Will
-#' resolve conflicting API token by deferring to original URL.
-#' @param url - a string; character vector of length one
-#' @param app_token - a string; SODA API token used to query the data 
-#' portal \url{http://dev.socrata.com/consumers/getting-started.html}
-#' @return a - valid Url
-#' @importFrom httr parse_url build_url
-#' @author Tom Schenk Jr \email{tom.schenk@@cityofchicago.org}
-#' @export
-validateUrl <- function(url, app_token) {
-	url <- as.character(url)
-  parsedUrl <- httr::parse_url(url)
-	
-  if(is.null(parsedUrl$scheme) | is.null(parsedUrl$hostname) | is.null(parsedUrl$path)) {
-		stop(url, " does not appear to be a valid URL.")
-	}
-  
-  if(!is.null(app_token)) { # Handles the addition of API token and resolves invalid uses
-    
-    if(is.null(parsedUrl$query[["$$app_token"]])) {
-      token_inclusion <- "valid_use"
-    } else {
-      token_inclusion <- "already_included" 
-    }
-    
-    switch(token_inclusion,
-      "already_included" = { # Token already included in url argument
-        warning(url, " already contains an API token in url. Ignoring user-defined token.")
-      },
-      "valid_use" = { # app_token argument is used, not duplicative.
-        parsedUrl$query[["app_token"]] <- as.character(paste("%24%24app_token=", app_token, sep=""))
-      }
-    )
-    
-  } 
-  
-  if(substr(parsedUrl$path, 1, 9) == 'resource/') {
-		return(httr::build_url(parsedUrl)) # resource url already
-	}
-	
-  fourByFour <- basename(parsedUrl$path)
-  if(!isFourByFour(fourByFour)) {
-		stop(fourByFour, " is not a valid Socrata dataset unique identifier.")
-  } else {
-    parsedUrl$path <- paste('resource/', fourByFour, '.csv', sep="")
-    httr::build_url(parsedUrl) 
-  }
-}
-
-
 #' Wrap httr GET in some diagnostics
 #' 
 #' In case of failure, report error details from Socrata
@@ -85,14 +29,13 @@ getResponse <- function(url) {
 
 #' Content parsers
 #'
-#' Return a data frame for csv
+#' Return a data frame for csv or json
 #'
 #' @author Hugh J. Devlin \email{Hugh.Devlin@@cityofchicago.org}
 #' @importFrom httr content
 #' @param response - an httr response object
 #' @return data frame, possibly empty
 #' @noRd
-getContentAsDataFrame <- function(response) { UseMethod('response') }
 getContentAsDataFrame <- function(response) {
   
 	mimeType <- response$header$'content-type'
