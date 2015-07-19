@@ -22,13 +22,13 @@ test_that("read Socrata No Scheme", {
   expect_error(read.socrata('soda.demo.socrata.com/resource/4334-bgaj.csv'))
 })
 
-test_that("readSoQL", {
+test_that("read SoQL", {
   df <- read.socrata('http://soda.demo.socrata.com/resource/4334-bgaj.csv?$select=region')
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(1, ncol(df), label="columns")
 })
 
-test_that("readSoQLColumnNotFound (will fail)", {
+test_that("read SoQL Column Not Found (will fail)", {
   # SoQL API uses field names, not human names
   expect_error(read.socrata('http://soda.demo.socrata.com/resource/4334-bgaj.csv?$select=Region'))
 })
@@ -46,32 +46,6 @@ test_that("readSocrataHumanReadable", {
 test_that("format is not supported", {
   # Unsupported data formats
   expect_error(read.socrata('http://soda.demo.socrata.com/resource/4334-bgaj.xml'))
-})
-
-context("Socrata Calendar")
-
-test_that("Calendar Date Long", {
-  df <- read.socrata('http://soda.demo.socrata.com/resource/4334-bgaj.csv')
-  dt <- df$Datetime[1] # "2012-09-14 22:38:01"
-  expect_equal("POSIXlt", class(dt)[1], label="data type of a date")
-  expect_equal(2012, dt$year + 1900, label="year")
-  expect_equal(9, dt$mon + 1, label="month")
-  expect_equal(14, dt$mday, label="day")
-  expect_equal(22, dt$hour, label="hours")
-  expect_equal(38, dt$min, label="minutes")
-  expect_equal(1, dt$sec, label="seconds")
-})
-
-test_that("Calendar Date Short", {
-  df <- read.socrata('http://data.cityofchicago.org/resource/y93d-d9e3.csv?$order=debarment_date')
-  dt <- df$DEBARMENT.DATE[1] # "05/21/1981"
-  expect_equal("POSIXlt", class(dt)[1], label="data type of a date")
-  expect_equal(81, dt$year, label="year")
-  expect_equal(5, dt$mon + 1, label="month")
-  expect_equal(21, dt$mday, label="day")
-  expect_equal(0, dt$hour, label="hours")
-  expect_equal(0, dt$min, label="minutes")
-  expect_equal(0, dt$sec, label="seconds")
 })
 
 context("Test Socrata with Token")

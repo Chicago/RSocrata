@@ -4,13 +4,13 @@
 \alias{fieldName}
 \title{Convert Socrata human-readable column name to field name}
 \usage{
-fieldName(humanName = NULL)
+fieldName(humanName = "")
 }
 \arguments{
 \item{humanName}{- a Socrata human-readable column name}
 }
 \value{
-Socrata field name
+Socrata field name in lower case
 }
 \description{
 Convert Socrata human-readable column name,

@@ -14,7 +14,7 @@ requesting a comma-separated download format (.csv suffix),
 May include SoQL parameters,
 but is assumed to not include a SODA offset parameter}
 
-\item{app_token}{- a string; SODA API token used to query the data
+\item{app_token}{- a (non-required) string; SODA API token is used to query the data
 portal \url{http://dev.socrata.com/consumers/getting-started.html}}
 }
 \value{
@@ -22,6 +22,9 @@ an R data frame with POSIX dates
 }
 \description{
 Manages throttling and POSIX date-time conversions
+}
+\section{TODO}{
+ \url{https://github.com/Chicago/RSocrata/issues/14}
 }
 \examples{
 df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv")

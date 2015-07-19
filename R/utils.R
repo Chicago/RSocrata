@@ -6,14 +6,14 @@
 #' that is, lower case, periods replaced with underscores
 #' 
 #' @param humanName - a Socrata human-readable column name
-#' @return Socrata field name 
+#' @return Socrata field name in lower case
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' @examples
 #' fieldName("Number.of.Stations") # number_of_stations
 #' 
 #' @export
-fieldName <- function(humanName = NULL) {
-  tolower(gsub('\\.', '_', as.character(humanName)))	
+fieldName <- function(humanName = "") {
+  tolower(gsub('\\.', '_', humanName))
 }
 
 #' Convert Socrata calendar_date string to POSIX

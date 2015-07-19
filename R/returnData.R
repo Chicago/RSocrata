@@ -9,21 +9,19 @@
 
 #' Wrap httr GET in some diagnostics
 #' 
-#' In case of failure, report error details from Socrata
+#' In case of failure, report error details from Socrata. For future: reconsider it.
 #' 
 #' @param url - Socrata Open Data Application Program Interface (SODA) query
 #' @return httr response object
 #' @importFrom httr http_status GET content stop_for_status
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
+#' 
 #' @noRd
-getResponse <- function(url) {
+checkResponse <- function(url) {
   response <- httr::GET(url)
   
-  if(response$status_code != 200) {
-    stop("Error in httr GET:", response$status_code, " during the request for ", response$url)
-  }
+  errorHandling(response)
   
-  httr::stop_for_status(response)
   return(response)
 }
 
@@ -51,12 +49,13 @@ getContentAsDataFrame <- function(response) {
          'text/csv' = 
            httr::content(response), # automatic parsing
          'application/json' = 
-           if(httr::content(response, as ='text') == "[ ]") { # empty json?
+           if(httr::content(response, as = 'text') == "[ ]") { # empty json?
              data.frame() # empty data frame
-           }	else {
+           } else {
              data.frame(t(sapply(httr::content(response), unlist)), stringsAsFactors = FALSE)
            }
-  ) # end switch
+  ) 
+  
 }
 
 #' Get the SoDA 2 data types
@@ -83,7 +82,7 @@ getSodaTypes <- function(response) {
 #' requesting a comma-separated download format (.csv suffix), 
 #' May include SoQL parameters, 
 #' but is assumed to not include a SODA offset parameter
-#' @param app_token - a string; SODA API token used to query the data 
+#' @param app_token - a (non-required) string; SODA API token is used to query the data 
 #' portal \url{http://dev.socrata.com/consumers/getting-started.html}
 #' @return an R data frame with POSIX dates
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
@@ -91,6 +90,10 @@ getSodaTypes <- function(response) {
 #' df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv")
 #' @importFrom httr parse_url build_url
 #' @importFrom mime guess_type
+#' 
+#' @section TODO: \url{https://github.com/Chicago/RSocrata/issues/14}
+#' 
+#' 
 #' @export
 read.socrata <- function(url, app_token = NULL) {
   validUrl <- validateUrl(url, app_token) # check url syntax, allow human-readable Socrata url
@@ -98,17 +101,17 @@ read.socrata <- function(url, app_token = NULL) {
   mimeType <- mime::guess_type(parsedUrl$path)
   
   if(!(mimeType %in% c('text/csv','application/json'))) {
-    stop("Error in read.socrata: ", mimeType, " not a supported data format.")
+    stop("Error in read.socrata: ", mimeType, " not a supported data format. Try JSON or CSV.")
   }
   
-  response <- getResponse(validUrl)
+  response <- checkResponse(validUrl)
   page <- getContentAsDataFrame(response)
   result <- page
   dataTypes <- getSodaTypes(response)
   
   while (nrow(page) > 0) { # more to come maybe?
     query <- paste0(validUrl, ifelse(is.null(parsedUrl$query), '?', "&"), '$offset=', nrow(result))
-    response <- getResponse(query)
+    response <- checkResponse(query)
     page <- getContentAsDataFrame(response)
     result <- rbind(result, page) # accumulate
   }	
