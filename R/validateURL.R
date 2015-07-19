@@ -14,8 +14,12 @@
 #' @importFrom httr parse_url build_url
 #' @author Tom Schenk Jr \email{tom.schenk@@cityofchicago.org}
 #' @examples 
+#' \dontrun{
 #' validateUrl(url = "a.fake.url.being.tested", app_token = "ew2rEMuESuzWPqMkyPfOSGJgE")
-#' validateUrl(url = "https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj", app_token="ew2rEMuESuzWPqMkyPfOSGJgE")
+#' }
+#' validateUrl(url = "https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj", 
+#' app_token="ew2rEMuESuzWPqMkyPfOSGJgE")
+#' 
 #' @export
 validateUrl <- function(url = "", app_token = NULL) {
   parsedUrl <- httr::parse_url(url)

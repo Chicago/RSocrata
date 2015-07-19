@@ -14,7 +14,7 @@
 #' 
 #' @export
 ls.socrata <- function(url = "") {
-
+  
   parsedUrl <- httr::parse_url(url)
   
   if(is.null(parsedUrl$scheme) | is.null(parsedUrl$hostname)) {

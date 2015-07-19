@@ -14,7 +14,7 @@ a POSIX date
 }
 \description{
 Datasets will either specify what timezone they should be interpreted in,
-or you can usually assume they’re in the timezone of the publisher. See examples below too.
+or you can usually assume they are in the timezone of the publisher. See examples below too.
 }
 \examples{
 posixify("2014-10-13T23:00:00")

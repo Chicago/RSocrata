@@ -17,14 +17,14 @@
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' @noRd
 getResponse <- function(url) {
-	response <- httr::GET(url)
-	
-	if(response$status_code != 200) {
-		stop("Error in httr GET:", response$status_code, " during the request for ", response$url)
-	}
-	
-	httr::stop_for_status(response)
-	return(response)
+  response <- httr::GET(url)
+  
+  if(response$status_code != 200) {
+    stop("Error in httr GET:", response$status_code, " during the request for ", response$url)
+  }
+  
+  httr::stop_for_status(response)
+  return(response)
 }
 
 #' Content parsers
@@ -38,25 +38,25 @@ getResponse <- function(url) {
 #' @noRd
 getContentAsDataFrame <- function(response) {
   
-	mimeType <- response$header$'content-type'
-	
-	# skip optional parameters
-	sep <- regexpr(';', mimeType)[1]
-
-	if(sep != -1) {
-	  mimeType <- substr(mimeType, 0, sep[1] - 1)
-	}
-
-	switch(mimeType,
-		'text/csv' = 
-				httr::content(response), # automatic parsing
-		'application/json' = 
-				if(httr::content(response, as ='text') == "[ ]") { # empty json?
-					data.frame() # empty data frame
-				}	else {
-					data.frame(t(sapply(httr::content(response), unlist)), stringsAsFactors = FALSE)
-				}
-	) # end switch
+  mimeType <- response$header$'content-type'
+  
+  # skip optional parameters
+  sep <- regexpr(';', mimeType)[1]
+  
+  if(sep != -1) {
+    mimeType <- substr(mimeType, 0, sep[1] - 1)
+  }
+  
+  switch(mimeType,
+         'text/csv' = 
+           httr::content(response), # automatic parsing
+         'application/json' = 
+           if(httr::content(response, as ='text') == "[ ]") { # empty json?
+             data.frame() # empty data frame
+           }	else {
+             data.frame(t(sapply(httr::content(response), unlist)), stringsAsFactors = FALSE)
+           }
+  ) # end switch
 }
 
 #' Get the SoDA 2 data types
@@ -68,9 +68,9 @@ getContentAsDataFrame <- function(response) {
 #' @importFrom jsonlite fromJSON
 #' @noRd
 getSodaTypes <- function(response) {
-	result <- jsonlite::fromJSON(response$headers[['x-soda2-types']])
-	names(result) <- jsonlite::fromJSON(response$headers[['x-soda2-fields']])
-	return(result)
+  result <- jsonlite::fromJSON(response$headers[['x-soda2-types']])
+  names(result) <- jsonlite::fromJSON(response$headers[['x-soda2-fields']])
+  return(result)
 }
 
 #' Get a full Socrata data set as an R data frame
@@ -93,31 +93,31 @@ getSodaTypes <- function(response) {
 #' @importFrom mime guess_type
 #' @export
 read.socrata <- function(url, app_token = NULL) {
-	validUrl <- validateUrl(url, app_token) # check url syntax, allow human-readable Socrata url
-	parsedUrl <- httr::parse_url(validUrl)
-	mimeType <- mime::guess_type(parsedUrl$path)
-	
-	if(!(mimeType %in% c('text/csv','application/json'))) {
-		stop("Error in read.socrata: ", mimeType, " not a supported data format.")
-	}
-	
-	response <- getResponse(validUrl)
-	page <- getContentAsDataFrame(response)
-	result <- page
-	dataTypes <- getSodaTypes(response)
-	
-	while (nrow(page) > 0) { # more to come maybe?
-		query <- paste0(validUrl, ifelse(is.null(parsedUrl$query), '?', "&"), '$offset=', nrow(result))
-		response <- getResponse(query)
-		page <- getContentAsDataFrame(response)
-		result <- rbind(result, page) # accumulate
-	}	
-	
-	# convert Socrata calendar dates to posix format
-	for(columnName in colnames(page)[!is.na(dataTypes[fieldName(colnames(page))]) & dataTypes[fieldName(colnames(page))] == 'calendar_date']) {
-		result[[columnName]] <- posixify(result[[columnName]])
-	}
-	
-	return(result)
+  validUrl <- validateUrl(url, app_token) # check url syntax, allow human-readable Socrata url
+  parsedUrl <- httr::parse_url(validUrl)
+  mimeType <- mime::guess_type(parsedUrl$path)
+  
+  if(!(mimeType %in% c('text/csv','application/json'))) {
+    stop("Error in read.socrata: ", mimeType, " not a supported data format.")
+  }
+  
+  response <- getResponse(validUrl)
+  page <- getContentAsDataFrame(response)
+  result <- page
+  dataTypes <- getSodaTypes(response)
+  
+  while (nrow(page) > 0) { # more to come maybe?
+    query <- paste0(validUrl, ifelse(is.null(parsedUrl$query), '?', "&"), '$offset=', nrow(result))
+    response <- getResponse(query)
+    page <- getContentAsDataFrame(response)
+    result <- rbind(result, page) # accumulate
+  }	
+  
+  # convert Socrata calendar dates to posix format
+  for(columnName in colnames(page)[!is.na(dataTypes[fieldName(colnames(page))]) & dataTypes[fieldName(colnames(page))] == 'calendar_date']) {
+    result[[columnName]] <- posixify(result[[columnName]])
+  }
+  
+  return(result)
 }
 

@@ -24,8 +24,11 @@ argument or will also accept API token in the URL query. Will
 resolve conflicting API token by deferring to original URL.
 }
 \examples{
+\dontrun{
 validateUrl(url = "a.fake.url.being.tested", app_token = "ew2rEMuESuzWPqMkyPfOSGJgE")
-validateUrl(url = "https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj", app_token="ew2rEMuESuzWPqMkyPfOSGJgE")
+}
+validateUrl(url = "https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj",
+app_token="ew2rEMuESuzWPqMkyPfOSGJgE")
 }
 \author{
 Tom Schenk Jr \email{tom.schenk@cityofchicago.org}
