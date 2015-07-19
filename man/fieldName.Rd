@@ -4,7 +4,7 @@
 \alias{fieldName}
 \title{Convert Socrata human-readable column name to field name}
 \usage{
-fieldName(humanName)
+fieldName(humanName = NULL)
 }
 \arguments{
 \item{humanName}{- a Socrata human-readable column name}

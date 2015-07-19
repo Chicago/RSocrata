@@ -12,7 +12,7 @@
 #' fieldName("Number.of.Stations") # number_of_stations
 #' 
 #' @export
-fieldName <- function(humanName) {
+fieldName <- function(humanName = NULL) {
   tolower(gsub('\\.', '_', as.character(humanName)))	
 }
 

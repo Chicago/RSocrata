@@ -4,7 +4,7 @@
 \alias{validateUrl}
 \title{Convert, if necessary, URL to valid REST API URL supported by Socrata.}
 \usage{
-validateUrl(url, app_token)
+validateUrl(url = "", app_token = NULL)
 }
 \arguments{
 \item{url}{- a string; character vector of length one}
@@ -22,6 +22,10 @@ by users and will also convert a human-readable URL to a valid API
 URL. Will accept queries with optional API token as a separate
 argument or will also accept API token in the URL query. Will
 resolve conflicting API token by deferring to original URL.
+}
+\examples{
+validateUrl(url = "a.fake.url.being.tested", app_token = "ew2rEMuESuzWPqMkyPfOSGJgE")
+validateUrl(url = "https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj", app_token="ew2rEMuESuzWPqMkyPfOSGJgE")
 }
 \author{
 Tom Schenk Jr \email{tom.schenk@cityofchicago.org}

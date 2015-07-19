@@ -93,17 +93,13 @@ test_that("API Conflict", {
   df <- read.socrata('https://soda.demo.socrata.com/resource/4334-bgaj.csv?$$app_token=ew2rEMuESuzWPqMkyPfOSGJgE', app_token="ew2rEMuESuzWPqMkyPfOSUSER")
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(9, ncol(df), label="columns")
-  # Check that function is calling the API token specified in url
-  expect_true(substr(validateUrl('https://soda.demo.socrata.com/resource/4334-bgaj.csv?$$app_token=ew2rEMuESuzWPqMkyPfOSGJgE', app_token="ew2rEMuESuzWPqMkyPfOSUSER"), 70, 94)=="ew2rEMuESuzWPqMkyPfOSGJgE")
-})
+ })
 
 test_that("readAPIConflictHumanReadable", {
   df <- read.socrata('https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj?$$app_token=ew2rEMuESuzWPqMkyPfOSGJgE', app_token="ew2rEMuESuzWPqMkyPfOSUSER")
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(9, ncol(df), label="columns")
-  # Check that function is calling the API token specified in url
-  expect_true(substr(validateUrl('https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj?$$app_token=ew2rEMuESuzWPqMkyPfOSGJgE', app_token="ew2rEMuESuzWPqMkyPfOSUSER"), 70, 94)=="ew2rEMuESuzWPqMkyPfOSGJgE")
-})
+ })
 
 test_that("incorrect API Query", {
   # The query below is missing a $ before app_token.

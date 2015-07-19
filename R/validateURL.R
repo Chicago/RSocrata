@@ -13,10 +13,11 @@
 #' @return a - valid Url
 #' @importFrom httr parse_url build_url
 #' @author Tom Schenk Jr \email{tom.schenk@@cityofchicago.org}
-#' 
+#' @examples 
+#' validateUrl(url = "a.fake.url.being.tested", app_token = "ew2rEMuESuzWPqMkyPfOSGJgE")
+#' validateUrl(url = "https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj", app_token="ew2rEMuESuzWPqMkyPfOSGJgE")
 #' @export
-validateUrl <- function(url, app_token) {
-  url <- as.character(url)
+validateUrl <- function(url = "", app_token = NULL) {
   parsedUrl <- httr::parse_url(url)
   
   if(is.null(parsedUrl$scheme) | is.null(parsedUrl$hostname) | is.null(parsedUrl$path)) {
@@ -25,7 +26,7 @@ validateUrl <- function(url, app_token) {
   
   if(!is.null(app_token)) { # Handles the addition of API token and resolves invalid uses
     
-    if(is.null(parsedUrl$query[["$$app_token"]])) {
+    if(is.null(parsedUrl$query["$$app_token"])) {
       token_inclusion <- "valid_use"
     } else {
       token_inclusion <- "already_included" 
@@ -36,7 +37,7 @@ validateUrl <- function(url, app_token) {
              warning(url, " already contains an API token in url. Ignoring user-defined token.")
            },
            "valid_use" = { # app_token argument is used, not duplicative.
-             parsedUrl$query[["app_token"]] <- as.character(paste("%24%24app_token=", app_token, sep=""))
+             parsedUrl$query[["app_token"]] <- paste("%24%24app_token=", app_token, sep="")
            }
     )
     
