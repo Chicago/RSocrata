@@ -41,12 +41,13 @@ posixify <- function(x = "") {
   # https://github.com/GregDThomas/jquery-localtime/issues/1
   if (regexpr("^(-?(?:[1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-(3[0-1]|0[1-9]|[1-2][0-9])T(2[0-3]|[0-1][0-9]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?(Z|[+-](?:2[0-3]|[0-1][0-9]):[0-5][0-9])?$", x) == TRUE) { 
     strptime(x, format = "%Y-%m-%dT%H:%M:%S")  # floating timestamp
+    
+  } else if (any(regexpr("^[[:digit:]]{1,2}/[[:digit:]]{1,2}/[[:digit:]]{4}$", x[1])[1] == TRUE)) {
+    strptime(x, format="%m/%d/%Y") # short date format
+    
   } else {
-    if (any(regexpr("^[[:digit:]]{1,2}/[[:digit:]]{1,2}/[[:digit:]]{4}$", x[1])[1] == 1)) {
-      strptime(x, format="%m/%d/%Y") # short date format
-    } else {
-      strptime(x, format="%m/%d/%Y %I:%M:%S %p") # long date-time format
-    }
+    strptime(x, format="%m/%d/%Y %I:%M:%S %p") # long date-time format
+    
   }
   
 }
