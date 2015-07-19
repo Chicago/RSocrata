@@ -3,6 +3,7 @@ library(RSocrata)
 library(httr)
 library(jsonlite)
 library(mime)
+library(dplyr)
 
 # http://www.noamross.net/blog/2014/2/10/using-times-and-dates-in-r---presentation-code.html
 
@@ -38,6 +39,15 @@ test_that("posixify new Floating Timestamp format", {
   expect_equal(47, dt$sec, label="seconds")
 })
 
+test_that("NA datetime in source", {
+  # https://github.com/Chicago/RSocrata/issues/24
+  # https://github.com/Chicago/RSocrata/issues/27
+  
+  df <- as.tbl(read.socrata("https://data.cityofboston.gov/resource/awu8-dc52.json"))
+  
+})
+
+
 context("Socrata Calendar")
 
 test_that("Calendar Date Long", {
@@ -63,3 +73,6 @@ test_that("Calendar Date Short", {
   expect_equal(0, dt$min, label="minutes")
   expect_equal(0, dt$sec, label="seconds")
 })
+
+
+

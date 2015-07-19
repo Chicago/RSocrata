@@ -84,7 +84,7 @@ getSodaTypes <- function(response) {
 #' but is assumed to not include a SODA offset parameter
 #' @param app_token - a (non-required) string; SODA API token is used to query the data 
 #' portal \url{http://dev.socrata.com/consumers/getting-started.html}
-#' @return an R data frame with POSIX dates
+#' @return a data frame with POSIX dates
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' @examples
 #' df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv")
@@ -93,6 +93,7 @@ getSodaTypes <- function(response) {
 #' 
 #' @section TODO: \url{https://github.com/Chicago/RSocrata/issues/14}
 #' 
+#' \code{read.socrata(url, domain, fourbyfour, app_token, query)}
 #' 
 #' @export
 read.socrata <- function(url, app_token = NULL) {

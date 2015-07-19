@@ -18,13 +18,15 @@ but is assumed to not include a SODA offset parameter}
 portal \url{http://dev.socrata.com/consumers/getting-started.html}}
 }
 \value{
-an R data frame with POSIX dates
+a data frame with POSIX dates
 }
 \description{
 Manages throttling and POSIX date-time conversions
 }
 \section{TODO}{
  \url{https://github.com/Chicago/RSocrata/issues/14}
+
+\code{read.socrata(url, domain, fourbyfour, app_token, query)}
 }
 \examples{
 df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv")

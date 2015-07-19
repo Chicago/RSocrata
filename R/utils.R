@@ -33,6 +33,7 @@ fieldName <- function(humanName = "") {
 #' @export
 posixify <- function(x = "") {
   
+  # https://github.com/Chicago/RSocrata/issues/24
   if (length(x) == 0) {
     return(x)
   }
