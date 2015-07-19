@@ -102,7 +102,7 @@ read.socrata <- function(url, app_token = NULL) {
   parsedUrl <- httr::parse_url(validUrl)
   mimeType <- mime::guess_type(parsedUrl$path)
   
-  if(!(mimeType %in% c('text/csv','application/json'))) {
+  if(!(mimeType %in% c('text/csv','application/json', 'text/plain'))) {
     stop("Error in read.socrata: ", mimeType, " not a supported data format. Try JSON or CSV.")
   }
   

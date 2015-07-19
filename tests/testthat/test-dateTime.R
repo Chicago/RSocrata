@@ -46,7 +46,7 @@ test_that("NA datetime in source", {
   skip_on_cran()
   skip_on_travis()
   skip_if_not_installed()
-  df <- read.socrata("https://data.cityofboston.gov/resource/awu8-dc52.json")
+  df <- read.socrata("https://data.cityofboston.gov/resource/awu8-dc52.csv?$limit=3")
   
 })
 
