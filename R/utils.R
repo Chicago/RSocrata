@@ -19,7 +19,7 @@ fieldName <- function(humanName = NULL) {
 #' Convert Socrata calendar_date string to POSIX
 #' 
 #' @description Datasets will either specify what timezone they should be interpreted in, 
-#' or you can usually assume they’re in the timezone of the publisher. See examples below too. 
+#' or you can usually assume they are in the timezone of the publisher. See examples below too. 
 #' 
 #' @seealso \url{http://dev.socrata.com/docs/datatypes/floating_timestamp.html}
 #' @param x - character vector in one of two Socrata calendar_date formats
