@@ -97,7 +97,8 @@ getSodaTypes <- function(response) {
 #' 
 #' @export
 read.socrata <- function(url, app_token = NULL) {
-  validUrl <- validateUrl(url, app_token) # check url syntax, allow human-readable Socrata url
+  # check url syntax, allow human-readable Socrata url
+  validUrl <- validateUrl(url, app_token) 
   parsedUrl <- httr::parse_url(validUrl)
   mimeType <- mime::guess_type(parsedUrl$path)
   
@@ -110,7 +111,8 @@ read.socrata <- function(url, app_token = NULL) {
   result <- page
   dataTypes <- getSodaTypes(response)
   
-  while (nrow(page) > 0) { # more to come maybe?
+  ## More to come? Loop over pages implicitly
+  while (nrow(page) > 0) { 
     query <- paste0(validUrl, ifelse(is.null(parsedUrl$query), '?', "&"), '$offset=', nrow(result))
     response <- checkResponse(query)
     page <- getContentAsDataFrame(response)

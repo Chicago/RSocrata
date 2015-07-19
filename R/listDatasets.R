@@ -23,7 +23,7 @@ ls.socrata <- function(url = "") {
   parsedUrl$path <- "data.json"
   
   df <- jsonlite::fromJSON(httr::build_url(parsedUrl))
-  df <- df$dataset
+  df <- as.data.frame(df$dataset, stringsAsFactors = FALSE)
   df$issued <- as.POSIXct(df$issued)
   df$modified <- as.POSIXct(df$modified)
   df$theme <- as.character(df$theme)

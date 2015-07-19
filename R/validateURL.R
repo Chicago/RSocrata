@@ -41,7 +41,7 @@ validateUrl <- function(url = "", app_token = NULL) {
              warning(url, " already contains an API token in url. Ignoring user-defined token.")
            },
            "valid_use" = { # app_token argument is used, not duplicative.
-             parsedUrl$query[["app_token"]] <- paste("%24%24app_token=", app_token, sep="")
+             parsedUrl$query[["app_token"]] <- paste("%24%24app_token=", app_token)
            }
     )
     
@@ -55,7 +55,8 @@ validateUrl <- function(url = "", app_token = NULL) {
   if(!isFourByFour(fourByFour)) {
     stop(fourByFour, " is not a valid Socrata dataset unique identifier.")
   } else {
-    parsedUrl$path <- paste('resource/', fourByFour, '.csv', sep="")
+    parsedUrl$path <- paste('resource/', fourByFour, '.csv')
     httr::build_url(parsedUrl) 
   }
+  
 }

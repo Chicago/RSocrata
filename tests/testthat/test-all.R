@@ -94,4 +94,11 @@ test_that("incorrect API Query Human Readable", {
   expect_equal(9, ncol(df), label="columns") 
 })
 
-
+# TODO
+test_that("A JSON TEST with uneven row lengths", {
+  skip_on_cran()
+  skip_on_travis()
+  skip_if_not_installed()
+  data <- read.socrata(url = "https://data.cityofchicago.org/resource/kn9c-c2s2.json")
+  awqe <- read.socrata("http://data.ny.gov/resource/eda3-in2f.json")
+})
