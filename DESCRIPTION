@@ -10,7 +10,7 @@ Description: Provides easier interaction with
     Converts dates to 'POSIX' format.
     Manages throttling by 'Socrata'.
 Version: 1.6.3
-Date: 2015-07-15
+Date: 2015-07-23
 Author: Hugh Devlin, Ph. D., Tom Schenk, Jr., and John Malc
 Maintainer: "Tom Schenk Jr." <developers@cityofchicago.org>
 Depends:
