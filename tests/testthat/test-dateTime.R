@@ -3,7 +3,6 @@ library(RSocrata)
 library(httr)
 library(jsonlite)
 library(mime)
-library(dplyr)
 
 # http://www.noamross.net/blog/2014/2/10/using-times-and-dates-in-r---presentation-code.html
 
@@ -40,21 +39,21 @@ test_that("posixify new Floating Timestamp format", {
 })
 
 # TODO
-test_that("NA datetime in source", {
+test_that("NA datetime in source (JSON)", {
   # https://github.com/Chicago/RSocrata/issues/24
   # https://github.com/Chicago/RSocrata/issues/27
+  skip("Not done")
   skip_on_cran()
   skip_on_travis()
-  skip_if_not_installed()
-  df <- read.socrata("https://data.cityofboston.gov/resource/awu8-dc52.csv?$limit=3")
-  
+  df <- read.socrata(url = "https://data.cityofboston.gov/resource/awu8-dc52.json")
+  expect_that(ncol(df) > 10)
 })
 
 
 context("Socrata Calendar")
 
 test_that("Calendar Date Long", {
-  df <- read.socrata('http://soda.demo.socrata.com/resource/4334-bgaj.csv')
+  df <- read.socrata(url = 'http://soda.demo.socrata.com/resource/4334-bgaj.csv')
   dt <- df$Datetime[1] # "2012-09-14 22:38:01"
   expect_equal("POSIXlt", class(dt)[1], label="data type of a date")
   expect_equal(2012, dt$year + 1900, label="year")

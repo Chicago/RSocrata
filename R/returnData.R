@@ -61,6 +61,7 @@ getContentAsDataFrame <- function(response) {
 #' Get the SoDA 2 data types
 #'
 #' Get the Socrata Open Data Application Program Interface data types from the http response header
+#' 
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' @param response - headers attribute from an httr response object
 #' @return a named vector mapping field names to data types
@@ -84,16 +85,19 @@ getSodaTypes <- function(response) {
 #' but is assumed to not include a SODA offset parameter
 #' @param app_token - a (non-required) string; SODA API token is used to query the data 
 #' portal \url{http://dev.socrata.com/consumers/getting-started.html}
+## @param domain - A Socrata domain, e.g \url{http://data.cityofchicago.org} 
+## @param fourByFour - a unique 4x4 identifier, e.g. "ydr8-5enu". See more \code{\link{isFourByFour}}
+## @param query - Based on query language called the "Socrata Query Language" ("SoQL"), see 
+## \url{http://dev.socrata.com/docs/queries.html}.
+## domain = NULL, fourByFour = NULL, query = NULL
+## read.socrata(domain = "http://data.cityofchicago.org", fourByFour = "ydr8-5enu", query = "")
+## @section TODO: \url{https://github.com/Chicago/RSocrata/issues/14}
 #' @return a data frame with POSIX dates
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' @examples
 #' df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv")
 #' @importFrom httr parse_url build_url
 #' @importFrom mime guess_type
-#' 
-#' @section TODO: \url{https://github.com/Chicago/RSocrata/issues/14}
-#' 
-#' \code{read.socrata(url, domain, fourbyfour, app_token, query)}
 #' 
 #' @export
 read.socrata <- function(url, app_token = NULL) {
@@ -102,7 +106,7 @@ read.socrata <- function(url, app_token = NULL) {
   parsedUrl <- httr::parse_url(validUrl)
   mimeType <- mime::guess_type(parsedUrl$path)
   
-  if(!(mimeType %in% c('text/csv','application/json', 'text/plain'))) {
+  if(!(mimeType %in% c('text/csv','application/json'))) {
     stop("Error in read.socrata: ", mimeType, " not a supported data format. Try JSON or CSV.")
   }
   
@@ -113,17 +117,18 @@ read.socrata <- function(url, app_token = NULL) {
   
   ## More to come? Loop over pages implicitly
   while (nrow(page) > 0) { 
-    query <- paste0(validUrl, ifelse(is.null(parsedUrl$query), '?', "&"), '$offset=', nrow(result))
-    response <- checkResponse(query)
+    query_url <- paste0(validUrl, ifelse(is.null(parsedUrl$query), '?', "&"), '$offset=', nrow(result))
+    response <- checkResponse(query_url)
     page <- getContentAsDataFrame(response)
     result <- rbind(result, page) # accumulate
   }	
   
-  # convert Socrata calendar dates to posix format
+  # Convert Socrata calendar dates to POSIX format
+  # Check for column names that are not NA and which dataType is a "calendar_date". If there are some, 
+  # then convert them to POSIX format
   for(columnName in colnames(page)[!is.na(dataTypes[fieldName(colnames(page))]) & dataTypes[fieldName(colnames(page))] == 'calendar_date']) {
     result[[columnName]] <- posixify(result[[columnName]])
   }
   
   return(result)
 }
-

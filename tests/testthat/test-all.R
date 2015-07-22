@@ -13,7 +13,7 @@ test_that("read Socrata CSV", {
 })
 
 test_that("read Socrata JSON", {
-  df <- read.socrata('https://soda.demo.socrata.com/resource/4334-bgaj.json')
+  df <- read.socrata(url = 'https://soda.demo.socrata.com/resource/4334-bgaj.json')
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(11, ncol(df), label="columns")
 })
@@ -37,8 +37,8 @@ test_that("URL is private (Unauthorized) (will fail)", {
   expect_error(read.socrata('http://data.cityofchicago.org/resource/j8vp-2qpg.json'))
 })
 
-test_that("readSocrataHumanReadable", {
-  df <- read.socrata('https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj')
+test_that("read Socrata Human Readable", {
+  df <- read.socrata(url="https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj")
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(9, ncol(df), label="columns")
 })
@@ -98,7 +98,9 @@ test_that("incorrect API Query Human Readable", {
 test_that("A JSON TEST with uneven row lengths", {
   skip_on_cran()
   skip_on_travis()
-  skip_if_not_installed()
+  skip("Not done")
   data <- read.socrata(url = "https://data.cityofchicago.org/resource/kn9c-c2s2.json")
   awqe <- read.socrata("http://data.ny.gov/resource/eda3-in2f.json")
+  
+  expect_that(ncol(data) > 10)
 })

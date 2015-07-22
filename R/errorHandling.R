@@ -6,7 +6,7 @@
 #' but one that is not compatible with RSocrata.
 #' See \url{https://github.com/Chicago/RSocrata/issues/16}
 #' 
-#' @param rsp - \code{\link{httr}} response
+#' @param rsp - \code{\link{httr::response}} response
 #' @importFrom httr stop_for_status
 #' 
 #' @noRd
