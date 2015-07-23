@@ -8,12 +8,20 @@ language: R
 sudo: required
 warnings_are_errors: true
 
+before_install:
+  - sudo apt-get install libv8-dev
+
 r_github_packages:
   - hadley/httr
   - jeroenooms/jsonlite
   - jeroenooms/curl
   - klutometis/roxygen
   - jimhester/covr
+  - ropensci/geojsonio
+  
+r_binary_packages:
+  - rgdal
+  - rgeos
 
 after_success:
   - Rscript -e 'library(covr);coveralls()'

@@ -52,33 +52,9 @@ install.packages("rgdal")
 install.packages("rgeos")
 ```
 
-### Example: Reading SoDA valid URLs
-```r
-earthquakesDataFrame <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv")
-nrow(earthquakesDataFrame) # 1007 (two "pages")
-class(earthquakesDataFrame$Datetime[1]) # POSIXlt
-```
+### Examples 
 
-### Example: Reading "human-readable" URLs
-```r
-earthquakesDataFrame <- read.socrata("https://soda.demo.socrata.com/dataset/USGS-Earthquakes-for-2012-11-01-API-School-Demo/4334-bgaj")
-nrow(earthquakesDataFrame) # 1007 (two "pages")
-class(earthquakesDataFrame$Datetime[1]) # POSIXlt
-```
-
-### Example: Using API key to read datasets
-```r
-token <- "ew2rEMuESuzWPqMkyPfOSGJgE"
-earthquakesDataFrame <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv", app_token = token)
-nrow(earthquakesDataFrame)
-```
-
-### Example: List all datasets on portal
-```r
-allSitesDataFrame <- ls.socrata("https://soda.demo.socrata.com")
-nrow(allSitesDataFrame) # Number of datasets
-allSitesDataFrame$title # Names of each dataset
-```
+Look in the `vignette` folder
 
 ### Issues
 

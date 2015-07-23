@@ -1,4 +1,3 @@
-
 # How to contribute
 
 We really appreciate when users [fix bugs](https://github.com/Chicago/RSocrata/pull/25) or [provide new features](https://github.com/Chicago/RSocrata/pull/21). When submitting changes, please read below to help the development team keep on top of issues and changes.

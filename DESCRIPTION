@@ -13,15 +13,19 @@ Version: 1.6.3
 Date: 2015-07-23
 Author: Hugh Devlin, Ph. D., Tom Schenk, Jr., and John Malc
 Maintainer: "Tom Schenk Jr." <developers@cityofchicago.org>
-Depends:
+Depends: 
     R (>= 3.0.0)
-Imports:
+Imports: 
     httr (>= 1.0.0),
     jsonlite (>= 0.9.16),
     mime (>= 0.3)
-Suggests:
+Suggests: 
     testthat (>= 0.10.0),
-    roxygen2 (>= 4.1.0)
+    roxygen2 (>= 4.1.0),
+    knitr (>= 1.10.5), 
+    leaflet (>= 1.0.0), 
+    geojsonio (>= 0.1.0)
 License: MIT + file LICENSE
 URL: https://github.com/Chicago/RSocrata
 BugReports: https://github.com/Chicago/RSocrata/issues
+VignetteBuilder: knitr

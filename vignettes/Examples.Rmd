@@ -1,0 +1,61 @@
+---
+title: "Vignette for RSocrata"
+author: "Developers of the City of Chicago (USA)"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r}
+library(RSocrata)
+
+# for geo support
+library(leaflet)
+library(geojsonio)
+```
+
+### Example: Reading SoDA valid URLs
+```{r}
+earthquakesDataFrame <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv")
+nrow(earthquakesDataFrame) # 1007 (two "pages")
+class(earthquakesDataFrame$Datetime[1]) # POSIXlt
+```
+
+### Example: Reading "human-readable" URLs
+```{r}
+earthquakesDataFrame <- read.socrata("https://soda.demo.socrata.com/dataset/USGS-Earthquakes-for-2012-11-01-API-School-Demo/4334-bgaj")
+nrow(earthquakesDataFrame) # 1007 (two "pages")
+class(earthquakesDataFrame$Datetime[1]) # POSIXlt
+```
+
+### Example: Using API key to read datasets
+```{r}
+token <- "ew2rEMuESuzWPqMkyPfOSGJgE"
+earthquakesDataFrame <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv", app_token = token)
+nrow(earthquakesDataFrame)
+```
+
+### Example: List all datasets on portal
+```{r}
+allSitesDataFrame <- ls.socrata("https://soda.demo.socrata.com")
+nrow(allSitesDataFrame) # Number of datasets
+allSitesDataFrame$title # Names of each dataset
+```
+
+### Geo & Leaflet
+
+```{r}
+
+asdsadas <- geojson_read("https://data.cityofchicago.org/resource/6zsd-86xi.geojson", method = "local", parse = FALSE, what = "list")
+
+m <- leaflet() %>%
+  addGeoJSON(asdsadas) %>%
+  setView(-87.6, 41.8, zoom = 10) %>% 
+  addTiles()
+m
+
+```
+

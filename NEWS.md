@@ -38,8 +38,10 @@ Deprecated ```httr::guess_media()``` and implemented ```mime::guess_type()```
 * Migrate Travis-CI to "proper" R YAML ([#46](https://github.com/Chicago/RSocrata/issues/46))
 
 
+### 1.6.3 / 1.6.2 ??? (see roadmap)
 
-
+* Add a small vignette with examples
+* Mostly internal changes which should not influence the current behaviour ([#53](https://github.com/Chicago/RSocrata/pull/53))
 
 
 
