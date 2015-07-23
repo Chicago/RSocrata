@@ -5,11 +5,13 @@
 #   http://docs.travis-ci.com/user/languages/r/
 
 language: R
-sudo: required
 warnings_are_errors: true
 
 before_install:
   - sudo apt-get install libv8-dev
+  
+r_binary_packages:
+  - rgdal
 
 r_github_packages:
   - hadley/httr
@@ -18,10 +20,6 @@ r_github_packages:
   - klutometis/roxygen
   - jimhester/covr
   - ropensci/geojsonio
-  
-r_binary_packages:
-  - rgdal
-  - rgeos
 
 after_success:
   - Rscript -e 'library(covr);coveralls()'
