@@ -23,7 +23,34 @@ Supports [SoDA query parameters](http://dev.socrata.com/docs/queries.html) in th
 
 Use ```ls.socrata()``` to list all datasets available on a Socrata webserver.
 
-[testthat](http://cran.r-project.org/package=testthat) test coverage.
+This package uses [testthat](http://cran.r-project.org/package=testthat) test coverage.
+
+### Installation
+
+Use `devtools` to install the latest version from Github:
+
+```
+library(devtools)
+devtools::install_github("Chicago/RSocrata")
+```
+
+**OR** 
+
+on [CRAN](http://cran.r-project.org/package=RSocrata)
+
+**Beware**:
+
+For the support of `GeoJSON`, it is necessary to install [geojsonio](https://github.com/ropensci/geojsonio) correctly!
+This depends on packages such as `rgdal` & `rgeos` (both are on CRAN), which on Linux you will need to install through `apt-get`:
+
+`sudo apt-get install libgdal1-dev libgdal-dev libgeos-c1 libproj-dev`
+
+Then install both of them:
+
+```
+install.packages("rgdal")
+install.packages("rgeos")
+```
 
 ### Example: Reading SoDA valid URLs
 ```r
