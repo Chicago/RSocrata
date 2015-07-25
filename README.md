@@ -23,35 +23,38 @@ Supports [SoDA query parameters](http://dev.socrata.com/docs/queries.html) in th
 
 Use ```ls.socrata()``` to list all datasets available on a Socrata webserver.
 
-[testthat](http://cran.r-project.org/package=testthat) test coverage.
+This package uses [testthat](http://cran.r-project.org/package=testthat) test coverage.
 
-### Example: Reading SoDA valid URLs
-```r
-earthquakesDataFrame <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv")
-nrow(earthquakesDataFrame) # 1007 (two "pages")
-class(earthquakesDataFrame$Datetime[1]) # POSIXlt
+### Installation
+
+Use `devtools` to install the latest version from Github:
+
+```
+library(devtools)
+devtools::install_github("Chicago/RSocrata")
 ```
 
-### Example: Reading "human-readable" URLs
-```r
-earthquakesDataFrame <- read.socrata("https://soda.demo.socrata.com/dataset/USGS-Earthquakes-for-2012-11-01-API-School-Demo/4334-bgaj")
-nrow(earthquakesDataFrame) # 1007 (two "pages")
-class(earthquakesDataFrame$Datetime[1]) # POSIXlt
+**OR** 
+
+on [CRAN](http://cran.r-project.org/package=RSocrata)
+
+**Beware**:
+
+For the support of `GeoJSON` (which is optional), it is necessary to install [geojsonio](https://github.com/ropensci/geojsonio) correctly!
+This depends on packages such as `rgdal` & `rgeos` (both on CRAN), which additionally on Linux you will need to install through `apt-get`:
+
+`sudo apt-get install libgdal1-dev libgdal-dev libgeos-c1 libproj-dev`
+
+Then install both of them use:
+
+```
+install.packages("rgdal")
+install.packages("rgeos")
 ```
 
-### Example: Using API key to read datasets
-```r
-token <- "ew2rEMuESuzWPqMkyPfOSGJgE"
-earthquakesDataFrame <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv", app_token = token)
-nrow(earthquakesDataFrame)
-```
+### Examples & Chanelog
 
-### Example: List all datasets on portal
-```r
-allSitesDataFrame <- ls.socrata("https://soda.demo.socrata.com")
-nrow(allSitesDataFrame) # Number of datasets
-allSitesDataFrame$title # Names of each dataset
-```
+Look for examples in the `vignette` folder and see `NEWS.MD` in the root of this repository. 
 
 ### Issues
 
