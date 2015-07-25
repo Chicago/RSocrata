@@ -1,5 +1,6 @@
 # An interface to data hosted online in Socrata data repositories
-# 
+# This is the main file which uses other functions to download data from a Socrata repositories
+#
 # Author: Hugh J. Devlin, Ph. D. 2013-08-28
 ###############################################################################
 
@@ -9,15 +10,15 @@
 
 #' Wrap httr GET in some diagnostics
 #' 
-#' In case of failure, report error details from Socrata. For future: reconsider it.
+#' In case of failure, report error details from Socrata.
 #' 
-#' @param url - Socrata Open Data Application Program Interface (SODA) query
-#' @return httr response object
-#' @importFrom httr http_status GET content stop_for_status
+#' @param url - Socrata Open Data Application Program Interface (SODA) query, a URL
+#' @return httr a response object
+#' @importFrom httr GET
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' 
 #' @noRd
-checkResponse <- function(url) {
+checkResponse <- function(url = "") {
   response <- httr::GET(url)
   
   errorHandling(response)
@@ -89,7 +90,7 @@ getSodaTypes <- function(response) {
 ## @param fourByFour - a unique 4x4 identifier, e.g. "ydr8-5enu". See more \code{\link{isFourByFour}}
 ## @param query - Based on query language called the "Socrata Query Language" ("SoQL"), see 
 ## \url{http://dev.socrata.com/docs/queries.html}.
-## domain = NULL, fourByFour = NULL, query = NULL
+## domain = NULL, fourByFour = NULL, query = NULL, limit = 50000, offset = 0
 ## read.socrata(domain = "http://data.cityofchicago.org", fourByFour = "ydr8-5enu", query = "")
 ## @section TODO: \url{https://github.com/Chicago/RSocrata/issues/14}
 #' @return a data frame with POSIX dates

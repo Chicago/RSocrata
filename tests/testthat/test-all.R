@@ -67,13 +67,13 @@ test_that("API Conflict", {
   df <- read.socrata('https://soda.demo.socrata.com/resource/4334-bgaj.csv?$$app_token=ew2rEMuESuzWPqMkyPfOSGJgE', app_token="ew2rEMuESuzWPqMkyPfOSUSER")
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(9, ncol(df), label="columns")
- })
+})
 
 test_that("readAPIConflictHumanReadable", {
   df <- read.socrata('https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj?$$app_token=ew2rEMuESuzWPqMkyPfOSGJgE', app_token="ew2rEMuESuzWPqMkyPfOSUSER")
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(9, ncol(df), label="columns")
- })
+})
 
 test_that("incorrect API Query", {
   # The query below is missing a $ before app_token.
@@ -95,12 +95,37 @@ test_that("incorrect API Query Human Readable", {
 })
 
 # TODO
-test_that("A JSON TEST with uneven row lengths", {
+# https://github.com/Chicago/RSocrata/issues/19
+test_that("A JSON test with uneven row lengths", {
   skip_on_cran()
   skip_on_travis()
-  skip("Not done")
+  skip("Not done") # working with bare jsonlite::fromJSON
+  # Both should be OK
   data <- read.socrata(url = "https://data.cityofchicago.org/resource/kn9c-c2s2.json")
   awqe <- read.socrata("http://data.ny.gov/resource/eda3-in2f.json")
   
   expect_that(ncol(data) > 10)
 })
+
+# TODO
+# https://github.com/Chicago/RSocrata/issues/14
+test_that("RSocrata hangs when passing along SoDA queries with small number of results ", {
+  skip_on_cran()
+  skip_on_travis()
+  skip("Not done")
+  
+  df500 <- read.socrata("https://data.cityofchicago.org/resource/xzkq-xp2w.json?$limit=500") # Hangs
+  df250 <- read.socrata("https://data.cityofchicago.org/resource/xzkq-xp2w.json?$limit=250") # Hangs
+  df100 <- read.socrata("https://data.cityofchicago.org/resource/xzkq-xp2w.json?$limit=100") # Hangs
+  df50 <- read.socrata("https://data.cityofchicago.org/resource/xzkq-xp2w.json?$limit=50") # Hangs
+  df25 <- read.socrata("https://data.cityofchicago.org/resource/xzkq-xp2w.json?$limit=25") # Hangs
+  df10 <- read.socrata("https://data.cityofchicago.org/resource/xzkq-xp2w.json?$limit=10") # Hangs
+  df5 <- read.socrata("https://data.cityofchicago.org/resource/xzkq-xp2w.json?$limit=5") # Hangs
+  df1 <- read.socrata("https://data.cityofchicago.org/resource/xzkq-xp2w.json?$limit=1") # Hangs
+  df <- read.socrata("https://data.cityofchicago.org/resource/xzkq-xp2w.json") # Success
+
+})
+
+
+
+

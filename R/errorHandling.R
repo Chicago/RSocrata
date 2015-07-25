@@ -19,7 +19,7 @@ errorHandling <- function(rsp = NULL) {
     warning("202 Request processing. You can retry your request, and when it's complete, you'll get a 200 instead.")
     
   } else if(rsp$status_code == 400) {
-    stop("400 Bad request. Most probably was your request malformed.")
+    stop("400 Bad request. Most probably was your request malformed (e.g URL with ?)")
     
   } else if(rsp$status_code == 401) {
     # only necessary when accessing datasets that have been marked as private or when making write requests (PUT, POST, and DELETE)
@@ -35,7 +35,7 @@ errorHandling <- function(rsp = NULL) {
     stop("Too Many Requests. Your client is currently being rate limited. Make sure you're using an app token.")
     
   } else if(rsp$status_code == 500) {
-    stop("Server error.")
+    stop("Server error. Try later.")
     
   } else {
     httr::stop_for_status(rsp)

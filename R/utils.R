@@ -1,3 +1,33 @@
+#' Checks the validity of the syntax for a potential Socrata dataset Unique Identifier, also known as a 4x4.
+#'
+#' @description Will check the validity of a potential dataset unique identifier
+#' supported by Socrata. It will provide an exception if the syntax
+#' does not align to Socrata unique identifiers. It only checks for
+#' the validity of the syntax, but does not check if it actually exists.
+#' 
+#' @param fourByFour - a string; character vector of length one
+#' @return TRUE if is valid Socrata unique identifier, FALSE otherwise
+#' @author Tom Schenk Jr \email{tom.schenk@@cityofchicago.org}
+#' @examples 
+#' isFourByFour(fourByFour = "4334-bgaj")
+#' isFourByFour("433-bgaj")
+#' isFourByFour(fourByFour = "4334-!gaj")
+#' 
+#' @export
+isFourByFour <- function(fourByFour = "") {
+  
+  if (nchar(fourByFour) == 9) {
+    if(identical(grepl("[[:alnum:]]{4}-[[:alnum:]]{4}", fourByFour), TRUE)) {
+      return(TRUE)
+    } else {
+      return(FALSE)
+    }
+  } else {
+    return(FALSE)
+  }
+  
+}
+
 #' Convert Socrata human-readable column name to field name
 #' 
 #' @description Convert Socrata human-readable column name,
@@ -22,7 +52,7 @@ fieldName <- function(humanName = "") {
 #' or you can usually assume they are in the timezone of the publisher. See examples below too. 
 #' 
 #' @seealso \url{http://dev.socrata.com/docs/datatypes/floating_timestamp.html}
-#' @param x - character vector in one of two Socrata calendar_date formats
+#' @param x - character vector in one of possible Socrata calendar_date formats
 #' @return a POSIX date
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' @examples 
@@ -34,18 +64,19 @@ fieldName <- function(humanName = "") {
 posixify <- function(x = "") {
   
   # https://github.com/Chicago/RSocrata/issues/24
+  # If a query with a date column returns no data (e.g. NA), posixify would fail without this
   if (length(x) == 0) {
     return(x)
   }
   
   # Three calendar date formats supplied by Socrata
-  # https://github.com/GregDThomas/jquery-localtime/issues/1
+  # See https://github.com/GregDThomas/jquery-localtime/issues/1 for the floating timestamp regex
   
   if (any(regexpr("^(-?(?:[1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-(3[0-1]|0[1-9]|[1-2][0-9])T(2[0-3]|[0-1][0-9]):([0-5][0-9]):([0-5][0-9])(.[0-9]+)?(Z|[+-](?:2[0-3]|[0-1][0-9]):[0-5][0-9])?$", x)[1] == TRUE)) { 
     # floating timestamp
     strptime(x, format = "%Y-%m-%dT%H:%M:%S") 
     
-  } else if (any(regexpr("^[[:digit:]]{1,2}/[[:digit:]]{1,2}/[[:digit:]]{4}$", x[1])[1] == TRUE)) {
+  } else if (any(regexpr("^[[:digit:]]{1,2}/[[:digit:]]{1,2}/[[:digit:]]{4}$", x)[1] == TRUE)) {
     # short date format
     strptime(x, format="%m/%d/%Y") 
     

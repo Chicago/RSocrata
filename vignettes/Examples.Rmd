@@ -49,10 +49,10 @@ allSitesDataFrame$title # Names of each dataset
 
 ```{r}
 
-asdsadas <- geojson_read("https://data.cityofchicago.org/resource/6zsd-86xi.geojson", method = "local", parse = FALSE, what = "list")
+geo_df <- geojson_read("https://data.cityofchicago.org/resource/6zsd-86xi.geojson", method = "local", parse = FALSE, what = "list")
 
 m <- leaflet() %>%
-  addGeoJSON(asdsadas) %>%
+  addGeoJSON(geo_df) %>%
   setView(-87.6, 41.8, zoom = 10) %>% 
   addTiles()
 m

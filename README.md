@@ -40,21 +40,21 @@ on [CRAN](http://cran.r-project.org/package=RSocrata)
 
 **Beware**:
 
-For the support of `GeoJSON`, it is necessary to install [geojsonio](https://github.com/ropensci/geojsonio) correctly!
-This depends on packages such as `rgdal` & `rgeos` (both are on CRAN), which on Linux you will need to install through `apt-get`:
+For the support of `GeoJSON` (which is optional), it is necessary to install [geojsonio](https://github.com/ropensci/geojsonio) correctly!
+This depends on packages such as `rgdal` & `rgeos` (both on CRAN), which additionally on Linux you will need to install through `apt-get`:
 
 `sudo apt-get install libgdal1-dev libgdal-dev libgeos-c1 libproj-dev`
 
-Then install both of them:
+Then install both of them use:
 
 ```
 install.packages("rgdal")
 install.packages("rgeos")
 ```
 
-### Examples 
+### Examples & Chanelog
 
-Look in the `vignette` folder
+Look for examples in the `vignette` folder and see `NEWS.MD` in the root of this repository. 
 
 ### Issues
 

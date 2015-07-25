@@ -42,10 +42,11 @@ test_that("posixify new Floating Timestamp format", {
 test_that("NA datetime in source (JSON)", {
   # https://github.com/Chicago/RSocrata/issues/24
   # https://github.com/Chicago/RSocrata/issues/27
-  skip("Not done")
+  skip("Test finished") # working with bare jsonlite::fromJson; not implemented in RSocrata
   skip_on_cran()
   skip_on_travis()
   df <- read.socrata(url = "https://data.cityofboston.gov/resource/awu8-dc52.json")
+  expect_equal(sum(is.na(df$target_dt)), 194)
   expect_that(ncol(df) > 10)
 })
 

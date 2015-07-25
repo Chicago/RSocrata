@@ -17,8 +17,8 @@ If you have multiple issues, please submit multiple requests. Once you submit yo
 
 When you want to make a change, either to fix a bug or introduce a new feature, please follow the instructions below
 
-* Create a branch or fork of the project based off of the `dev` branch.
+* Create a branch or fork of the project based off of the **`dev`** branch.
 * Make commits of logical units
 * Add unit tests for any new features
-* Run all tests in `tests/testthat/`
+* Run all tests in `tests/testthat/` (CTRL+SHIFT+T)
 * Create a pull request with a robust description or [reference the issue number](https://github.com/Chicago/RSocrata/issues)

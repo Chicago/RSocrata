@@ -11,4 +11,3 @@ RSocrata.Rcheck
 ^\.travis\.yml$
 appveyor.yml
 CONTRIBUTING.md
-NEWS.md
