@@ -4,27 +4,46 @@
 \alias{read.socrata}
 \title{Get a full Socrata data set as an R data frame}
 \usage{
-read.socrata(url, app_token = NULL)
+read.socrata(url = NULL, app_token = NULL, domain = NULL,
+  fourByFour = NULL, query = NULL, limit = 50000, offset = 0,
+  output = c("csv", "json", "geojson"))
 }
 \arguments{
-\item{url}{- A Socrata resource URL,
-or a Socrata "human-friendly" URL,
+\item{url}{- A Socrata resource URL, or a Socrata "human-friendly" URL,
 or Socrata Open Data Application Program Interface (SODA) query
 requesting a comma-separated download format (.csv suffix),
-May include SoQL parameters,
-but is assumed to not include a SODA offset parameter}
+May include SoQL parameters, and it is now assumed to include SODA \code{limit}
+& \code{offset} parameters.
+Either use a compelete URL, e.g. \code{} or use parameters below to construct your URL.
+But don't combine them.}
 
-\item{app_token}{- a (non-required) string; SODA API token is used to query the data
+\item{app_token}{- a (non-required) string; SODA API token can be used to query the data
 portal \url{http://dev.socrata.com/consumers/getting-started.html}}
+
+\item{domain}{- A Socrata domain, e.g \url{http://data.cityofchicago.org}}
+
+\item{fourByFour}{- a unique 4x4 identifier, e.g. "ydr8-5enu". See more \code{\link{isFourByFour}}}
+
+\item{query}{- Based on query language called the "Socrata Query Language" ("SoQL"), see
+\url{http://dev.socrata.com/docs/queries.html}.}
+
+\item{limit}{- defaults to the max of 50000. See \url{http://dev.socrata.com/docs/paging.html}.}
+
+\item{offset}{- defaults to the max of 0. See \url{http://dev.socrata.com/docs/paging.html}.}
 }
 \value{
 a data frame with POSIX dates
 }
 \description{
-Manages throttling and POSIX date-time conversions
+Manages throttling and POSIX date-time conversions.
+}
+\section{TODO}{
+ \url{https://github.com/Chicago/RSocrata/issues/14}
 }
 \examples{
 df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv")
+dfgjs <- read.socrata(url = "https://data.cityofchicago.org/resource/6zsd-86xi.geojson")
+df2 <- read.socrata(domain = "http://data.cityofchicago.org", fourByFour = "ydr8-5enu")
 }
 \author{
 Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@cityofchicago.org}

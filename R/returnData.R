@@ -4,9 +4,10 @@
 # Author: Hugh J. Devlin, Ph. D. 2013-08-28
 ###############################################################################
 
-# library('httr')       # for access to the HTTP header
-# library('jsonlite')   # for parsing data types from Socrata
-# library('mime')       # for guessing mime type
+# library("httr")       # for access to the HTTP header
+# library("jsonlite")   # for parsing data types from Socrata
+# library("mime")       # for guessing mime type
+# library("geojsonio") # for geospatial json
 
 #' Wrap httr GET in some diagnostics
 #' 
@@ -32,6 +33,7 @@ checkResponse <- function(url = "") {
 #'
 #' @author Hugh J. Devlin \email{Hugh.Devlin@@cityofchicago.org}
 #' @importFrom httr content
+#' @importFrom geojsonio geojson_read
 #' @param response - an httr response object
 #' @return data frame, possibly empty
 #' @noRd
@@ -47,14 +49,16 @@ getContentAsDataFrame <- function(response) {
   }
   
   switch(mimeType,
-         'text/csv' = 
+         "text/csv" = 
            httr::content(response), # automatic parsing
-         'application/json' = 
-           if(httr::content(response, as = 'text') == "[ ]") { # empty json?
+         "application/json" = 
+           if(httr::content(response, as = "text") == "[ ]") { # empty json?
              data.frame() # empty data frame
            } else {
              data.frame(t(sapply(httr::content(response), unlist)), stringsAsFactors = FALSE)
-           }
+           }, 
+         "application/vnd.geo+json" =  # use geojson_read directly through its response link
+           geojsonio::geojson_read(response$url, method = "local", parse = FALSE, what = "list")
   ) 
   
 }
@@ -76,49 +80,66 @@ getSodaTypes <- function(response) {
 
 #' Get a full Socrata data set as an R data frame
 #'
-#' Manages throttling and POSIX date-time conversions
+#' @description Manages throttling and POSIX date-time conversions.
 #'
-#' @param url - A Socrata resource URL, 
-#' or a Socrata "human-friendly" URL, 
+#' @param url - A Socrata resource URL, or a Socrata "human-friendly" URL, 
 #' or Socrata Open Data Application Program Interface (SODA) query 
 #' requesting a comma-separated download format (.csv suffix), 
-#' May include SoQL parameters, 
-#' but is assumed to not include a SODA offset parameter
-#' @param app_token - a (non-required) string; SODA API token is used to query the data 
+#' May include SoQL parameters, and it is now assumed to include SODA \code{limit} 
+#' & \code{offset} parameters.
+#' Either use a compelete URL, e.g. \code{} or use parameters below to construct your URL. 
+#' But don't combine them.
+#' @param app_token - a (non-required) string; SODA API token can be used to query the data 
 #' portal \url{http://dev.socrata.com/consumers/getting-started.html}
-## @param domain - A Socrata domain, e.g \url{http://data.cityofchicago.org} 
-## @param fourByFour - a unique 4x4 identifier, e.g. "ydr8-5enu". See more \code{\link{isFourByFour}}
-## @param query - Based on query language called the "Socrata Query Language" ("SoQL"), see 
-## \url{http://dev.socrata.com/docs/queries.html}.
-## domain = NULL, fourByFour = NULL, query = NULL, limit = 50000, offset = 0
-## read.socrata(domain = "http://data.cityofchicago.org", fourByFour = "ydr8-5enu", query = "")
-## @section TODO: \url{https://github.com/Chicago/RSocrata/issues/14}
+#' @param domain - A Socrata domain, e.g \url{http://data.cityofchicago.org} 
+#' @param fourByFour - a unique 4x4 identifier, e.g. "ydr8-5enu". See more \code{\link{isFourByFour}}
+#' @param query - Based on query language called the "Socrata Query Language" ("SoQL"), see 
+#' \url{http://dev.socrata.com/docs/queries.html}.
+#' @param limit - defaults to the max of 50000. See \url{http://dev.socrata.com/docs/paging.html}.
+#' @param offset - defaults to the max of 0. See \url{http://dev.socrata.com/docs/paging.html}.
+#' @param output - in case of building URL manually, one of \code{c("csv", "json", "geojson")}
+#' 
+#' @section TODO: \url{https://github.com/Chicago/RSocrata/issues/14}
+#'
 #' @return a data frame with POSIX dates
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
+#' 
 #' @examples
 #' df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv")
+#' dfgjs <- read.socrata(url = "https://data.cityofchicago.org/resource/6zsd-86xi.geojson")
+#' df2 <- read.socrata(domain = "http://data.cityofchicago.org", fourByFour = "ydr8-5enu")
+#' 
 #' @importFrom httr parse_url build_url
 #' @importFrom mime guess_type
 #' 
 #' @export
-read.socrata <- function(url, app_token = NULL) {
+read.socrata <- function(url = NULL, app_token = NULL, domain = NULL, fourByFour = NULL, 
+                         query = NULL, limit = 50000, offset = 0, output = NULL) {
+  
   # check url syntax, allow human-readable Socrata url
   validUrl <- validateUrl(url, app_token) 
   parsedUrl <- httr::parse_url(validUrl)
-  mimeType <- mime::guess_type(parsedUrl$path)
+  mimeType <- mime::guess_type(parsedUrl$path, unknown = "application/vnd.geo+json")
   
-  if(!(mimeType %in% c('text/csv','application/json'))) {
-    stop("Error in read.socrata: ", mimeType, " not a supported data format. Try JSON or CSV.")
+  # match args
+  output_args <- match.arg(output)
+  
+  if(!(mimeType %in% c("text/csv","application/json", "application/vnd.geo+json"))) {
+    stop(mimeType, " not a supported data format. Try JSON, CSV or GeoJSON.")
   }
   
   response <- checkResponse(validUrl)
   page <- getContentAsDataFrame(response)
   result <- page
-  dataTypes <- getSodaTypes(response)
+  
+  if(mimeType %in% c("text/csv","application/json")) {
+    dataTypes <- getSodaTypes(response)
+  }
   
   ## More to come? Loop over pages implicitly
+  ## TODO: start here
   while (nrow(page) > 0) { 
-    query_url <- paste0(validUrl, ifelse(is.null(parsedUrl$query), '?', "&"), '$offset=', nrow(result))
+    query_url <- paste0(validUrl, ifelse(is.null(parsedUrl$query), "?", "&"), "$offset=", nrow(result))
     response <- checkResponse(query_url)
     page <- getContentAsDataFrame(response)
     result <- rbind(result, page) # accumulate
@@ -127,7 +148,7 @@ read.socrata <- function(url, app_token = NULL) {
   # Convert Socrata calendar dates to POSIX format
   # Check for column names that are not NA and which dataType is a "calendar_date". If there are some, 
   # then convert them to POSIX format
-  for(columnName in colnames(page)[!is.na(dataTypes[fieldName(colnames(page))]) & dataTypes[fieldName(colnames(page))] == 'calendar_date']) {
+  for(columnName in colnames(page)[!is.na(dataTypes[fieldName(colnames(page))]) & dataTypes[fieldName(colnames(page))] == "calendar_date"]) {
     result[[columnName]] <- posixify(result[[columnName]])
   }
   
