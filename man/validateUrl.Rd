@@ -2,18 +2,15 @@
 % Please edit documentation in R/validateURL.R
 \name{validateUrl}
 \alias{validateUrl}
-\title{Convert, if necessary, URL to valid REST API URL supported by Socrata.}
+\title{Check if the URL is a valid one and supported by RSocrata (!).}
 \usage{
-validateUrl(url = "", app_token = NULL)
+validateUrl(url = "")
 }
 \arguments{
 \item{url}{- a string; character vector of length one}
-
-\item{app_token}{- a string; SODA API token used to query the data
-portal \url{http://dev.socrata.com/consumers/getting-started.html}}
 }
 \value{
-a - valid Url
+a valid URL used for downloading data
 }
 \description{
 Will convert a human-readable URL to a valid REST API call
@@ -25,12 +22,17 @@ resolve conflicting API token by deferring to original URL.
 }
 \examples{
 \dontrun{
-validateUrl(url = "a.fake.url.being.tested", app_token = "ew2rEMuESuzWPqMkyPfOSGJgE")
+validateUrl(url = "a.fake.url.being.tested")
+validateUrl(url = "https://soda.demo.socrata.com/resource/4334-bgaj")
+validateUrl(url = "https://soda.demo.socrata.com/resource/4334-bgaj.json")
+validateUrl(url = "https://soda.demo.socrata.com/resource/4334-bgaj.csv")
+validateUrl(url = "http://soda.demo.socrata.com/resource/4334-bgaj.json")
+validateUrl(url = "http://soda.demo.socrata.com/resource/4334-bgaj.xml")
+validateUrl(url = "https://data.cityofchicago.org/resource/6zsd-86xi.geojson")
+validateUrl(url = "http://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj.csv")
 }
-validateUrl(url = "https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj",
-app_token="ew2rEMuESuzWPqMkyPfOSGJgE")
 }
 \author{
-Tom Schenk Jr \email{tom.schenk@cityofchicago.org}
+Tom Schenk Jr \email{tom.schenk@cityofchicago.org} et al.
 }
 

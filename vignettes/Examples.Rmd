@@ -11,10 +11,6 @@ vignette: >
 
 ```{r}
 library(RSocrata)
-
-# for geo support
-library(leaflet)
-library(geojsonio)
 ```
 
 ### Example: Reading SoDA valid URLs
@@ -26,7 +22,7 @@ class(earthquakesDataFrame$Datetime[1]) # POSIXlt
 
 ### Example: Reading "human-readable" URLs
 ```{r}
-earthquakesDataFrame <- read.socrata("https://soda.demo.socrata.com/dataset/USGS-Earthquakes-for-2012-11-01-API-School-Demo/4334-bgaj")
+earthquakesDataFrame <- read.socrata("https://soda.demo.socrata.com/resource/4334-bgaj")
 nrow(earthquakesDataFrame) # 1007 (two "pages")
 class(earthquakesDataFrame$Datetime[1]) # POSIXlt
 ```
@@ -45,17 +41,25 @@ nrow(allSitesDataFrame) # Number of datasets
 allSitesDataFrame$title # Names of each dataset
 ```
 
-### Geo & Leaflet
+### GEO & Leaflet
 
 ```{r}
+# for geo support
+library(leaflet)
 
-geo_df <- geojson_read("https://data.cityofchicago.org/resource/6zsd-86xi.geojson", method = "local", parse = FALSE, what = "list")
+geo_df <- read.socrataGEO("https://data.cityofchicago.org/resource/6zsd-86xi.geojson")
+
+# OR classically
+# library(geojsonio)
+# geo_df <- geojsonio::geojson_read("https://data.cityofchicago.org/resource/6zsd-86xi.geojson", method = "local", parse = TRUE, what = "list")
 
 m <- leaflet() %>%
   addGeoJSON(geo_df) %>%
-  setView(-87.6, 41.8, zoom = 10) %>% 
-  addTiles()
+  setView(-87.6, 41.8, zoom = 15) %>% 
+  addTiles(attribution = paste(
+    '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+    '&copy; <a href="http://cartodb.com/attributions">CartoDB</a>'
+  ))
 m
-
 ```
 

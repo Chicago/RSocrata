@@ -4,21 +4,21 @@
 \alias{read.socrata}
 \title{Get a full Socrata data set as an R data frame}
 \usage{
-read.socrata(url = NULL, app_token = NULL, domain = NULL,
-  fourByFour = NULL, query = NULL, limit = 50000, offset = 0,
-  output = c("csv", "json", "geojson"))
+read.socrata(url = NULL, app_token = NULL, limit = 50000, domain = NULL,
+  fourByFour = NULL, query = NULL)
 }
 \arguments{
 \item{url}{- A Socrata resource URL, or a Socrata "human-friendly" URL,
 or Socrata Open Data Application Program Interface (SODA) query
-requesting a comma-separated download format (.csv suffix),
+requesting a comma-separated download format (.json suffix),
 May include SoQL parameters, and it is now assumed to include SODA \code{limit}
 & \code{offset} parameters.
-Either use a compelete URL, e.g. \code{} or use parameters below to construct your URL.
-But don't combine them.}
+Either use a compelete URL or use parameters below to construct your URL.}
 
 \item{app_token}{- a (non-required) string; SODA API token can be used to query the data
 portal \url{http://dev.socrata.com/consumers/getting-started.html}}
+
+\item{limit}{- defaults to the max of 50000. See \url{http://dev.socrata.com/docs/paging.html}.}
 
 \item{domain}{- A Socrata domain, e.g \url{http://data.cityofchicago.org}}
 
@@ -26,24 +26,17 @@ portal \url{http://dev.socrata.com/consumers/getting-started.html}}
 
 \item{query}{- Based on query language called the "Socrata Query Language" ("SoQL"), see
 \url{http://dev.socrata.com/docs/queries.html}.}
-
-\item{limit}{- defaults to the max of 50000. See \url{http://dev.socrata.com/docs/paging.html}.}
-
-\item{offset}{- defaults to the max of 0. See \url{http://dev.socrata.com/docs/paging.html}.}
-}
-\value{
-a data frame with POSIX dates
 }
 \description{
-Manages throttling and POSIX date-time conversions.
-}
-\section{TODO}{
- \url{https://github.com/Chicago/RSocrata/issues/14}
+Manages throttling and POSIX date-time conversions. We support only .json suffix.
 }
 \examples{
-df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv")
-dfgjs <- read.socrata(url = "https://data.cityofchicago.org/resource/6zsd-86xi.geojson")
-df2 <- read.socrata(domain = "http://data.cityofchicago.org", fourByFour = "ydr8-5enu")
+\dontrun{
+df_csv <- read.socrata(url = "http://soda.demo.socrata.com/resource/4334-bgaj.csv")
+df_manual2 <- read.socrata(domain = "http://data.cityofchicago.org/", fourByFour = "ydr8-5enu")
+## df_manual3<-read.socrata(url="http://data.cityofchicago.org/resource/ydr8-5enu") not working
+lp<-read.socrata(url="http://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj.csv")
+}
 }
 \author{
 Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@cityofchicago.org}
