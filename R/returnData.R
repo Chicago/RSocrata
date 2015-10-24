@@ -18,8 +18,12 @@
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' 
 #' @noRd
-checkResponse <- function(url = "") {
-  response <- httr::GET(url)
+checkResponse <- function(url = "", email = NULL, password = NULL) {
+  if(is.null(email) && is.null(password)){
+    response <- httr::GET(url)  
+  } else {
+    response <- httr::GET(url, authenticate(email, password))
+  } 
   
   errorHandling(response)
   
@@ -101,7 +105,7 @@ getSodaTypes <- function(response) {
 #' @importFrom mime guess_type
 #' 
 #' @export
-read.socrata <- function(url, app_token = NULL) {
+read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL) {
   # check url syntax, allow human-readable Socrata url
   validUrl <- validateUrl(url, app_token) 
   parsedUrl <- httr::parse_url(validUrl)
@@ -111,7 +115,7 @@ read.socrata <- function(url, app_token = NULL) {
     stop("Error in read.socrata: ", mimeType, " not a supported data format. Try JSON or CSV.")
   }
   
-  response <- checkResponse(validUrl)
+  response <- checkResponse(validUrl, email, password)
   page <- getContentAsDataFrame(response)
   result <- page
   dataTypes <- getSodaTypes(response)
@@ -119,7 +123,7 @@ read.socrata <- function(url, app_token = NULL) {
   ## More to come? Loop over pages implicitly
   while (nrow(page) > 0) { 
     query_url <- paste0(validUrl, ifelse(is.null(parsedUrl$query), '?', "&"), '$offset=', nrow(result))
-    response <- checkResponse(query_url)
+    response <- checkResponse(query_url, email, password)
     page <- getContentAsDataFrame(response)
     result <- rbind(result, page) # accumulate
   }	
