@@ -38,10 +38,13 @@ Deprecated ```httr::guess_media()``` and implemented ```mime::guess_type()```
 * Migrate Travis-CI to "proper" R YAML ([#46](https://github.com/Chicago/RSocrata/issues/46))
 
 
-### 1.6.3 / 1.6.2 (see roadmap)
+### 1.7 Several changes, bug fixes and new features
 
-* Add a small vignette with existing examples
-* Mostly internal changes which should not influence the current behaviour ([#53](https://github.com/Chicago/RSocrata/pull/53))
-    * Add support of a `floating timestamp`
-    * New error handling function
-
+* Create a small vignette with existing examples and add new ones with with ```leaflet``` map package.
+* Some internal changes ([#53](https://github.com/Chicago/RSocrata/pull/53))
+* Add support of a `floating timestamp`
+* New error handling function
+* New functions returning metadata and GeoJSON data (similar to the read.socrata)
+* Should be fixing [#27](https://github.com/Chicago/RSocrata/issues/27) + [#24](https://github.com/Chicago/RSocrata/pull/25)
+* Many thanks to the [David A Springate](https://github.com/DASpringate), who wrote a function in 2014 to allow conversion of files with some missing columns to dataframe. This should be now fixing the long standing issue with rbind [https://github.com/Chicago/RSocrata/issues/19](https://github.com/Chicago/RSocrata/issues/19). 
+* ```rbind``` from base system has been replaced with `plyr's` `rbind.fill`, which can be faster [in some cases](https://github.com/Chicago/RSocrata/pull/56).  
