@@ -108,7 +108,7 @@ read.socrata <- function(url = NULL, app_token = NULL, limit = 50000, domain = N
                          query = NULL) {
   
   if (is.null(url) == TRUE) {
-    buildUrl <- paste0(domain, "resource/", fourByFour, ".json")
+    buildUrl <- paste0(domain, "/resource/", fourByFour, ".json")
     url <- httr::parse_url(buildUrl)
   }
   
