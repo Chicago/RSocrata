@@ -1,9 +1,3 @@
-library(testthat)
-library(RSocrata)
-library(httr)
-library(jsonlite)
-library(mime)
-
 context("Validate URL")
 
 test_that("Invalid URL", {

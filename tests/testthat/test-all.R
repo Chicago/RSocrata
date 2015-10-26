@@ -1,10 +1,3 @@
-library(testthat)
-library(RSocrata)
-library(httr)
-library(jsonlite)
-library(mime)
-library(geojsonio)
-
 context("read Socrata")
 
 test_that("read Socrata CSV", {

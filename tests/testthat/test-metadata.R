@@ -1,9 +1,3 @@
-library(testthat)
-library(RSocrata)
-library(httr)
-library(jsonlite)
-library(mime)
-
 context("Checks metadata")
 
 test_that("it returns some number of rows", {

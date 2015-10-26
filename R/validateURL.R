@@ -1,4 +1,4 @@
-#' Check if the URL is a valid one and supported by RSocrata (!).
+#' Check if the URL is a valid one and supported by RSocrata.
 #'
 #' @description Will convert a human-readable URL to a valid REST API call
 #' supported by Socrata. It will accept a valid API URL if provided
@@ -15,14 +15,14 @@
 #' 
 #' @examples
 #' \dontrun{
-#' validateUrl(url = "a.fake.url.being.tested")
-#' validateUrl(url = "https://soda.demo.socrata.com/resource/4334-bgaj")
-#' validateUrl(url = "https://soda.demo.socrata.com/resource/4334-bgaj.json")
-#' validateUrl(url = "https://soda.demo.socrata.com/resource/4334-bgaj.csv")
-#' validateUrl(url = "http://soda.demo.socrata.com/resource/4334-bgaj.json")
-#' validateUrl(url = "http://soda.demo.socrata.com/resource/4334-bgaj.xml")
-#' validateUrl(url = "https://data.cityofchicago.org/resource/6zsd-86xi.geojson")
-#' validateUrl(url = "http://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj.csv")
+#' validateUrl(url = "a.fake.url.being.tested") # Returns FALSE
+#' validateUrl(url = "https://soda.demo.socrata.com/resource/4334-bgaj") # Returns FALSE
+#' validateUrl(url = "https://soda.demo.socrata.com/resource/4334-bgaj.json") # Returns TRUE
+#' validateUrl(url = "https://soda.demo.socrata.com/resource/4334-bgaj.csv") # Returns TRUE
+#' validateUrl(url = "http://soda.demo.socrata.com/resource/4334-bgaj.json") # Returns TRUE
+#' validateUrl(url = "http://soda.demo.socrata.com/resource/4334-bgaj.xml") # Returns TRUE
+#' validateUrl(url = "https://data.cityofchicago.org/resource/6zsd-86xi.geojson") # Returns TRUE
+#' validateUrl(url = "http://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj.csv") # Returns TRUE
 #' }
 #'
 #' @importFrom httr parse_url build_url

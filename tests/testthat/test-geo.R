@@ -1,10 +1,3 @@
-library(testthat)
-library(RSocrata)
-library(httr)
-library(jsonlite)
-library(mime)
-library(geojsonio)
-
 context("Geospatial JSON")
 
 test_that("fetches GeoJSON data", {

@@ -1,9 +1,3 @@
-library(testthat)
-library(RSocrata)
-library(httr)
-library(jsonlite)
-library(mime)
-
 context("Checks the validity of 4x4")
 
 test_that("is 4x4", {

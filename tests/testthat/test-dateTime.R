@@ -1,9 +1,3 @@
-library(testthat)
-library(RSocrata)
-library(httr)
-library(jsonlite)
-library(mime)
-
 # http://www.noamross.net/blog/2014/2/10/using-times-and-dates-in-r---presentation-code.html
 
 context("Test posixify function")

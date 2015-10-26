@@ -1,9 +1,3 @@
-library(testthat)
-library(RSocrata)
-library(httr)
-library(jsonlite)
-library(mime)
-
 context("Test Socrata with Token")
 
 test_that("CSV with Token", {
