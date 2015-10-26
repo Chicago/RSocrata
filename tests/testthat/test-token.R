@@ -15,7 +15,7 @@ test_that("CSV with Token", {
 })
 
 
-test_that("it will not read Socrata Human Readable URL with Token", {
+test_that("it will read Socrata Human Readable URL with Token", {
   df <- read.socrata("https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj", 
                               app_token="ew2rEMuESuzWPqMkyPfOSGJgE")
   

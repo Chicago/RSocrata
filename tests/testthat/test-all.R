@@ -32,6 +32,15 @@ test_that("read SoQL", {
   expect_equal(1, ncol(df), label="columns")
 })
 
+test_that("read SoQL", {
+  skip("because of query")
+  skip_on_cran()
+  skip_on_travis()
+  df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.json?$select=region")
+  expect_equal(1007, nrow(df), label="rows")
+  expect_equal(1, ncol(df), label="columns")
+})
+
 test_that("read SoQL Column Not Found (will fail)", {
   skip("because of query")
   skip_on_cran()
@@ -44,10 +53,10 @@ test_that("URL is private (Unauthorized) (will fail)", {
   expect_error(read.socrata("http://data.cityofchicago.org/resource/j8vp-2qpg.json"))
 })
 
-test_that("it will not read Socrata Human Readable URL", {
-  expect_warning(read.socrata(url="https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj"))
-  # expect_equal(1007, nrow(df), label="rows")
-  # expect_equal(9, ncol(df), label="columns")
+test_that("read human-readable Socrata URL", {
+  df <- read.socrata('https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj')
+  expect_equal(1007, nrow(df), label="rows")
+  expect_equal(9, ncol(df), label="columns")
 })
 
 test_that("format is not supported", {
