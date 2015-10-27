@@ -17,27 +17,12 @@ test_that("read Socrata No Scheme", {
 })
 
 test_that("read SoQL", {
-  skip("because of query")
-  skip_on_cran()
-  skip_on_travis()
-  df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.json?$select=region")
-  expect_equal(1007, nrow(df), label="rows")
-  expect_equal(1, ncol(df), label="columns")
-})
-
-test_that("read SoQL", {
-  skip("because of query")
-  skip_on_cran()
-  skip_on_travis()
   df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.json?$select=region")
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(1, ncol(df), label="columns")
 })
 
 test_that("read SoQL Column Not Found (will fail)", {
-  skip("because of query")
-  skip_on_cran()
-  skip_on_travis()
   # SoQL API uses field names, not human names
   expect_error(read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv?$select=Region"))
 })
