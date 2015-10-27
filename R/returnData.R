@@ -4,13 +4,6 @@
 # Author: Hugh J. Devlin, Ph. D. et al.
 ###############################################################################
 
-# library("httr")       # for access to the HTTP header
-# library("jsonlite")   # for parsing data types from Socrata
-# library("mime")       # for guessing mime type
-# library("geojsonio")  # for geospatial json
-# library("plyr")       # for a faster binding of rows
-
-
 #' Converts to data frame even with missing columns
 #' 
 #' @source https://github.com/DASpringate/RSocrata/blob/master/R/RSocrata.R#L130
@@ -93,10 +86,9 @@ getContentAsDataFrame <- function(response) {
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' 
 #' @examples
-#' df_csv <- read.socrata(url = "http://soda.demo.socrata.com/resource/4334-bgaj.csv")
-#' df_manual2 <- read.socrata(domain = "http://data.cityofchicago.org/", fourByFour = "ydr8-5enu")
-#' df_manual3 <- read.socrata(url = "http://data.cityofchicago.org/resource/ydr8-5enu.json") not working
-#' lp <- read.socrata(url = "http://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj.csv")
+#' df_1 <- read.socrata(url = "http://soda.demo.socrata.com/resource/4334-bgaj.csv")
+#' df_2 <- read.socrata(domain = "http://data.cityofchicago.org/", fourByFour = "ydr8-5enu")
+#' df_3 <- read.socrata(url = "http://data.cityofchicago.org/resource/ydr8-5enu.json")
 #' 
 #' @importFrom httr parse_url build_url
 #' @importFrom plyr rbind.fill

@@ -31,10 +31,9 @@ portal \url{http://dev.socrata.com/consumers/getting-started.html}}
 Manages throttling and POSIX date-time conversions. We support only .json suffix.
 }
 \examples{
-df_csv <- read.socrata(url = "http://soda.demo.socrata.com/resource/4334-bgaj.csv")
-df_manual2 <- read.socrata(domain = "http://data.cityofchicago.org/", fourByFour = "ydr8-5enu")
-df_manual3 <- read.socrata(url = "http://data.cityofchicago.org/resource/ydr8-5enu.json") not working
-lp <- read.socrata(url = "http://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj.csv")
+df_1 <- read.socrata(url = "http://soda.demo.socrata.com/resource/4334-bgaj.csv")
+df_2 <- read.socrata(domain = "http://data.cityofchicago.org/", fourByFour = "ydr8-5enu")
+df_3 <- read.socrata(url = "http://data.cityofchicago.org/resource/ydr8-5enu.json")
 }
 \author{
 Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@cityofchicago.org}

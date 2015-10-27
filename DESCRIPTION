@@ -9,7 +9,7 @@ Description: Provides easier interaction with
     return a R data frame.
     Additionally, it converts dates to 'POSIX' format,
     manages throttling by 'Socrata' and supports geospacial data.
-Version: 1.7.0-7
+Version: 1.7.0-8
 Date: 2015-10-26
 Author: Hugh Devlin, Ph. D., Tom Schenk, Jr. and John Malc (@dmpe)
 Maintainer: "Tom Schenk Jr." <developers@cityofchicago.org>
