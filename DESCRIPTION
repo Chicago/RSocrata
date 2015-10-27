@@ -9,7 +9,7 @@ Description: Provides easier interaction with
     return a R data frame.
     Additionally, it converts dates to 'POSIX' format,
     manages throttling by 'Socrata' and supports geospacial data.
-Version: 1.7.0-6
+Version: 1.7.0-7
 Date: 2015-10-26
 Author: Hugh Devlin, Ph. D., Tom Schenk, Jr. and John Malc (@dmpe)
 Maintainer: "Tom Schenk Jr." <developers@cityofchicago.org>
@@ -24,9 +24,6 @@ Imports:
 Suggests: 
     testthat (>= 0.10.0),
     roxygen2 (>= 4.1.1),
-    knitr (>= 1.11), 
-    leaflet (>= 1.0.0)
 License: MIT + file LICENSE
 URL: https://github.com/Chicago/RSocrata
 BugReports: https://github.com/Chicago/RSocrata/issues
-VignetteBuilder: knitr
