@@ -86,10 +86,11 @@ getContentAsDataFrame <- function(response) {
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' 
 #' @examples
+#' \dontrun{
 #' df_1 <- read.socrata(url = "http://soda.demo.socrata.com/resource/4334-bgaj.csv")
 #' df_2 <- read.socrata(domain = "http://data.cityofchicago.org/", fourByFour = "ydr8-5enu")
 #' df_3 <- read.socrata(url = "http://data.cityofchicago.org/resource/ydr8-5enu.json")
-#' 
+#' }
 #' @importFrom httr parse_url build_url
 #' @importFrom plyr rbind.fill
 #' 
