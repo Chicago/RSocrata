@@ -12,6 +12,19 @@ test_that("read Socrata CSV", {
   expect_equal(9, ncol(df), label="columns")
 })
 
+test_that("read Socrata CSV that requires a login", {
+  privateResourceUrl <- "https://soda.demo.socrata.com/resource/a9g2-feh2.json"
+  expect_error(read.socrata(privateResourceUrl))
+
+  socrataEmail <- "mark.silverberg+soda.demo@socrata.com"
+  socrataPassword <- "" # TODO find a secure way to do this
+
+  df <- read.socrata(privateResourceUrl, NULL, socrataEmail, socrataPassword)
+
+  expect_equal(2, ncol(df), label="columns")
+  expect_equal(3, nrow(df), label="rows")
+})
+
 test_that("read Socrata JSON", {
   df <- read.socrata(url = 'https://soda.demo.socrata.com/resource/4334-bgaj.json')
   expect_equal(1007, nrow(df), label="rows")
