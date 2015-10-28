@@ -23,7 +23,7 @@ Supports [SoDA query parameters](http://dev.socrata.com/docs/queries.html) in th
 
 Use ```ls.socrata()``` to list all datasets available on a Socrata webserver.
 
-This package uses [testthat](http://cran.r-project.org/package=testthat) test coverage.
+This package uses [`testthat`](http://cran.r-project.org/package=testthat) test coverage.
 
 ### Installation
 
@@ -36,29 +36,32 @@ devtools::install_github("Chicago/RSocrata")
 
 **OR** 
 
-on [CRAN](http://cran.r-project.org/package=RSocrata)
+from [CRAN](http://cran.r-project.org/package=RSocrata):
+
+```
+install.packages("RSocrata")
+```
 
 **Beware**:
 
-For the support of `GeoJSON` (which is optional), it is necessary to install [geojsonio](https://github.com/ropensci/geojsonio) correctly!
+In order to support `GeoJSON` (which is semi-optional), it is necessary to install [geojsonio](https://github.com/ropensci/geojsonio) correctly!
 This depends on packages such as `rgdal` & `rgeos` (both on CRAN), which additionally on Linux you will need to install through `apt-get`:
 
 `sudo apt-get install libgdal1-dev libgdal-dev libgeos-c1 libproj-dev`
 
-Then install both of them use:
+Then install both CRAN packages using:
 
 ```
-install.packages("rgdal")
-install.packages("rgeos")
+install.packages(c("rgdal", "rgeos"))
 ```
 
 ### Examples & Chanelog
 
-Look for examples in the `vignette` folder and see `NEWS.MD` in the root of this repository. 
+Look for examples in the [`vignette` folder](https://github.com/Chicago/RSocrata/blob/dev/vignettes/Examples.Rmd) and see `NEWS` in the root of this repository. 
 
 ### Issues
 
-Please report issues, request enhancements or fork us at the [City of Chicago github](https://github.com/Chicago/RSocrata/issues).
+**Please report issues**, request enhancements or fork us at the [City of Chicago github](https://github.com/Chicago/RSocrata/issues).
 
 ### Contributing
 
