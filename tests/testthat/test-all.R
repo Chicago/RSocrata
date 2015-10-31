@@ -16,8 +16,8 @@ test_that("read Socrata CSV that requires a login", {
   privateResourceUrl <- "https://soda.demo.socrata.com/resource/a9g2-feh2.json"
   expect_error(read.socrata(privateResourceUrl))
 
-  socrataEmail <- "mark.silverberg+soda.demo@socrata.com"
-  socrataPassword <- "" # TODO find a secure way to do this
+  socrataEmail <- Sys.getenv("SOCRATA_EMAIL", "")
+  socrataPassword <- Sys.getenv("SOCRATA_PASSWORD", "")
 
   df <- read.socrata(privateResourceUrl, NULL, socrataEmail, socrataPassword)
 
