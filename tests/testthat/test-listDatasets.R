@@ -1,9 +1,3 @@
-library(testthat)
-library(RSocrata)
-library(httr)
-library(jsonlite)
-library(mime)
-
 context("List datasets available from a Socrata domain")
 
 test_that("More than 0 datasets are available from a Socrata domain to download", {
