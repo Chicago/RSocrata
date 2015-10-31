@@ -17,6 +17,18 @@
 #' @return a dataframe
 #' @author David A Springate \email{daspringate@@gmail.com}
 #' @noRd
+<<<<<<< HEAD
+checkResponse <- function(url = "", email = NULL, password = NULL) {
+  if(is.null(email) && is.null(password)){
+    response <- httr::GET(url)  
+  } else {
+    response <- httr::GET(url, httr::authenticate(email, password))
+  } 
+  
+  errorHandling(response)
+  
+  return(response)
+=======
 content_to_df <- function(con){
   lengths <- sapply(con, length)
   if (all(lengths == length(con[[1]]))) {
@@ -29,6 +41,7 @@ content_to_df <- function(con){
     })
     data.frame(t(sapply(con, unlist)), stringsAsFactors = FALSE)
   }
+>>>>>>> Chicago/dev
 }
 
 #' Content parsers
@@ -77,12 +90,25 @@ getContentAsDataFrame <- function(response) {
 #' Either use a compelete URL or use parameters below to construct your URL. 
 #' @param app_token - a (non-required) string; SODA API token can be used to query the data 
 #' portal \url{http://dev.socrata.com/consumers/getting-started.html}
+<<<<<<< HEAD
+#' @param email - (optional) email associated with Socrata account with read access to dataset
+#' @param password - (optional) password associated with Socrata account with read access to dataset
+## @param domain - A Socrata domain, e.g \url{http://data.cityofchicago.org} 
+## @param fourByFour - a unique 4x4 identifier, e.g. "ydr8-5enu". See more \code{\link{isFourByFour}}
+## @param query - Based on query language called the "Socrata Query Language" ("SoQL"), see 
+## \url{http://dev.socrata.com/docs/queries.html}.
+## domain = NULL, fourByFour = NULL, query = NULL, limit = 50000, offset = 0
+## read.socrata(domain = "http://data.cityofchicago.org", fourByFour = "ydr8-5enu", query = "")
+## @section TODO: \url{https://github.com/Chicago/RSocrata/issues/14}
+#' @return a data frame with POSIX dates
+=======
 #' @param query - Based on query language called the "Socrata Query Language" ("SoQL"), see 
 #' \url{http://dev.socrata.com/docs/queries.html}.
 #' @param limit - defaults to the max of 50000. See \url{http://dev.socrata.com/docs/paging.html}.
 #' @param domain - A Socrata domain, e.g \url{http://data.cityofchicago.org} 
 #' @param fourByFour - a unique 4x4 identifier, e.g. "ydr8-5enu". See more \code{\link{isFourByFour}}
 #' 
+>>>>>>> Chicago/dev
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' 
 #' @examples
@@ -95,28 +121,48 @@ getContentAsDataFrame <- function(response) {
 #' @importFrom plyr rbind.fill
 #' 
 #' @export
+<<<<<<< HEAD
+read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL) {
+  # check url syntax, allow human-readable Socrata url
+  validUrl <- validateUrl(url, app_token) 
+  parsedUrl <- httr::parse_url(validUrl)
+  mimeType <- mime::guess_type(parsedUrl$path)
+=======
 read.socrata <- function(url = NULL, app_token = NULL, limit = 50000, domain = NULL, fourByFour = NULL, 
                          query = NULL) {
+>>>>>>> Chicago/dev
   
   if (is.null(url) == TRUE) {
     buildUrl <- paste0(domain, "/resource/", fourByFour, ".json")
     url <- httr::parse_url(buildUrl)
   }
   
+<<<<<<< HEAD
+  response <- checkResponse(validUrl, email, password)
+  page <- getContentAsDataFrame(response)
+  result <- page
+=======
   # check url syntax, allow human-readable Socrata url
   validUrl <- validateUrl(url) 
   parsedUrl <- httr::parse_url(validUrl)
   
   response <- errorHandling(validUrl, app_token)
   results <- getContentAsDataFrame(response)
+>>>>>>> Chicago/dev
   dataTypes <- getSodaTypes(response)
   
   rowCount <- as.numeric(getMetadata(cleanQuest(validUrl))[1])
 
   ## More to come? Loop over pages implicitly
+<<<<<<< HEAD
+  while (nrow(page) > 0) { 
+    query_url <- paste0(validUrl, ifelse(is.null(parsedUrl$query), '?', "&"), '$offset=', nrow(result))
+    response <- checkResponse(query_url, email, password)
+=======
   while (nrow(results) < rowCount) { 
     query_url <- paste0(validUrl, ifelse(is.null(parsedUrl$query), "?", "&"), "$offset=", nrow(results), "&$limit=", limit)
     response <- errorHandling(query_url, app_token)
+>>>>>>> Chicago/dev
     page <- getContentAsDataFrame(response)
     results <- plyr::rbind.fill(results, page) # accumulate data
   }	

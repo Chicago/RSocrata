@@ -6,8 +6,26 @@ test_that("read Socrata CSV", {
   expect_equal(11, ncol(df), label="columns")
 })
 
+<<<<<<< HEAD
+test_that("read Socrata CSV that requires a login", {
+  privateResourceUrl <- "https://soda.demo.socrata.com/resource/a9g2-feh2.json"
+  expect_error(read.socrata(privateResourceUrl))
+
+  socrataEmail <- Sys.getenv("SOCRATA_EMAIL", "")
+  socrataPassword <- Sys.getenv("SOCRATA_PASSWORD", "")
+
+  df <- read.socrata(privateResourceUrl, NULL, socrataEmail, socrataPassword)
+
+  expect_equal(2, ncol(df), label="columns")
+  expect_equal(3, nrow(df), label="rows")
+})
+
+test_that("read Socrata JSON", {
+  df <- read.socrata(url = 'https://soda.demo.socrata.com/resource/4334-bgaj.json')
+=======
 test_that("read Socrata JSON with HTTP", {
   df <- read.socrata(url = "https://soda.demo.socrata.com/resource/4334-bgaj.json")
+>>>>>>> Chicago/dev
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(11, ncol(df), label="columns")
 })

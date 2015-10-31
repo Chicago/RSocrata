@@ -4,8 +4,12 @@
 \alias{read.socrata}
 \title{Get a full Socrata data set as an R data frame}
 \usage{
+<<<<<<< HEAD
+read.socrata(url, app_token = NULL, email = NULL, password = NULL)
+=======
 read.socrata(url = NULL, app_token = NULL, limit = 50000, domain = NULL,
   fourByFour = NULL, query = NULL)
+>>>>>>> Chicago/dev
 }
 \arguments{
 \item{url}{- A Socrata resource URL, or a Socrata "human-friendly" URL,
@@ -18,6 +22,14 @@ Either use a compelete URL or use parameters below to construct your URL.}
 \item{app_token}{- a (non-required) string; SODA API token can be used to query the data
 portal \url{http://dev.socrata.com/consumers/getting-started.html}}
 
+<<<<<<< HEAD
+\item{email}{- (optional) email associated with Socrata account with read access to dataset}
+
+\item{password}{- (optional) password associated with Socrata account with read access to dataset}
+}
+\value{
+a data frame with POSIX dates
+=======
 \item{limit}{- defaults to the max of 50000. See \url{http://dev.socrata.com/docs/paging.html}.}
 
 \item{domain}{- A Socrata domain, e.g \url{http://data.cityofchicago.org}}
@@ -26,6 +38,7 @@ portal \url{http://dev.socrata.com/consumers/getting-started.html}}
 
 \item{query}{- Based on query language called the "Socrata Query Language" ("SoQL"), see
 \url{http://dev.socrata.com/docs/queries.html}.}
+>>>>>>> Chicago/dev
 }
 \description{
 Manages throttling and POSIX date-time conversions. We support only .json suffix.
