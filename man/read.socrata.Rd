@@ -16,6 +16,10 @@ but is assumed to not include a SODA offset parameter}
 
 \item{app_token}{- a (non-required) string; SODA API token is used to query the data
 portal \url{http://dev.socrata.com/consumers/getting-started.html}}
+
+\item{email}{- (optional) email associated with Socrata account with read access to dataset}
+
+\item{password}{- (optional) password associated with Socrata account with read access to dataset}
 }
 \value{
 a data frame with POSIX dates
