@@ -24,6 +24,6 @@ isFourByFour("433-bgaj")
 isFourByFour(fourByFour = "4334-!gaj")
 }
 \author{
-Tom Schenk Jr \email{tom.schenk@cityofchicago.org}
+Tom Schenk Jr \email{tom.schenk@cityofchicago.org} et al.
 }
 

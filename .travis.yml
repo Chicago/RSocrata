@@ -19,6 +19,7 @@ r_github_packages:
   - jeroenooms/curl
   - klutometis/roxygen
   - jimhester/covr
+  - yihui/mime
   - ropensci/geojsonio
 
 after_success:

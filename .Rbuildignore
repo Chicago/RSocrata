@@ -11,3 +11,6 @@ RSocrata.Rcheck
 ^\.travis\.yml$
 appveyor.yml
 CONTRIBUTING.md
+vignettes/rsconnect
+vignettes/bench.rmd
+^.*\.o$
