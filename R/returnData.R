@@ -90,6 +90,8 @@ getSodaTypes <- function(response) {
 #' but is assumed to not include a SODA offset parameter
 #' @param app_token - a (non-required) string; SODA API token is used to query the data 
 #' portal \url{http://dev.socrata.com/consumers/getting-started.html}
+#' @param email - (optional) email associated with Socrata account with read access to dataset
+#' @param password - (optional) password associated with Socrata account with read access to dataset
 ## @param domain - A Socrata domain, e.g \url{http://data.cityofchicago.org} 
 ## @param fourByFour - a unique 4x4 identifier, e.g. "ydr8-5enu". See more \code{\link{isFourByFour}}
 ## @param query - Based on query language called the "Socrata Query Language" ("SoQL"), see 
