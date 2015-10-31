@@ -25,13 +25,13 @@ checkUpdateResponse <- function(json_data_to_upload, url, http_verb, email, pass
       body = json_data_to_upload,
       authenticate(email, password),
       add_headers("X-App-Token" = app_token,
-                  "Content-Type" = "application/json"), verbose())
+                  "Content-Type" = "application/json")) #, verbose())
   } else if(http_verb == "PUT"){
     response <- httr::PUT(url,
       body = json_data_to_upload,
       authenticate(email, password),
       add_headers("X-App-Token" = app_token,
-                  "Content-Type" = "application/json"), verbose())
+                  "Content-Type" = "application/json")) # , verbose())
   }
   
   errorHandling(response)
