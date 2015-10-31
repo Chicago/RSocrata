@@ -22,7 +22,7 @@ checkResponse <- function(url = "", email = NULL, password = NULL) {
   if(is.null(email) && is.null(password)){
     response <- httr::GET(url)  
   } else {
-    response <- httr::GET(url, authenticate(email, password))
+    response <- httr::GET(url, httr::authenticate(email, password))
   } 
   
   errorHandling(response)
