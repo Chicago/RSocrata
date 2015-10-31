@@ -23,14 +23,14 @@ checkUpdateResponse <- function(json_data_to_upload, url, http_verb, email, pass
   if(http_verb == "POST"){
     response <- httr::POST(url,
       body = json_data_to_upload,
-      authenticate(email, password),
-      add_headers("X-App-Token" = app_token,
+      httr::authenticate(email, password),
+      httr::add_headers("X-App-Token" = app_token,
                   "Content-Type" = "application/json")) #, verbose())
   } else if(http_verb == "PUT"){
     response <- httr::PUT(url,
       body = json_data_to_upload,
-      authenticate(email, password),
-      add_headers("X-App-Token" = app_token,
+      httr::authenticate(email, password),
+      httr::add_headers("X-App-Token" = app_token,
                   "Content-Type" = "application/json")) # , verbose())
   }
   
@@ -63,7 +63,7 @@ write.socrata <- function(dataframe, dataset_json_endpoint, update_mode, email, 
   }
 
   # convert dataframe to JSON
-  dataframe_as_json_string <- toJSON(dataframe)
+  dataframe_as_json_string <- jsonlite::toJSON(dataframe)
 
   # do the actual upload
   response <- checkUpdateResponse(dataframe_as_json_string, dataset_json_endpoint, http_verb, email, password, app_token)
