@@ -82,8 +82,8 @@ getContentAsDataFrame <- function(response) {
 #' @param limit - defaults to the max of 50000. See \url{http://dev.socrata.com/docs/paging.html}.
 #' @param domain - A Socrata domain, e.g \url{http://data.cityofchicago.org} 
 #' @param fourByFour - a unique 4x4 identifier, e.g. "ydr8-5enu". See more \code{\link{isFourByFour}}
-#' @param optional email - The email to the Socrata account with read access to the dataset
-#' @param optional password - The password associated with the email to the Socrata account
+#' @param email - (optional) The email to the Socrata account with read access to the dataset
+#' @param password - (optional) The password associated with the email to the Socrata account
 #' 
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' 

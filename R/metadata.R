@@ -5,8 +5,8 @@
 #' \code{http://DOMAIN/api/views/FOUR-FOUR/columns.json}, which is used here. 
 #' 
 #' @param url - A Socrata resource URL, or a Socrata "human-friendly" URL!
-#' @param optional email - The email to the Socrata account with read access to the dataset
-#' @param optional password - The password associated with the email to the Socrata account
+#' @param email - (optional) The email to the Socrata account with read access to the dataset
+#' @param password - (optional) The password associated with the email to the Socrata account
 #' 
 #' @source \url{http://stackoverflow.com/a/29782941}
 #'

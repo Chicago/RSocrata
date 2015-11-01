@@ -27,9 +27,9 @@ portal \url{http://dev.socrata.com/consumers/getting-started.html}}
 \item{query}{- Based on query language called the "Socrata Query Language" ("SoQL"), see
 \url{http://dev.socrata.com/docs/queries.html}.}
 
-\item{optional}{email - The email to the Socrata account with read access to the dataset}
+\item{email}{- (optional) The email to the Socrata account with read access to the dataset}
 
-\item{optional}{password - The password associated with the email to the Socrata account}
+\item{password}{- (optional) The password associated with the email to the Socrata account}
 }
 \description{
 Manages throttling and POSIX date-time conversions. We support only .json suffix.

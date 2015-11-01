@@ -12,9 +12,9 @@ getMetadata(url = "", email = NULL, password = NULL)
 \arguments{
 \item{url}{- A Socrata resource URL, or a Socrata "human-friendly" URL!}
 
-\item{optional}{email - The email to the Socrata account with read access to the dataset}
+\item{email}{- (optional) The email to the Socrata account with read access to the dataset}
 
-\item{optional}{password - The password associated with the email to the Socrata account}
+\item{password}{- (optional) The password associated with the email to the Socrata account}
 }
 \value{
 a list (!) containing a number of rows & columns and a data frame of metadata
