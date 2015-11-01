@@ -2,6 +2,7 @@
 % Please edit documentation in R/writeData.R
 \name{write.socrata}
 \alias{write.socrata}
+\title{Write to a Socrata dataset (full replace or upsert)}
 \usage{
 write.socrata(dataframe, dataset_json_endpoint, update_mode, email, password,
   app_token = NULL)

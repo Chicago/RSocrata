@@ -35,7 +35,8 @@ checkUpdateResponse <- function(json_data_to_upload, url, http_verb, email, pass
   return(response)
 }
 
-
+#' Write to a Socrata dataset (full replace or upsert)
+#'
 #' @description Method for updating Socrata datasets 
 #'
 #' @param dataframe - dataframe to upload to Socrata
