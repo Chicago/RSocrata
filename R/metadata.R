@@ -5,6 +5,8 @@
 #' \code{http://DOMAIN/api/views/FOUR-FOUR/columns.json}, which is used here. 
 #' 
 #' @param url - A Socrata resource URL, or a Socrata "human-friendly" URL!
+#' @param optional email - The email to the Socrata account with read access to the dataset
+#' @param optional password - The password associated with the email to the Socrata account
 #' 
 #' @source \url{http://stackoverflow.com/a/29782941}
 #'
@@ -24,13 +26,13 @@
 #' @author John Malc \email{cincenko@@outlook.com} 
 #'  
 #' @export
-getMetadata <- function(url = "") {
+getMetadata <- function(url = "", email = NULL, password = NULL) {
   
   urlParsedBase <- httr::parse_url(url)
   mimeType <- mime::guess_type(urlParsedBase$path)
   
   # use function below to get them using =COUNT(*) SODA query
-  gQRC <- getQueryRowCount(urlParsedBase, mimeType) 
+  gQRC <- getQueryRowCount(urlParsedBase, mimeType, email, password) 
   
   # create URL for metadata data frame
   fourByFour <- substr(basename(urlParsedBase$path), 1, 9)
@@ -39,8 +41,15 @@ getMetadata <- function(url = "") {
   
   # execute it
   URL <- httr::build_url(urlParsed)
-  df <- jsonlite::fromJSON(URL)
   
+  if(is.null(email) && is.null(password)){
+    df <- jsonlite::fromJSON(URL)
+  } else { # email and password are not NULL
+    response <- httr::GET(URL, httr::authenticate(email, password))
+    response_content <- httr::content(response, as="text")
+    df <- jsonlite::fromJSON(response_content)
+  } 
+
   # number of rows can be sometimes "cached". If yes, then below we calculate the maximum number of 
   # rows from all non-null and null fields. 
   # If not, then it uses "getQueryRowCount" fnct with SODA =COUNT(*) SODA query.
@@ -62,7 +71,7 @@ getMetadata <- function(url = "") {
 # @author Gene Leynes \email{gleynes@@gmail.com}
 #
 #' @importFrom httr GET build_url content
-getQueryRowCount <- function(urlParsed, mimeType) {
+getQueryRowCount <- function(urlParsed, mimeType, email = NULL, password = NULL) {
   ## Construct the count query based on the URL,
   if (is.null(urlParsed[['query']])) {
     ## If there is no query at all, create a simple count
@@ -81,7 +90,7 @@ getQueryRowCount <- function(urlParsed, mimeType) {
                    urlParsed[[c('path')]], cntQueryText)
   
   ## Execute the query to count the rows
-  totalRowsResult <- errorHandling(cntUrl, app_token = NULL)
+  totalRowsResult <- errorHandling(cntUrl, app_token = NULL, email, password)
   
   ## Parsing the result depends on the mime type
   if (mimeType == "application/json") {

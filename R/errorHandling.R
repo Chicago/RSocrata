@@ -6,11 +6,18 @@
 # but one that is not compatible with RSocrata.
 # See \url{https://github.com/Chicago/RSocrata/issues/16}
 #
-# @param url - SOPA url
+# @param url - SODA url
+# @param optional email - The email to the Socrata account with read access to the dataset
+# @param optional password - The password associated with the email to the Socrata account
 #' @importFrom httr stop_for_status GET add_headers
-errorHandling <- function(url = "", app_token = NULL) {
-  rsp <- httr::GET(url, httr::add_headers("X-App-Token" = app_token))
-  
+errorHandling <- function(url = "", app_token = NULL, email = NULL, password = NULL) {
+
+  if(is.null(email) && is.null(password)){
+    rsp <- httr::GET(url, httr::add_headers("X-App-Token" = app_token))
+  } else { # email and password are not NULL
+    rsp <- httr::GET(url, httr::add_headers("X-App-Token" = app_token), httr::authenticate(email, password))
+  } 
+
   if (rsp$status_code == 200) {
     invisible("OK. Your request was successful.")
     

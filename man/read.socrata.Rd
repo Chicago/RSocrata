@@ -5,7 +5,7 @@
 \title{Get a full Socrata data set as an R data frame}
 \usage{
 read.socrata(url = NULL, app_token = NULL, limit = 50000, domain = NULL,
-  fourByFour = NULL, query = NULL)
+  fourByFour = NULL, query = NULL, email = NULL, password = NULL)
 }
 \arguments{
 \item{url}{- A Socrata resource URL, or a Socrata "human-friendly" URL,
@@ -26,14 +26,20 @@ portal \url{http://dev.socrata.com/consumers/getting-started.html}}
 
 \item{query}{- Based on query language called the "Socrata Query Language" ("SoQL"), see
 \url{http://dev.socrata.com/docs/queries.html}.}
+
+\item{optional}{email - The email to the Socrata account with read access to the dataset}
+
+\item{optional}{password - The password associated with the email to the Socrata account}
 }
 \description{
 Manages throttling and POSIX date-time conversions. We support only .json suffix.
 }
 \examples{
+\dontrun{
 df_1 <- read.socrata(url = "http://soda.demo.socrata.com/resource/4334-bgaj.csv")
 df_2 <- read.socrata(domain = "http://data.cityofchicago.org/", fourByFour = "ydr8-5enu")
 df_3 <- read.socrata(url = "http://data.cityofchicago.org/resource/ydr8-5enu.json")
+}
 }
 \author{
 Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@cityofchicago.org}

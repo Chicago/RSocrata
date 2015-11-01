@@ -82,6 +82,8 @@ getContentAsDataFrame <- function(response) {
 #' @param limit - defaults to the max of 50000. See \url{http://dev.socrata.com/docs/paging.html}.
 #' @param domain - A Socrata domain, e.g \url{http://data.cityofchicago.org} 
 #' @param fourByFour - a unique 4x4 identifier, e.g. "ydr8-5enu". See more \code{\link{isFourByFour}}
+#' @param optional email - The email to the Socrata account with read access to the dataset
+#' @param optional password - The password associated with the email to the Socrata account
 #' 
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' 
@@ -96,7 +98,7 @@ getContentAsDataFrame <- function(response) {
 #' 
 #' @export
 read.socrata <- function(url = NULL, app_token = NULL, limit = 50000, domain = NULL, fourByFour = NULL, 
-                         query = NULL) {
+                         query = NULL, email = NULL, password = NULL) {
   
   if (is.null(url) == TRUE) {
     buildUrl <- paste0(domain, "/resource/", fourByFour, ".json")
@@ -107,16 +109,16 @@ read.socrata <- function(url = NULL, app_token = NULL, limit = 50000, domain = N
   validUrl <- validateUrl(url) 
   parsedUrl <- httr::parse_url(validUrl)
   
-  response <- errorHandling(validUrl, app_token)
+  response <- errorHandling(validUrl, app_token, email, password)
   results <- getContentAsDataFrame(response)
   dataTypes <- getSodaTypes(response)
   
-  rowCount <- as.numeric(getMetadata(cleanQuest(validUrl))[1])
+  rowCount <- as.numeric(getMetadata(cleanQuest(validUrl), email, password)[1])
 
   ## More to come? Loop over pages implicitly
   while (nrow(results) < rowCount) { 
     query_url <- paste0(validUrl, ifelse(is.null(parsedUrl$query), "?", "&"), "$offset=", nrow(results), "&$limit=", limit)
-    response <- errorHandling(query_url, app_token)
+    response <- errorHandling(query_url, app_token, email, password)
     page <- getContentAsDataFrame(response)
     results <- plyr::rbind.fill(results, page) # accumulate data
   }	
