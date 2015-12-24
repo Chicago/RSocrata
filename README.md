@@ -7,7 +7,7 @@ RSocrata
 
 **Dev**
 
-[![Linux build - Dev](https://img.shields.io/travis/Chicago/RSocrata/dev.svg?style=flat-square&label=Linux build)](https://travis-ci.org/Chicago/RSocrata)[![Windows build - Dev](https://img.shields.io/appveyor/ci/tomschenkjr/RSocrata/dev.svg?style=flat-square&label=Windows build)](https://ci.appveyor.com/project/tomschenkjr/rsocrata/branch/dev)[![Coverage - Dev](https://img.shields.io/coveralls/Chicago/RSocrata/dev.svg?style=flat-square&label=Coverage - Dev)](https://coveralls.io/r/Chicago/RSocrata?branch=dev)
+[![Linux build - Dev](https://img.shields.io/travis/Chicago/RSocrata/dev.svg?style=flat-square&label=Linux build)](https://travis-ci.org/Chicago/RSocrata)[![Windows build - Dev](https://img.shields.io/appveyor/ci/tomschenkjr/RSocrata/dev.svg?style=flat-square&label=Windows build)](https://ci.appveyor.com/project/tomschenkjr/rsocrata/branch/dev)[![Coverage - Dev](https://img.shields.io/coveralls/Chicago/RSocrata/dev.svg?style=flat-square&label=Coverage status - Dev)](https://coveralls.io/r/Chicago/RSocrata?branch=dev)
 
 A tool for downloading Socrata datasets as R data frames
 --------------------------------------------------------	
@@ -23,45 +23,39 @@ Supports [SoDA query parameters](http://dev.socrata.com/docs/queries.html) in th
 
 Use ```ls.socrata()``` to list all datasets available on a Socrata webserver.
 
-This package uses [`testthat`](http://cran.r-project.org/package=testthat) test coverage.
+[testthat](http://cran.r-project.org/web/packages/testthat/index.html) test coverage.
 
-### Installation
-
-Use `devtools` to install the latest version from Github:
-
-```
-library(devtools)
-devtools::install_github("Chicago/RSocrata")
+### Example: Reading SoDA valid URLs
+```r
+earthquakesDataFrame <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv")
+nrow(earthquakesDataFrame) # 1007 (two "pages")
+class(earthquakesDataFrame$Datetime[1]) # POSIXlt
 ```
 
-**OR** 
-
-from [CRAN](http://cran.r-project.org/package=RSocrata):
-
-```
-install.packages("RSocrata")
-```
-
-**Beware**:
-
-In order to support `GeoJSON` (which is semi-optional), it is necessary to install [geojsonio](https://github.com/ropensci/geojsonio) correctly!
-This depends on packages such as `rgdal` & `rgeos` (both on CRAN), which additionally on Linux you will need to install through `apt-get`:
-
-`sudo apt-get install libgdal1-dev libgdal-dev libgeos-c1 libproj-dev`
-
-Then install both CRAN packages using:
-
-```
-install.packages(c("rgdal", "rgeos"))
+### Example: Reading "human-readable" URLs
+```r
+earthquakesDataFrame <- read.socrata("https://soda.demo.socrata.com/dataset/USGS-Earthquakes-for-2012-11-01-API-School-Demo/4334-bgaj")
+nrow(earthquakesDataFrame) # 1007 (two "pages")
+class(earthquakesDataFrame$Datetime[1]) # POSIXlt
 ```
 
-### Examples & Chanelog
+### Example: Using API key to read datasets
+```r
+token <- "ew2rEMuESuzWPqMkyPfOSGJgE"
+earthquakesDataFrame <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv", app_token = token)
+nrow(earthquakesDataFrame)
+```
 
-Look for examples in the [`vignette` folder](https://github.com/Chicago/RSocrata/blob/dev/vignettes/Examples.Rmd) and see `NEWS` in the root of this repository. 
+### Example: List all datasets on portal
+```r
+allSitesDataFrame <- ls.socrata("https://soda.demo.socrata.com")
+nrow(allSitesDataFrame) # Number of datasets
+allSitesDataFrame$title # Names of each dataset
+```
 
 ### Issues
 
-**Please report issues**, request enhancements or fork us at the [City of Chicago github](https://github.com/Chicago/RSocrata/issues).
+Please report issues, request enhancements or fork us at the [City of Chicago github](https://github.com/Chicago/RSocrata/issues).
 
 ### Contributing
 

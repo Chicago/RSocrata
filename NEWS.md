@@ -38,11 +38,8 @@ Deprecated ```httr::guess_media()``` and implemented ```mime::guess_type()```
 * Migrate Travis-CI to "proper" R YAML ([#46](https://github.com/Chicago/RSocrata/issues/46))
 
 
-### 1.7.0 Several changes, bug fixes and new features:
 
-* New function, `read.socrataGEO()`, which allows downloading GeoJSON data from Socrata data portals.
-* Downloads now default to JSON for any requests for improved speed ([#53](https://github.com/Chicago/RSocrata/pull/53))
-* Add support of a "floating timestamp"
-* Improved error handling and warnings
-* Fixed errors when "NA" was present in date columns ([#27](https://github.com/Chicago/RSocrata/issues/27) and [#24](https://github.com/Chicago/RSocrata/pull/25)) 
-* Use `plyr` to improve the speed and performance of downloads [in some cases](https://github.com/Chicago/RSocrata/pull/56).  
+
+
+
+

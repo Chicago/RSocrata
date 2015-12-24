@@ -13,5 +13,3 @@
 *.Rproj.user
 *.Rhistory
 .Rproj.user
-inst/doc
-/vignettes/rsconnect
