@@ -4,7 +4,6 @@
 /.README.md.html
 /.settings
 /DESCRIPTION.Rcheck
-/man
 /out
 /RCheck
 /RSocrata_*.tar.gz
@@ -14,3 +13,5 @@
 *.Rproj.user
 *.Rhistory
 .Rproj.user
+inst/doc
+/vignettes/rsconnect

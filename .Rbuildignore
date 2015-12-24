@@ -8,7 +8,9 @@ RSocrata.Rcheck
 ^.*\.Rproj$
 ^\.Rproj\.user$
 .DS_Store
-README.md
 ^\.travis\.yml$
 appveyor.yml
 CONTRIBUTING.md
+vignettes/rsconnect
+vignettes/bench.rmd
+^.*\.o$

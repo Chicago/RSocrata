@@ -15,7 +15,6 @@ build_script:
 test_script:
   - Rscript -e "install.packages('roxygen2', repos='http://cran.us.r-project.org'); library(roxygen2); roxygen2::roxygenize(package.dir='.', roclets=c('rd', 'collate', 'namespace'))"
   - travis-tool.sh run_tests
-  - Rscript -e "source('R/tests/testRSocrata.R'); runAllTestsCI()"
 
 on_failure:
   - travis-tool.sh dump_logs

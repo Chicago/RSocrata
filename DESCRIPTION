@@ -1,25 +1,30 @@
 Package: RSocrata
+Type: Package
 Title: Download 'Socrata' Data Sets as R Data Frames
 Description: Provides easier interaction with
     Socrata open data portals http://dev.socrata.com.
     Users can provide a 'Socrata' data set resource URL,
     or a 'Socrata' Open Data API (SoDA) web query,
-    or a 'Socrata' "human-friendly" URL,
-    returns an R data frame.
-    Converts dates to 'POSIX' format.
-    Manages throttling by 'Socrata'.
-Version: 1.6.1-4
-Date: 2015-7-10
+    or a 'Socrata' "human-friendly" URL, all of which
+    return a R data frame.
+    Additionally, it converts dates to 'POSIX' format,
+    manages throttling by 'Socrata' and supports geospacial data.
+Version: 1.7.0-9
+Date: 2015-10-26
+Author: Hugh Devlin, Ph. D., Tom Schenk, Jr. and John Malc (@dmpe)
+Maintainer: "Tom Schenk Jr." <developers@cityofchicago.org>
+Depends:
+    R (>= 3.2.2)
+Imports:
+    httr (>= 1.0.0),
+    jsonlite (>= 0.9.19),
+    mime (>= 0.4),
+    geojsonio (>= 0.1.4),
+    plyr (>= 1.8.3)
+Suggests:
+    testthat (>= 0.11.0),
+    roxygen2 (>= 5.0.1),
+License: MIT + file LICENSE
 URL: https://github.com/Chicago/RSocrata
 BugReports: https://github.com/Chicago/RSocrata/issues
-Imports: 
-    httr (>= 0.3),
-    jsonlite (>= 0.9.14),
-    mime (>= 0.2),
-Depends: 
-    curl (>= 0.5)
-Suggests: 
-    testthat (>= 0.10.0)
-Author: Hugh Devlin, Ph. D. and Tom Schenk, Jr.
-Maintainer: Tom Schenk Jr <developers@cityofchicago.org>
-License: MIT + file LICENSE
+RoxygenNote: 5.0.1
