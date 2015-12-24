@@ -30,14 +30,10 @@ logMsg <- function(s) {
 #' @export
 isFourByFour <- function(fourByFour) {
 	fourByFour <- as.character(fourByFour)
-	
-	if(nchar(fourByFour) != 9) {
+	if(nchar(fourByFour) != 9)
 		return(FALSE)
-	}
-	
-	if(regexpr("[[:alnum:]]{4}-[[:alnum:]]{4}", fourByFour) == -1) {
+	if(regexpr("[[:alnum:]]{4}-[[:alnum:]]{4}", fourByFour) == -1)
 		return(FALSE)
-	}
 	TRUE	
 }
 
@@ -59,38 +55,28 @@ isFourByFour <- function(fourByFour) {
 validateUrl <- function(url, app_token) {
 	url <- as.character(url)
   parsedUrl <- httr::parse_url(url)
-	
-  if(is.null(parsedUrl$scheme) | is.null(parsedUrl$hostname) | is.null(parsedUrl$path)) {
+	if(is.null(parsedUrl$scheme) | is.null(parsedUrl$hostname) | is.null(parsedUrl$path))
 		stop(url, " does not appear to be a valid URL.")
-	}
-  
   if(!is.null(app_token)) { # Handles the addition of API token and resolves invalid uses
-    
     if(is.null(parsedUrl$query[["$$app_token"]])) {
       token_inclusion <- "valid_use"
     } else {
-      token_inclusion <- "already_included" 
-    }
-    
+      token_inclusion <- "already_included" }
     switch(token_inclusion,
-      "already_included" = { # Token already included in url argument
+      "already_included"={ # Token already included in url argument
         warning(url, " already contains an API token in url. Ignoring user-defined token.")
       },
-      "valid_use" = { # app_token argument is used, not duplicative.
+      "valid_use"={ # app_token argument is used, not duplicative.
         parsedUrl$query[["app_token"]] <- as.character(paste("%24%24app_token=", app_token, sep=""))
-      }
-    )
-    
+      })
   } 
-  
   if(substr(parsedUrl$path, 1, 9) == 'resource/') {
 		return(httr::build_url(parsedUrl)) # resource url already
 	}
-	
-  fourByFour <- basename(parsedUrl$path)
-  if(!isFourByFour(fourByFour)) {
+	fourByFour <- basename(parsedUrl$path)
+  if(!isFourByFour(fourByFour))
 		stop(fourByFour, " is not a valid Socrata dataset unique identifier.")
-  } else {
+  else {
     parsedUrl$path <- paste('resource/', fourByFour, '.csv', sep="")
     httr::build_url(parsedUrl) 
   }
@@ -104,10 +90,10 @@ validateUrl <- function(url, app_token) {
 #' that is, lower case, periods replaced with underscores#'
 #' @param humanName - a Socrata human-readable column name
 #' @return Socrata field name 
+#' @export
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' @examples
 #' fieldName("Number.of.Stations") # number_of_stations
-#' @export
 fieldName <- function(humanName) {
 	tolower(gsub('\\.', '_', as.character(humanName)))	
 }
@@ -116,21 +102,16 @@ fieldName <- function(humanName) {
 #'
 #' @param x - character vector in one of two Socrata calendar_date formats
 #' @return a POSIX date
-#' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' @export
+#' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 posixify <- function(x) {
 	x <- as.character(x)
-	
-	if (length(x) == 0) {
-	  return(x)
-	}
-	
+	if (length(x)==0) return(x)
 	# Two calendar date formats supplied by Socrata
-	if(any(regexpr("^[[:digit:]]{1,2}/[[:digit:]]{1,2}/[[:digit:]]{4}$", x[1])[1] == 1)) {
+	if(any(regexpr("^[[:digit:]]{1,2}/[[:digit:]]{1,2}/[[:digit:]]{4}$", x[1])[1] == 1))
 	  strptime(x, format="%m/%d/%Y") # short date format
-	} else {
+	else
 	  strptime(x, format="%m/%d/%Y %I:%M:%S %p") # long date-time format 
-	}
 }
 
 #' Wrap httr GET in some diagnostics
@@ -144,7 +125,6 @@ posixify <- function(x) {
 #' @noRd
 getResponse <- function(url) {
 	response <- httr::GET(url)
-	
 	# status <- httr::http_status(response)
 	if(response$status_code != 200) {
 		msg <- paste("Error in httr GET:", response$status_code, response$headers$statusmessage, url)
@@ -154,7 +134,6 @@ getResponse <- function(url) {
 		}
 		logMsg(msg)
 	}
-	
 	httr::stop_for_status(response)
 	return(response)
 }
@@ -170,25 +149,18 @@ getResponse <- function(url) {
 #' @noRd
 getContentAsDataFrame <- function(response) { UseMethod('response') }
 getContentAsDataFrame <- function(response) {
-  
 	mimeType <- response$header$'content-type'
-	
 	# skip optional parameters
 	sep <- regexpr(';', mimeType)[1]
-
-	if(sep != -1) {
-	  mimeType <- substr(mimeType, 0, sep[1] - 1)
-	}
-
+	if(sep != -1) mimeType <- substr(mimeType, 0, sep[1] - 1)
 	switch(mimeType,
 		'text/csv' = 
 				content(response), # automatic parsing
 		'application/json' = 
-				if(content(response, as='text') == "[ ]") { # empty json?
+				if(content(response, as='text') == "[ ]") # empty json?
 					data.frame() # empty data frame
-				}	else {
-					data.frame(t(sapply(content(response), unlist)), stringsAsFactors = FALSE)
-				}
+				else
+					data.frame(t(sapply(content(response), unlist)), stringsAsFactors=FALSE)
 	) # end switch
 }
 
@@ -230,28 +202,22 @@ read.socrata <- function(url, app_token = NULL) {
 	validUrl <- validateUrl(url, app_token) # check url syntax, allow human-readable Socrata url
 	parsedUrl <- httr::parse_url(validUrl)
 	mimeType <- mime::guess_type(parsedUrl$path)
-	
-	if(!(mimeType %in% c('text/csv','application/json'))) {
+	if(!(mimeType %in% c('text/csv','application/json')))
 		stop("Error in read.socrata: ", mimeType, " not a supported data format.")
-	}
-	
 	response <- getResponse(validUrl)
 	page <- getContentAsDataFrame(response)
 	result <- page
 	dataTypes <- getSodaTypes(response)
-	
 	while (nrow(page) > 0) { # more to come maybe?
-		query <- paste(validUrl, if(is.null(parsedUrl$query)) {'?'} else {"&"}, '$offset=', nrow(result), sep = '')
+		query <- paste(validUrl, if(is.null(parsedUrl$query)) {'?'} else {"&"}, '$offset=', nrow(result), sep='')
 		response <- getResponse(query)
 		page <- getContentAsDataFrame(response)
 		result <- rbind(result, page) # accumulate
 	}	
-	
 	# convert Socrata calendar dates to posix format
 	for(columnName in colnames(page)[!is.na(dataTypes[fieldName(colnames(page))]) & dataTypes[fieldName(colnames(page))] == 'calendar_date']) {
 		result[[columnName]] <- posixify(result[[columnName]])
 	}
-	
 	return(result)
 }
 
@@ -268,19 +234,14 @@ read.socrata <- function(url, app_token = NULL) {
 #' @export
 ls.socrata <- function(url) {
     url <- as.character(url)
-    
     parsedUrl <- httr::parse_url(url)
-    
-    if(is.null(parsedUrl$scheme) | is.null(parsedUrl$hostname)) {
+    if(is.null(parsedUrl$scheme) | is.null(parsedUrl$hostname))
         stop(url, " does not appear to be a valid URL.")
-    }
     parsedUrl$path <- "data.json"
-    
     df <- jsonlite::fromJSON(httr::build_url(parsedUrl))
     df <- as.data.frame(df$dataset)
     df$issued <- as.POSIXct(df$issued)
     df$modified <- as.POSIXct(df$modified)
     df$theme <- as.character(df$theme)
-    
     return(df)
 }
