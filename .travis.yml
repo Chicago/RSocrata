@@ -1,15 +1,15 @@
-# Sample .travis.yml for R projects.
-#
-# See README.md for instructions, or for more configuration options,
-# see the wiki:
-#   http://docs.travis-ci.com/user/languages/r/
+language: c
+sudo: required
+dist: trusty
+script: ./travis-tool.sh run_tests
 
-language: R
-warnings_are_errors: true
-
-before_install:
+before_script:
   - sudo apt-get --yes --force-yes update -qq
   - sudo apt-get install -y gdal-bin libgdal-dev libgdal1-dev netcdf-bin libproj-dev libv8-dev
+  - curl -OL http://raw.github.com/craigcitro/r-travis/master/scripts/travis-tool.sh
+  - chmod 755 ./travis-tool.sh
+  - ./travis-tool.sh bootstrap
+  - ./travis-tool.sh install_deps
 
 r_github_packages:
   - hadley/httr
@@ -20,8 +20,25 @@ r_github_packages:
   - yihui/mime
   - ropensci/geojsonio
 
-after_success:
-  - Rscript -e 'library(covr);coveralls()'
+after_failure:
+  - ./travis-tool.sh dump_logs
+
+env:
+   global:
+     - R_LIBS="http://cran.rstudio.com"
+     - R_BUILD_ARGS="--no-build-vignettes --no-manual"
+     - R_CHECK_ARGS="--no-build-vignettes --no-manual --as-cran"
+     - BOOTSTRAP_LATEX=""
+
+#language: R
+#warnings_are_errors: true
+
+#before_install:
+#  - sudo apt-get --yes --force-yes update -qq
+# - sudo apt-get install -y gdal-bin libgdal-dev libgdal1-dev netcdf-bin libproj-dev libv8-dev
+
+#after_success:
+#  - Rscript -e 'library(covr);coveralls()'
 
 notifications:
   email:
