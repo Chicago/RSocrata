@@ -1,3 +1,6 @@
+library(testthat)
+library(RSocrata)
+
 context("Parsimonious URL calls")
 
 test_that("read from Socrata domain", {

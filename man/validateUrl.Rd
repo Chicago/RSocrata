@@ -22,7 +22,7 @@ resolve conflicting API token by deferring to original URL.
 }
 \examples{
 # Returns FALSE
-validateUrl(url = "a.fake.url.being.tested") 
+## validateUrl(url = "a.fake.url.being.tested") 
 # Returns TRUE
 validateUrl(url = "https://soda.demo.socrata.com/resource/4334-bgaj")
 # Returns TRUE

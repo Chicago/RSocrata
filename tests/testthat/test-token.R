@@ -1,3 +1,6 @@
+library(testthat)
+library(RSocrata)
+
 context("Test Socrata with Token")
 
 test_that("CSV with Token", {

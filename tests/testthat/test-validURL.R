@@ -1,3 +1,6 @@
+library(testthat)
+library(RSocrata)
+
 context("Validate URL")
 
 test_that("Invalid URL", {

@@ -1,3 +1,6 @@
+library(testthat)
+library(RSocrata)
+
 context("Checks metadata")
 
 test_that("it returns some number of rows", {

@@ -1,3 +1,6 @@
+library(testthat)
+library(RSocrata)
+
 # http://www.noamross.net/blog/2014/2/10/using-times-and-dates-in-r---presentation-code.html
 
 context("Test posixify function")

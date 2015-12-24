@@ -8,14 +8,12 @@
 #' resolve conflicting API token by deferring to original URL.
 #'
 #' @param url - a string; character vector of length one
-#' 
 #' @return a valid URL used for downloading data
-#' 
 #' @author Tom Schenk Jr \email{tom.schenk@@cityofchicago.org} et al.
 #' 
 #' @examples
 #' # Returns FALSE
-#' validateUrl(url = "a.fake.url.being.tested") 
+#' ## validateUrl(url = "a.fake.url.being.tested") 
 #' # Returns TRUE
 #' validateUrl(url = "https://soda.demo.socrata.com/resource/4334-bgaj")
 #' # Returns TRUE
@@ -31,7 +29,7 @@
 #' # Returns TRUE
 #' validateUrl(url = "http://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj.csv")
 #'
-#' @importFrom httr parse_url build_url
+#' @importFrom httr parse_url build_url content
 #' @importFrom mime guess_type
 #' 
 #' @export
@@ -80,5 +78,3 @@ validateUrl <- function(url = "") {
   } 
   
 }
-
-

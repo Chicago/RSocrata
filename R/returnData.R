@@ -91,7 +91,7 @@ getContentAsDataFrame <- function(response) {
 #' df_2 <- read.socrata(domain = "http://data.cityofchicago.org/", fourByFour = "ydr8-5enu")
 #' df_3 <- read.socrata(url = "http://data.cityofchicago.org/resource/ydr8-5enu.json")
 #' }
-#' @importFrom httr parse_url build_url
+#' @importFrom httr parse_url
 #' @importFrom plyr rbind.fill
 #' 
 #' @export
@@ -140,16 +140,16 @@ read.socrata <- function(url = NULL, app_token = NULL, limit = 50000, domain = N
 #' @param ... - other arguments from \link{geojsonio} package for geojson_read method
 #' @param url - A Socrata resource URL, requiring a .geojson suffix.
 #' 
-#' @importFrom geojsonio geojson_read
-#' @importFrom httr build_url parse_url
-#' @importFrom mime guess_type
-#' 
 #' @return Returns a list, which is the default option here. 
 #'
 #' @examples 
 #' \dontrun{
 #' df_geo <- read.socrataGEO(url = "https://data.cityofchicago.org/resource/6zsd-86xi.geojson")
 #' }
+#' 
+#' @importFrom geojsonio geojson_read
+#' @importFrom httr parse_url
+#' @importFrom mime guess_type
 #' 
 #' @export
 read.socrataGEO <- function(url = "", ...) {

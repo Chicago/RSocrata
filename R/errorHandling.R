@@ -7,7 +7,8 @@
 # See \url{https://github.com/Chicago/RSocrata/issues/16}
 #
 # @param url - SOPA url
-#' @importFrom httr stop_for_status GET add_headers verbose config
+# @param app_token - token for private data
+#' @importFrom httr GET add_headers stop_for_status config
 errorHandling <- function(url = "", app_token = NULL) {
   rsp <- httr::GET(url, httr::add_headers("X-App-Token" = app_token), config(fresh_connect = 1L))
   
@@ -41,5 +42,4 @@ errorHandling <- function(url = "", app_token = NULL) {
   }
   
   return(rsp)
-  
 }

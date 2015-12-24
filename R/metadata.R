@@ -11,7 +11,7 @@
 #' @examples
 #' \dontrun{
 #' gM1 <- getMetadata(url = "http://data.cityofchicago.org/resource/y93d-d9e3.json")
-#' gM3 <- getMetadata(url = "https://data.cityofchicago.org/resource/6zsd-86xi.json")
+#' gM3 <- getMetadata(url = "https://data.cityofchicago.org/resource/6zsd-86xi")
 #' gM2 <- getMetadata(url = "https://data.cityofboston.gov/resource/awu8-dc52")
 #' }
 #' 
@@ -19,21 +19,20 @@
 #'
 #' @importFrom jsonlite fromJSON
 #' @importFrom httr parse_url build_url
-#' @importFrom mime guess_type
 #'
 #' @author John Malc \email{cincenko@@outlook.com} 
 #'  
 #' @export
 getMetadata <- function(url = "") {
   
-  urlParsedBase <- httr::parse_url(url)
- 
   # use function below to get them using =COUNT(*) SODA query
-  gQRC <- getQueryRowCount(urlParsedBase) 
+  gQRC <- getQueryRowCount(url) 
+  
+  urlParsedBase <- httr::parse_url(url)
+  urlParsed <- urlParsedBase
   
   # create URL for metadata data frame
   fourByFour <- substr(basename(urlParsedBase$path), 1, 9)
-  urlParsed <- urlParsedBase
   urlParsed$path <- paste0("api/views/", fourByFour, "/columns.json")
   
   # execute it
@@ -47,7 +46,7 @@ getMetadata <- function(url = "") {
     suppressWarnings(max(df$cachedContents$non_null + df$cachedContents$null))
   } else {
     # as.numeric(ifelse(is.null(gQRC$count), gQRC$COUNT, gQRC$count)) # the reason
-    as.numeric(getQueryRowCount(gQRC))
+    as.numeric(gQRC)
   }
   
   columns <- as.numeric(nrow(df))
@@ -55,16 +54,18 @@ getMetadata <- function(url = "") {
   return(list(rows = rows, cols = columns, df))
 }
 
-# Return (always & only) number of rows as specified in the metadata of the data set
-#
-# @source Taken from \link{https://github.com/Chicago/RSocrata/blob/sprint7/R/getQueryRowCount.R}
-# @author Gene Leynes \email{gleynes@@gmail.com}
-#
-#' @importFrom httr GET build_url content
+#' Return (always & only) number of rows as specified in the metadata of the data set
+#'
+#' @source Taken from \link{https://github.com/Chicago/RSocrata/blob/sprint7/R/getQueryRowCount.R}
+#' @author Gene Leynes \email{gleynes@@gmail.com}
+#' @return number of rows the dataset has
+#' 
+#' @importFrom httr parse_url build_url content
+#' @importFrom mime guess_type
+#' @noRd
 getQueryRowCount <- function(validUrl) {
   
   urlParsed <- httr::parse_url(validUrl)
-  mimeType <- mime::guess_type(urlParsed$path)
   
   ## Construct the count query based on the URL,
   if (is.null(urlParsed[['query']])) {
@@ -87,6 +88,7 @@ getQueryRowCount <- function(validUrl) {
   totalRowsResult <- errorHandling(cntUrl, app_token = NULL)
   
   ## Parsing the result depends on the mime type
+  mimeType <- mime::guess_type(urlParsed$path)
   if (mimeType == "application/json") {
     totalRows <- httr::content(totalRowsResult)[[1]]
   } else {

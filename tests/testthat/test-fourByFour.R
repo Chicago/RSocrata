@@ -1,3 +1,6 @@
+library(testthat)
+library(RSocrata)
+
 context("Checks the validity of 4x4")
 
 test_that("is 4x4", {

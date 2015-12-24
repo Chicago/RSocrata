@@ -1,3 +1,6 @@
+library(testthat)
+library(RSocrata)
+
 context("List datasets available from a Socrata domain")
 
 test_that("More than 0 datasets are available from a Socrata domain to download", {

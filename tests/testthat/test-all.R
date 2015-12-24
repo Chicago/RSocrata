@@ -1,3 +1,6 @@
+library(testthat)
+library(RSocrata)
+
 context("read Socrata")
 
 test_that("read Socrata CSV", {
@@ -17,14 +20,14 @@ test_that("read Socrata No Scheme", {
 })
 
 test_that("read SoQL", {
-  df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.json?$select=region")
+  df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.json", query = "region")
   expect_equal(1007, nrow(df), label="rows")
-  expect_equal(1, ncol(df), label="columns")
+  expect_equal(11, ncol(df), label="columns")
 })
 
 test_that("read SoQL Column Not Found (will fail)", {
   # SoQL API uses field names, not human names
-  expect_error(read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv?$select=Region"))
+  expect_message(expect_error(read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv?$select=Region")))
 })
 
 test_that("URL is private (Unauthorized) (will fail)", {
@@ -34,7 +37,7 @@ test_that("URL is private (Unauthorized) (will fail)", {
 test_that("read human-readable Socrata URL", {
   df <- read.socrata('https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj')
   expect_equal(1007, nrow(df), label="rows")
-  expect_equal(9, ncol(df), label="columns")
+  expect_equal(11, ncol(df), label="columns")
 })
 
 test_that("format is not supported", {

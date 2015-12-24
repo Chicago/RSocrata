@@ -23,7 +23,7 @@ with browser at \code{http://DOMAIN/api/views/FOUR-FOUR/rows.json} or
 \examples{
 \dontrun{
 gM1 <- getMetadata(url = "http://data.cityofchicago.org/resource/y93d-d9e3.json")
-gM3 <- getMetadata(url = "https://data.cityofchicago.org/resource/6zsd-86xi.json")
+gM3 <- getMetadata(url = "https://data.cityofchicago.org/resource/6zsd-86xi")
 gM2 <- getMetadata(url = "https://data.cityofboston.gov/resource/awu8-dc52")
 }
 
