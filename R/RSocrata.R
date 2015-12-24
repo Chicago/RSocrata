@@ -145,8 +145,14 @@ posixify <- function(x) {
 getResponse <- function(url) {
 	response <- httr::GET(url)
 	
+	# status <- httr::http_status(response)
 	if(response$status_code != 200) {
-		stop("Error in httr GET:", response$status_code, " during the request for ", response$url)
+		msg <- paste("Error in httr GET:", response$status_code, response$headers$statusmessage, url)
+		if(!is.null(response$headers$`content-length`) && (response$headers$`content-length` > 0)) {
+			details <- httr::content(response)
+			msg <- paste(msg, details$code[1], details$message[1])	
+		}
+		logMsg(msg)
 	}
 	
 	httr::stop_for_status(response)
@@ -178,7 +184,7 @@ getContentAsDataFrame <- function(response) {
 		'text/csv' = 
 				content(response), # automatic parsing
 		'application/json' = 
-				if(content(response, as ='text') == "[ ]") { # empty json?
+				if(content(response, as='text') == "[ ]") { # empty json?
 					data.frame() # empty data frame
 				}	else {
 					data.frame(t(sapply(content(response), unlist)), stringsAsFactors = FALSE)
