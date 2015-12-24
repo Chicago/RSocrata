@@ -7,9 +7,9 @@
 # See \url{https://github.com/Chicago/RSocrata/issues/16}
 #
 # @param url - SOPA url
-#' @importFrom httr stop_for_status GET add_headers
+#' @importFrom httr stop_for_status GET add_headers verbose config
 errorHandling <- function(url = "", app_token = NULL) {
-  rsp <- httr::GET(url, httr::add_headers("X-App-Token" = app_token))
+  rsp <- httr::GET(url, httr::add_headers("X-App-Token" = app_token), config(fresh_connect = 1L))
   
   if (rsp$status_code == 200) {
     invisible("OK. Your request was successful.")

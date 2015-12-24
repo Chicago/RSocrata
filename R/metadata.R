@@ -27,10 +27,9 @@
 getMetadata <- function(url = "") {
   
   urlParsedBase <- httr::parse_url(url)
-  mimeType <- mime::guess_type(urlParsedBase$path)
-  
+ 
   # use function below to get them using =COUNT(*) SODA query
-  gQRC <- getQueryRowCount(urlParsedBase, mimeType) 
+  gQRC <- getQueryRowCount(urlParsedBase) 
   
   # create URL for metadata data frame
   fourByFour <- substr(basename(urlParsedBase$path), 1, 9)
@@ -48,7 +47,7 @@ getMetadata <- function(url = "") {
     suppressWarnings(max(df$cachedContents$non_null + df$cachedContents$null))
   } else {
     # as.numeric(ifelse(is.null(gQRC$count), gQRC$COUNT, gQRC$count)) # the reason
-    as.numeric(tolower(gQRC$COUNT))
+    as.numeric(getQueryRowCount(gQRC))
   }
   
   columns <- as.numeric(nrow(df))
@@ -62,7 +61,11 @@ getMetadata <- function(url = "") {
 # @author Gene Leynes \email{gleynes@@gmail.com}
 #
 #' @importFrom httr GET build_url content
-getQueryRowCount <- function(urlParsed, mimeType) {
+getQueryRowCount <- function(validUrl) {
+  
+  urlParsed <- httr::parse_url(validUrl)
+  mimeType <- mime::guess_type(urlParsed$path)
+  
   ## Construct the count query based on the URL,
   if (is.null(urlParsed[['query']])) {
     ## If there is no query at all, create a simple count
@@ -93,5 +96,5 @@ getQueryRowCount <- function(urlParsed, mimeType) {
   ## Limit the row count to $limit (if the $limit existed). 
   # totalRows <- min(totalRows, as.numeric(rowLimit))
   
-  return(totalRows)
+  return(totalRows[[1]])
 }

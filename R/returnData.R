@@ -111,7 +111,7 @@ read.socrata <- function(url = NULL, app_token = NULL, limit = 50000, domain = N
   results <- getContentAsDataFrame(response)
   dataTypes <- getSodaTypes(response)
   
-  rowCount <- as.numeric(getMetadata(cleanQuest(validUrl))[1])
+  rowCount <- as.numeric(getQueryRowCount(validUrl))
 
   ## More to come? Loop over pages implicitly
   while (nrow(results) < rowCount) { 

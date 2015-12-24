@@ -56,6 +56,7 @@ test_that("A JSON test with uneven row lengths", {
 test_that("RSocrata hangs when passing along SoDA queries with small number of results ", {
   skip_on_cran()
   skip_on_travis()
+  skip_on_appveyor()
   skip("Test works, but is just to large & long to run it")
   
   df500 <- read.socrata(url = "https://data.cityofchicago.org/resource/xzkq-xp2w.json", limit =500) 
@@ -67,7 +68,6 @@ test_that("RSocrata hangs when passing along SoDA queries with small number of r
   df5 <- read.socrata("https://data.cityofchicago.org/resource/xzkq-xp2w.json", limit =5) 
   df1 <- read.socrata("https://data.cityofchicago.org/resource/xzkq-xp2w.json", limit =1) 
   df <- read.socrata("https://data.cityofchicago.org/resource/xzkq-xp2w.json")
-
 })
 
 
