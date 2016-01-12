@@ -304,7 +304,6 @@ checkUpdateResponse <- function(json_data_to_upload, url, http_verb, email, pass
 #' @author Mark Silverberg \email{mark.silverberg@@socrata.com}
 #' 
 #' @importFrom httr parse_url build_url
-#' @importFrom plyr rbind.fill
 #' 
 #' @export
 write.socrata <- function(dataframe, dataset_json_endpoint, update_mode, email, password, app_token = NULL) {
