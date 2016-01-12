@@ -119,8 +119,8 @@ posixify <- function(x) {
 #' In case of failure, report error details from Socrata
 #' 
 #' @param url - Socrata Open Data Application Program Interface (SODA) query
-#' @param optional email - The email to the Socrata account with read access to the dataset
-#' @param optional password - The password associated with the email to the Socrata account
+#' @param email - Optional. The email to the Socrata account with read access to the dataset.
+#' @param password - Optional. The password associated with the email to the Socrata account
 #' @return httr response object
 #' @importFrom httr http_status GET content stop_for_status
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
@@ -199,8 +199,8 @@ getSodaTypes <- function(response) {
 #' but is assumed to not include a SODA offset parameter
 #' @param app_token - a string; SODA API token used to query the data 
 #' portal \url{http://dev.socrata.com/consumers/getting-started.html}
-#' @param optional email - The email to the Socrata account with read access to the dataset
-#' @param optional password - The password associated with the email to the Socrata account
+#' @param email - Optional. The email to the Socrata account with read access to the dataset
+#' @param password - Optional. The password associated with the email to the Socrata account
 #' @return an R data frame with POSIX dates
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' @examples
