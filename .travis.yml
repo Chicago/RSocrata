@@ -9,10 +9,6 @@ sudo: required
 warnings_are_errors: true
 
 r_packages:
-  - httr
-  - jsonlite
-  - curl
-  - roxygen
   - covr
 
 after_success:
