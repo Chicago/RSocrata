@@ -8,12 +8,12 @@ language: R
 sudo: required
 warnings_are_errors: true
 
-r_github_packages:
-  - hadley/httr
-  - jeroenooms/jsonlite
-  - jeroenooms/curl
-  - klutometis/roxygen
-  - jimhester/covr
+r_packages:
+  - httr
+  - jsonlite
+  - curl
+  - roxygen
+  - covr
 
 after_success:
   - Rscript -e 'library(covr);coveralls()'
