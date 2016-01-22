@@ -1,6 +1,10 @@
 RSocrata
 ========
 
+[![Gitter](https://badges.gitter.im/gitterHQ/gitter.svg)](https://gitter.im/gitterHQ/gitter)
+[![](http://cranlogs.r-pkg.org/badges/RSocrata)](http://cran.rstudio.com/web/packages/RSocrata/index.html)
+[![cran version](http://www.r-pkg.org/badges/version/RSocrata)](http://cran.rstudio.com/web/packages/RSocrata)
+
 **Master** 
 
 [![Linux build - Master](https://img.shields.io/travis/Chicago/RSocrata/master.svg?style=flat-square&label=Linux build)](https://travis-ci.org/Chicago/RSocrata)[![Windows build - Master](https://img.shields.io/appveyor/ci/tomschenkjr/RSocrata/master.svg?style=flat-square&label=Windows build)](https://ci.appveyor.com/project/tomschenkjr/rsocrata/branch/master)[![Coverage - Master](https://img.shields.io/coveralls/Chicago/RSocrata/master.svg?style=flat-square&label=Coverage - Master)](https://coveralls.io/r/Chicago/RSocrata?branch=master)
