@@ -9,7 +9,7 @@ sudo: required
 warnings_are_errors: true
 
 before_script:
-  - Rscript -e 'install.packages("covr")'
+  - Rscript -e 'install.packages("covr", repos="http://mirror.las.iastate.edu/CRAN/")'
 
 after_success:
   - Rscript -e 'library(covr);coveralls()'
