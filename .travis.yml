@@ -8,12 +8,8 @@ language: R
 sudo: required
 warnings_are_errors: true
 
-r_github_packages:
-  - hadley/httr
-  - jeroenooms/jsonlite
-  - jeroenooms/curl
-  - klutometis/roxygen
-  - jimhester/covr
+before_script:
+  - Rscript -e 'install.packages("covr", repos="http://mirror.las.iastate.edu/CRAN/")'
 
 after_success:
   - Rscript -e 'library(covr);coveralls()'

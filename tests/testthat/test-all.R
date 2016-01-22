@@ -4,6 +4,10 @@ library(httr)
 library(jsonlite)
 library(mime)
 
+## Credentials for testing private dataset and update dataset functionality ##
+socrataEmail <- Sys.getenv("SOCRATA_EMAIL", "mark.silverberg+soda.demo@socrata.com")
+socrataPassword <- Sys.getenv("SOCRATA_PASSWORD", "7vFDsGFDUG")
+
 context("posixify function")
 
 test_that("posixify returns Long format", {
@@ -161,7 +165,6 @@ test_that("incorrect API Query", {
   expect_equal(9, ncol(df), label="columns") 
 })
 
-
 test_that("incorrect API Query Human Readable", {
   # The query below is missing a $ before app_token.
   expect_error(read.socrata("https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj?$app_token=ew2rEMuESuzWPqMkyPfOSGJgE"))
@@ -178,7 +181,7 @@ test_that("List datasets available from a Socrata domain", {
   expect_equal(TRUE, nrow(df) > 0)
   # Test comparing columns against data.json specifications:
   # https://project-open-data.cio.gov/v1.1/schema/
-  core_names <- as.character(c("issued", "modified", "keyword", "landingPage", "theme", 
+  core_names <- as.character(c("issued", "modified", "keyword", "@type", "landingPage", "theme", 
                                "title", "accessLevel", "distribution", "description", 
                                "identifier", "publisher", "contactPoint", "license"))
   expect_equal(as.logical(rep(TRUE, length(core_names))), core_names %in% names(df))
@@ -187,10 +190,70 @@ test_that("List datasets available from a Socrata domain", {
 })
 
 
+context("Test reading private Socrata dataset with email and password")
+
+privateResourceToReadCsvUrl <- "https://soda.demo.socrata.com/resource/a9g2-feh2.csv"
+privateResourceToReadJsonUrl <- "https://soda.demo.socrata.com/resource/a9g2-feh2.json"
+
+test_that("read Socrata CSV that requires a login", {
+  # should error when no email and password are sent with the request
+  expect_error(read.socrata(url = privateResourceToReadCsvUrl))
+  # try again, this time with email and password in the request
+  df <- read.socrata(url = privateResourceToReadCsvUrl, email = socrataEmail, password = socrataPassword)
+  # tests
+  expect_equal(2, ncol(df), label="columns")
+  expect_equal(3, nrow(df), label="rows")
+})
+
+test_that("read Socrata JSON that requires a login", {
+  # should error when no email and password are sent with the request
+  expect_error(read.socrata(url = privateResourceToReadJsonUrl))
+  # try again, this time with email and password in the request
+  df <- read.socrata(url = privateResourceToReadJsonUrl, email = socrataEmail, password = socrataPassword)
+  # tests
+  expect_equal(2, ncol(df), label="columns")
+  expect_equal(3, nrow(df), label="rows")
+})
 
 
+context("write Socrata datasets")
+
+test_that("add a row to a dataset", {
+  datasetToAddToUrl <- "https://soda.demo.socrata.com/resource/xh6g-yugi.json"
+
+  # populate df_in with two columns, each with a random number
+  x <- sample(-1000:1000, 1)
+  y <- sample(-1000:1000, 1)
+  df_in <- data.frame(x,y)
+
+  # write to dataset
+  write.socrata(df_in,datasetToAddToUrl,"UPSERT",socrataEmail,socrataPassword)
+
+  # read from dataset and store last (most recent) row for comparisons / tests
+  df_out <- read.socrata(url = datasetToAddToUrl, email = socrataEmail, password = socrataPassword)
+  df_out_last_row <- tail(df_out, n=1)
+
+  expect_equal(df_in$x, as.numeric(df_out_last_row$x), label = "x value")
+  expect_equal(df_in$y, as.numeric(df_out_last_row$y), label = "y value")
+})
 
 
+test_that("fully replace a dataset", {
+  datasetToReplaceUrl <- "https://soda.demo.socrata.com/resource/kc76-ybeq.json"
 
+  # populate df_in with two columns of random numbers
+  x <- sample(-1000:1000, 5)
+  y <- sample(-1000:1000, 5)
+  df_in <- data.frame(x,y)
 
+  # write to dataset
+  write.socrata(df_in,datasetToReplaceUrl,"REPLACE",socrataEmail,socrataPassword)
 
+  # read from dataset for comparisons / tests
+  df_out <- read.socrata(url = datasetToReplaceUrl, email = socrataEmail, password = socrataPassword)
+
+  expect_equal(ncol(df_in), ncol(df_out), label="columns")
+  expect_equal(nrow(df_in), nrow(df_out), label="rows")
+  expect_equal(df_in$x, as.numeric(df_out$x), label = "x values")
+  expect_equal(df_in$y, as.numeric(df_out$y), label = "y values")
+})

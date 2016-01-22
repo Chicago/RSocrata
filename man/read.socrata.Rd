@@ -4,7 +4,7 @@
 \alias{read.socrata}
 \title{Get a full Socrata data set as an R data frame}
 \usage{
-read.socrata(url, app_token = NULL)
+read.socrata(url, app_token = NULL, email = NULL, password = NULL)
 }
 \arguments{
 \item{url}{- A Socrata resource URL,
@@ -16,6 +16,10 @@ but is assumed to not include a SODA offset parameter}
 
 \item{app_token}{- a string; SODA API token used to query the data
 portal \url{http://dev.socrata.com/consumers/getting-started.html}}
+
+\item{email}{- Optional. The email to the Socrata account with read access to the dataset}
+
+\item{password}{- Optional. The password associated with the email to the Socrata account}
 }
 \value{
 an R data frame with POSIX dates
