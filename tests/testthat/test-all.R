@@ -181,7 +181,7 @@ test_that("List datasets available from a Socrata domain", {
   expect_equal(TRUE, nrow(df) > 0)
   # Test comparing columns against data.json specifications:
   # https://project-open-data.cio.gov/v1.1/schema/
-  core_names <- as.character(c("issued", "modified", "keyword", "landingPage", "theme", 
+  core_names <- as.character(c("issued", "modified", "keyword", "@type", "landingPage", "theme", 
                                "title", "accessLevel", "distribution", "description", 
                                "identifier", "publisher", "contactPoint", "license"))
   expect_equal(as.logical(rep(TRUE, length(core_names))), core_names %in% names(df))
