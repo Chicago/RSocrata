@@ -118,8 +118,8 @@ posixify <- function(x) {
 #' 
 #' @param x - a factor of Money fields
 #' @return a number
-#' @export
-#' @author Tom Schenk Jr \email{tom.schenk@cityofchicago.org}
+#' @author Tom Schenk Jr \email{tom.schenk@@cityofchicago.org}
+#' @noRd
 no_deniro <- function(x) {
   x <- sub("\\$", "", x)
   x <- as.numeric(x)
