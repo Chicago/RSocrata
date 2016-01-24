@@ -51,6 +51,17 @@ earthquakesDataFrame <- read.socrata("http://soda.demo.socrata.com/resource/4334
 nrow(earthquakesDataFrame)
 ```
 
+### Example: Download private datasets from portal
+```r
+# Store user email and password
+socrataEmail <- Sys.getenv("SOCRATA_EMAIL", "mark.silverberg+soda.demo@socrata.com")
+socrataPassword <- Sys.getenv("SOCRATA_PASSWORD", "7vFDsGFDUG")
+
+privateResourceToReadCsvUrl <- "https://soda.demo.socrata.com/resource/a9g2-feh2.csv" # dataset
+
+read.socrata(url = privateResourceToReadCsvUrl, email = socrataEmail, password = socrataPassword)
+```
+
 ### Example: List all datasets on portal
 ```r
 allSitesDataFrame <- ls.socrata("https://soda.demo.socrata.com")
@@ -58,8 +69,22 @@ nrow(allSitesDataFrame) # Number of datasets
 allSitesDataFrame$title # Names of each dataset
 ```
 
-### Example: Write data to portal
+### Example: Upload data to portal
+```r
+# Store user email and password
+socrataEmail <- Sys.getenv("SOCRATA_EMAIL", "mark.silverberg+soda.demo@socrata.com")
+socrataPassword <- Sys.getenv("SOCRATA_PASSWORD", "7vFDsGFDUG")
 
+datasetToAddToUrl <- "https://soda.demo.socrata.com/resource/xh6g-yugi.json" # dataset
+ 
+# Generate some data
+x <- sample(-1000:1000, 1)
+y <- sample(-1000:1000, 1)
+df_in <- data.frame(x,y)
+ 
+# Upload to Socrata
+write.socrata(df_in,datasetToAddToUrl,"UPSERT",socrataEmail,socrataPassword)
+```
 
 ### Issues
 

@@ -24,6 +24,21 @@ portal \url{http://dev.socrata.com/consumers/getting-started.html}}
 \description{
 Method for updating Socrata datasets
 }
+\examples{
+# Store user email and password
+socrataEmail <- Sys.getenv("SOCRATA_EMAIL", "mark.silverberg+soda.demo@socrata.com")
+socrataPassword <- Sys.getenv("SOCRATA_PASSWORD", "7vFDsGFDUG")
+
+datasetToAddToUrl <- "https://soda.demo.socrata.com/resource/xh6g-yugi.json" # dataset
+
+# Generate some data
+x <- sample(-1000:1000, 1)
+y <- sample(-1000:1000, 1)
+df_in <- data.frame(x,y)
+
+# Upload to Socrata
+write.socrata(df_in,datasetToAddToUrl,"UPSERT",socrataEmail,socrataPassword)
+}
 \author{
 Mark Silverberg \email{mark.silverberg@socrata.com}
 }
