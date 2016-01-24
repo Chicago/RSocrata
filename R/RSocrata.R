@@ -114,6 +114,17 @@ posixify <- function(x) {
 	  strptime(x, format="%m/%d/%Y %I:%M:%S %p") # long date-time format 
 }
 
+#' Convert Socrata money fields to numeric
+#' 
+#' @param x - a factor of Money fields
+#' @return a number
+#' @author Tom Schenk Jr \email{tom.schenk@@cityofchicago.org}
+#' @noRd
+no_deniro <- function(x) {
+  x <- sub("\\$", "", x)
+  x <- as.numeric(x)
+}
+
 #' Wrap httr GET in some diagnostics
 #' 
 #' In case of failure, report error details from Socrata
@@ -204,7 +215,21 @@ getSodaTypes <- function(response) {
 #' @return an R data frame with POSIX dates
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' @examples
+#' # Human-readable URL:
+#' url <- "https://soda.demo.socrata.com/dataset/USGS-Earthquakes-for-2012-11-01-API/4334-bgaj"
+#' df <- read.socrata(url)
+#' # SoDA URL:
 #' df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv")
+#' # Download private dataset
+#' socrataEmail <- Sys.getenv("SOCRATA_EMAIL", "mark.silverberg+soda.demo@@socrata.com")
+#' socrataPassword <- Sys.getenv("SOCRATA_PASSWORD", "7vFDsGFDUG")
+#' privateResourceToReadCsvUrl <- "https://soda.demo.socrata.com/resource/a9g2-feh2.csv" # dataset
+#' read.socrata(url = privateResourceToReadCsvUrl, email = socrataEmail, password = socrataPassword)
+#' # Using an API key to read datasets (reduces throttling)
+#' token <- "ew2rEMuESuzWPqMkyPfOSGJgE"
+#' df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv", 
+#'                    app_token = token)
+#' nrow(df)
 #' @importFrom httr parse_url build_url
 #' @importFrom mime guess_type
 #' @export
@@ -228,6 +253,9 @@ read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL) {
 	for(columnName in colnames(page)[!is.na(dataTypes[fieldName(colnames(page))]) & dataTypes[fieldName(colnames(page))] == 'calendar_date']) {
 		result[[columnName]] <- posixify(result[[columnName]])
 	}
+  for(columnName in colnames(page)[!is.na(dataTypes[fieldName(colnames(page))]) & dataTypes[fieldName(colnames(page))] == 'money']) {
+    result[[columnName]] <- no_deniro(result[[columnName]])
+  }
 	return(result)
 }
 
@@ -300,11 +328,22 @@ checkUpdateResponse <- function(json_data_to_upload, url, http_verb, email, pass
 #' @param password - The password associated with the email to the Socrata account
 #' @param app_token - a (non-required) string; SODA API token can be used to query the data 
 #' portal \url{http://dev.socrata.com/consumers/getting-started.html}
-#' 
 #' @author Mark Silverberg \email{mark.silverberg@@socrata.com}
-#' 
 #' @importFrom httr parse_url build_url
+#' @examples
+#' # Store user email and password
+#' socrataEmail <- Sys.getenv("SOCRATA_EMAIL", "mark.silverberg+soda.demo@@socrata.com")
+#' socrataPassword <- Sys.getenv("SOCRATA_PASSWORD", "7vFDsGFDUG")
 #' 
+#' datasetToAddToUrl <- "https://soda.demo.socrata.com/resource/xh6g-yugi.json" # dataset
+#' 
+#' # Generate some data
+#' x <- sample(-1000:1000, 1)
+#' y <- sample(-1000:1000, 1)
+#' df_in <- data.frame(x,y)
+#' 
+#' # Upload to Socrata
+#' write.socrata(df_in,datasetToAddToUrl,"UPSERT",socrataEmail,socrataPassword)
 #' @export
 write.socrata <- function(dataframe, dataset_json_endpoint, update_mode, email, password, app_token = NULL) {
   

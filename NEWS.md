@@ -37,8 +37,16 @@ Deprecated ```httr::guess_media()``` and implemented ```mime::guess_type()```
 * Add continuous integration for Windows ([#39](https://github.com/Chicago/RSocrata/issues/39))
 * Migrate Travis-CI to "proper" R YAML ([#46](https://github.com/Chicago/RSocrata/issues/46))
 
+### 1.7.0 Several changes
 
+New features:
+* Users can upload data with `write.socrata()` to upload data to Socrata data portals (using "upsert" and "replace" methods).
+* Download private datasets by using Socrata credentials with `email` and `password` fields in `read.socrata()`.
 
+Bug fixes:
+* Updated unit testing on `ls.socrata()` to check for `@type` field is available.
+* Converts a Socrata money field into a proper numeric field, instead of a factor.
+* Updated build method for Travis to test using the current CRAN packages, not beta packages from GitHub.
 
 
 
