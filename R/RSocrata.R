@@ -114,6 +114,17 @@ posixify <- function(x) {
 	  strptime(x, format="%m/%d/%Y %I:%M:%S %p") # long date-time format 
 }
 
+#' Convert Socrata money fields to numeric
+#' 
+#' @param x - a factor of Money fields
+#' @return a number
+#' @export
+#' @author Tom Schenk Jr \email{tom.schenk@cityofchicago.org}
+no_deniro <- function(x) {
+  x <- sub("\\$", "", x)
+  x <- as.numeric(x)
+}
+
 #' Wrap httr GET in some diagnostics
 #' 
 #' In case of failure, report error details from Socrata
@@ -228,6 +239,9 @@ read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL) {
 	for(columnName in colnames(page)[!is.na(dataTypes[fieldName(colnames(page))]) & dataTypes[fieldName(colnames(page))] == 'calendar_date']) {
 		result[[columnName]] <- posixify(result[[columnName]])
 	}
+  for(columnName in colnames(page)[!is.na(dataTypes[fieldName(colnames(page))]) & dataTypes[fieldName(colnames(page))] == 'money']) {
+    result[[columnName]] <- no_deniro(result[[columnName]])
+  }
 	return(result)
 }
 

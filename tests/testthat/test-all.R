@@ -33,6 +33,15 @@ test_that("posixify returns Short format", {
   expect_equal(0, dt$sec, label="seconds")
 })
 
+context("change money to numeric")
+
+test_that("Fields with currency symbols remove the symbol and convert to money", {
+  deniro <- "$15325.65"
+  deniro <- no_deniro(deniro)
+  expect_equal(15325.65, deniro, label="dollars")
+  expect_equal("numeric", class(deniro), label="output of money fields")
+})
+
 context("read Socrata")
 
 test_that("read Socrata CSV", {
