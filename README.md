@@ -1,7 +1,7 @@
 RSocrata
 ========
 
-[![Gitter](https://badges.gitter.im/gitterHQ/gitter.svg)](https://gitter.im/gitterHQ/gitter)
+[![Gitter](https://badges.gitter.im/gitterHQ/gitter.svg)](https://gitter.im/Chicago/RSocrata)
 [![](http://cranlogs.r-pkg.org/badges/RSocrata)](http://cran.rstudio.com/web/packages/RSocrata/index.html)
 [![cran version](http://www.r-pkg.org/badges/version/RSocrata)](http://cran.rstudio.com/web/packages/RSocrata)
 
