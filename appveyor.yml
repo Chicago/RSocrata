@@ -40,7 +40,7 @@ artifacts:
     
 notifications:
 
-  - provider: Gitter
+  - provider: Webhook
     url: https://webhooks.gitter.im/e/de3afec35a1146836c43
     on_build_success: true
     on_build_failure: true
