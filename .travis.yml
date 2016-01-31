@@ -18,3 +18,9 @@ notifications:
   email:
     on_success: change
     on_failure: change
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/104bab7ef95b3a1bfd4c
+    on_success: always  # options: [always|never|change] default: always
+    on_failure: always  # options: [always|never|change] default: always
+    on_start: never     # options: [always|never|change] default: always
