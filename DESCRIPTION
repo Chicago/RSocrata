@@ -10,8 +10,8 @@ Description: Provides easier interaction with
     format and manages throttling by 'Socrata'.
     Users can upload data to Socrata portals directly
     from R.
-Version: 1.7.0-5
-Date: 2016-01-24
+Version: 1.7.0-10
+Date: 2016-01-30
 Author: Hugh Devlin, Ph. D., Tom Schenk, Jr., and John Malc
 Maintainer: "Tom Schenk Jr." <developers@cityofchicago.org>
 Depends:
@@ -22,7 +22,9 @@ Imports:
     mime (>= 0.3)
 Suggests:
     testthat (>= 0.10.0),
-    roxygen2 (>= 4.1.0)
+    roxygen2 (>= 4.1.0),
+    readr (>= 0.2.2)
 License: MIT + file LICENSE
 URL: https://github.com/Chicago/RSocrata
 BugReports: https://github.com/Chicago/RSocrata/issues
+RoxygenNote: 5.0.1

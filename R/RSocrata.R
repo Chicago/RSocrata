@@ -174,7 +174,7 @@ getContentAsDataFrame <- function(response) {
 	if(sep != -1) mimeType <- substr(mimeType, 0, sep[1] - 1)
 	switch(mimeType,
 		'text/csv' = 
-				content(response), # automatic parsing
+				read.csv( textConnection(content(response, as="text", type="text/csv", encoding="utf-8")) ), # automatic parsing
 		'application/json' = 
 				if(content(response, as='text') == "[ ]") # empty json?
 					data.frame() # empty data frame
