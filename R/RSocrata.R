@@ -163,6 +163,7 @@ getResponse <- function(url, email = NULL, password = NULL) {
 #'
 #' @author Hugh J. Devlin \email{Hugh.Devlin@@cityofchicago.org}
 #' @importFrom httr content
+#' @importFrom utils read.csv
 #' @param response - an httr response object
 #' @return data frame, possibly empty
 #' @noRd
