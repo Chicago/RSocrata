@@ -1,8 +1,7 @@
 environment:
   WARNINGS_ARE_ERRORS: 1
 
-version: {build}
-
+version: '{build}'
 
 init:
   ps: |
