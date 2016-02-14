@@ -81,6 +81,14 @@ test_that("readSocrataHumanReadable", {
   expect_equal(9, ncol(df), label="columns")
 })
 
+test_that("Read data with missing dates", { # See issue #24 & #27 
+  # Query below will pull Boston's 311 requests from early July 2011. Contains NA dates.
+  df <- read.socrata("https://data.cityofboston.gov/resource/awu8-dc52.csv?$where=case_enquiry_id< 101000295717")
+  expect_equal(99, nrow(df), label="rows")
+  na_time_rows <- df[is.na(df$TARGET_DT), ]
+  expect_equal(33, length(na_time_rows), label="rows with missing TARGET_DT dates")
+})
+
 test_that("format is not supported", {
   # Unsupported data formats
   expect_error(read.socrata('http://soda.demo.socrata.com/resource/4334-bgaj.xml'))
