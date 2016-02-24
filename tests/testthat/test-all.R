@@ -120,6 +120,30 @@ test_that("Calendar Date Short", {
   expect_equal(0, dt$sec, label="seconds")
 })
 
+test_that("Date is not entirely NA if the first record is bad (issue 68)", {
+  
+  ## Define and test issue 68
+  # df <- read.socrata('http://data.cityofchicago.org/resource/me59-5fac.csv')
+  # expect_false(object = all(is.na(df$Creation.Date)),
+  #              "Testing issue 68 https://github.com/Chicago/RSocrata/issues/68")
+  
+  df <- read.socrata("https://data.cityofchicago.org/resource/4h87-zdcp.csv")
+  expect_false(object = all(is.na(df$DATE.RECEIVED)),
+               "Testing issue 68 https://github.com/Chicago/RSocrata/issues/68")
+  
+  
+  ## Define smaller tests
+  dates_clean <- posixify(c("01/01/2011", "01/01/2011", "01/01/2011"))
+  dates_mixed <- posixify(c("Date", "01/01/2011", "01/01/2011"))
+  dates_dirty <- posixify(c("Date", "junk", "junk"))
+  
+  ## Execute smaller tests
+  expect_true(all(!is.na(dates_clean)))  ## Nothing should be NA
+  expect_true(any(is.na(dates_mixed)))   ## Some should be NA
+  expect_true(any(!is.na(dates_mixed)))  ## Some should not be NA
+  expect_true(all(is.na(dates_dirty)))   ## Everything should be NA
+})
+
 context("Checks the validity of 4x4")
 
 test_that("is 4x4", {

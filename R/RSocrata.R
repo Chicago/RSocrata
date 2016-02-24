@@ -107,11 +107,22 @@ fieldName <- function(humanName) {
 posixify <- function(x) {
 	x <- as.character(x)
 	if (length(x)==0) return(x)
-	# Two calendar date formats supplied by Socrata
-	if(any(regexpr("^[[:digit:]]{1,2}/[[:digit:]]{1,2}/[[:digit:]]{4}$", x[1])[1] == 1))
-	  strptime(x, format="%m/%d/%Y") # short date format
-	else
-	  strptime(x, format="%m/%d/%Y %I:%M:%S %p") # long date-time format 
+	
+	## Define regex patterns for short and long date formats, which are the two 
+	## formats that are supplied by Socrata. 
+	patternShort <- paste0("^[[:digit:]]{1,2}/[[:digit:]]{1,2}/[[:digit:]]{4}$")
+	patternLong <- paste0("^[[:digit:]]{1,2}/[[:digit:]]{1,2}/[[:digit:]]{4}",
+	                      "[[:digit:]]{1,2}:[[:digit:]]{1,2}:[[:digit:]]{1,2}",
+	                      "AM|PM", "$")
+	## Find number of matches with grep
+	nMatchesShort <- grep(pattern = patternShort, x)
+	nMatchesLong <- grep(pattern = patternLong, x)
+	## Parse as the most likely calendar date format. Ties go to short format.
+	if(length(nMatchesLong) > length(nMatchesShort)){
+	  as.POSIXct(strptime(x, format="%m/%d/%Y %I:%M:%S %p")) # long date-time format
+	}	else {
+	  as.POSIXct(strptime(x, format="%m/%d/%Y")) # short date format
+	}
 }
 
 #' Convert Socrata money fields to numeric
