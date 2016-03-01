@@ -85,15 +85,15 @@ test_that("Fields with currency symbols remove the symbol and convert to money",
 
 context("read Socrata")
 
-test_that("read Socrata CSV as default / with factors", {
+test_that("read Socrata CSV as default", {
   df <- read.socrata('https://soda.demo.socrata.com/resource/4334-bgaj.csv')
   expect_equal("data.frame", class(df), label="class")
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(9, ncol(df), label="columns")
-  expect_equal(c("factor", "factor", "factor", "POSIXct", "numeric", "numeric", 
-                 "integer", "factor", "factor"), 
+  expect_equal(c("character", "character", "character", "POSIXct", "numeric", 
+                 "numeric", "integer", "character", "character"), 
                unname(sapply(sapply(df, class),`[`, 1)), 
-               label="testing column CSV classes (as factor)")
+               label="testing column CSV classes with defaults")
 })
 
 test_that("read Socrata CSV as character", {
@@ -104,20 +104,30 @@ test_that("read Socrata CSV as character", {
   expect_equal(9, ncol(df), label="columns")
   expect_equal(c("character", "character", "character", "POSIXct", "numeric", 
                  "numeric", "integer", "character", "character"), 
-               unname(sapply(sapply(df, class),`[`, 1)), 
-               label="testing CSV column classes (as character)")
+               unname(sapply(sapply(df, class),`[`, 1)))
+})
+
+test_that("read Socrata CSV as factor", {
+  df <- read.socrata('https://soda.demo.socrata.com/resource/4334-bgaj.csv',
+                     stringsAsFactors = TRUE)
+  expect_equal("data.frame", class(df), label="class")
+  expect_equal(1007, nrow(df), label="rows")
+  expect_equal(9, ncol(df), label="columns")
+  expect_equal(c("factor", "factor", "factor", "POSIXct", "numeric", "numeric", 
+                 "integer", "factor", "factor"), 
+               unname(sapply(sapply(df, class),`[`, 1)))
 })
 
 
-test_that("read Socrata JSON as default / factors", {
+test_that("read Socrata JSON as default", {
   df <- read.socrata('https://soda.demo.socrata.com/resource/4334-bgaj.json')
   expect_equal("data.frame", class(df), label="class")
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(11, ncol(df), label="columns")
-  expect_equal(c("factor", "factor", "factor", "factor", "factor", "factor", 
-                 "factor", "factor", "factor", "factor", "factor"), 
-               unname(sapply(sapply(df, class),`[`, 1)), 
-               label="testing JSON column classes (as factor)")
+  expect_equal(c("character", "character", "character", "character", "character", 
+                 "character", "character", "character", "character", "character", 
+                 "character"), 
+               unname(sapply(sapply(df, class),`[`, 1)))
 })
 
 test_that("read Socrata JSON as character", {
@@ -129,10 +139,19 @@ test_that("read Socrata JSON as character", {
   expect_equal(c("character", "character", "character", "character", "character", 
                  "character", "character", "character", "character", "character", 
                  "character"), 
-               unname(sapply(sapply(df, class),`[`, 1)), 
-               label="testing JSON column classes (as character)")
+               unname(sapply(sapply(df, class),`[`, 1)))
 })
 
+test_that("read Socrata JSON as factor", {
+  df <- read.socrata('https://soda.demo.socrata.com/resource/4334-bgaj.json',
+                     stringsAsFactors = TRUE)
+  expect_equal("data.frame", class(df), label="class")
+  expect_equal(1007, nrow(df), label="rows")
+  expect_equal(11, ncol(df), label="columns")
+  expect_equal(c("factor", "factor", "factor", "factor", "factor", "factor", 
+                 "factor", "factor", "factor", "factor", "factor"), 
+               unname(sapply(sapply(df, class),`[`, 1)))
+})
 
 
 test_that("read Socrata No Scheme", {

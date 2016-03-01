@@ -253,7 +253,7 @@ getSodaTypes <- function(response) {
 #' @importFrom mime guess_type
 #' @export
 read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL,
-                         stringsAsFactors = default.stringsAsFactors()) {
+                         stringsAsFactors = FALSE) {
 	validUrl <- validateUrl(url, app_token) # check url syntax, allow human-readable Socrata url
 	parsedUrl <- httr::parse_url(validUrl)
 	mimeType <- mime::guess_type(parsedUrl$path)
