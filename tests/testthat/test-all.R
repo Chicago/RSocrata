@@ -11,26 +11,67 @@ socrataPassword <- Sys.getenv("SOCRATA_PASSWORD", "7vFDsGFDUG")
 context("posixify function")
 
 test_that("posixify returns Long format", {
+  df <- read.socrata('http://soda.demo.socrata.com/resource/4334-bgaj.csv')
   dt <- posixify("09/14/2012 10:38:01 PM")
-  expect_equal("POSIXlt", class(dt)[1], label="first data type of a date")
-  expect_equal(2012, dt$year + 1900, label="year")
-  expect_equal(9, dt$mon + 1, label="month")
-  expect_equal(14, dt$mday, label="day")
-  expect_equal(22, dt$hour, label="hours")
-  expect_equal(38, dt$min, label="minutes")
-  expect_equal(1, dt$sec, label="seconds")
+  expect_equal(dt, df$Datetime[1])  ## Check that download matches test
+  
+  expect_equal("POSIXct", class(dt)[1], label="Long format date data type")
+  expect_equal("2012", format(dt, "%Y"), label="year")
+  expect_equal("09", format(dt, "%m"), label="month")
+  expect_equal("14", format(dt, "%d"), label="day")
+  expect_equal("22", format(dt, "%H"), label="hours")
+  expect_equal("38", format(dt, "%M"), label="minutes")
+  expect_equal("01", format(dt, "%S"), label="seconds")
 })
 
 
 test_that("posixify returns Short format", {
   dt <- posixify("09/14/2012")
-  expect_equal("POSIXlt", class(dt)[1], label="first data type of a date")
-  expect_equal(2012, dt$year + 1900, label="year")
-  expect_equal(9, dt$mon + 1, label="month")
-  expect_equal(14, dt$mday, label="day")
-  expect_equal(0, dt$hour, label="hours")
-  expect_equal(0, dt$min, label="minutes")
-  expect_equal(0, dt$sec, label="seconds")
+  expect_equal("POSIXct", class(dt)[1], label="Short format date data type")
+  expect_equal("2012", format(dt, "%Y"), label="year")
+  expect_equal("09", format(dt, "%m"), label="month")
+  expect_equal("14", format(dt, "%d"), label="day")
+  expect_equal("00", format(dt, "%H"), label="hours")
+  expect_equal("00", format(dt, "%M"), label="minutes")
+  expect_equal("00", format(dt, "%S"), label="seconds")
+})
+
+context("Socrata Calendar")
+
+test_that("Calendar Date Short", {
+  df <- read.socrata('http://data.cityofchicago.org/resource/y93d-d9e3.csv?$order=debarment_date')
+  dt <- df$DEBARMENT.DATE[1] # "05/21/1981"
+  expect_equal("POSIXct", class(dt)[1], label="data type of a date")
+  expect_equal("81", format(dt, "%y"), label="year")
+  expect_equal("05", format(dt, "%m"), label="month")
+  expect_equal("21", format(dt, "%d"), label="day")
+  expect_equal("00", format(dt, "%H"), label="hours")
+  expect_equal("00", format(dt, "%M"), label="minutes")
+  expect_equal("00", format(dt, "%S"), label="seconds")
+})
+
+test_that("Date is not entirely NA if the first record is bad (issue 68)", {
+  
+  ## Define and test issue 68
+  # df <- read.socrata('http://data.cityofchicago.org/resource/me59-5fac.csv')
+  # expect_false(object = all(is.na(df$Creation.Date)),
+  #              "Testing issue 68 https://github.com/Chicago/RSocrata/issues/68")
+  
+  df <- read.socrata("https://data.cityofchicago.org/resource/4h87-zdcp.csv")
+  expect_false(object = all(is.na(df$DATE.RECEIVED)),
+               "Testing issue 68 https://github.com/Chicago/RSocrata/issues/68")
+  
+  
+  ## Define smaller tests
+  dates_clean <- posixify(c("01/01/2011", "01/01/2011", "01/01/2011"))
+  dates_mixed <- posixify(c("Date", "01/01/2011", "01/01/2011"))
+  dates_dirty <- posixify(c("Date", "junk", "junk"))
+  
+  ## Execute smaller tests
+  expect_true(all(!is.na(dates_clean)))  ## Nothing should be NA
+  expect_true(any(is.na(dates_mixed)))   ## Some should be NA
+  expect_true(any(!is.na(dates_mixed)))  ## Some should not be NA
+  expect_true(all(is.na(dates_dirty)))   ## Everything should be NA
 })
 
 context("change money to numeric")
@@ -44,17 +85,74 @@ test_that("Fields with currency symbols remove the symbol and convert to money",
 
 context("read Socrata")
 
-test_that("read Socrata CSV", {
+test_that("read Socrata CSV as default", {
   df <- read.socrata('https://soda.demo.socrata.com/resource/4334-bgaj.csv')
+  expect_equal("data.frame", class(df), label="class")
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(9, ncol(df), label="columns")
+  expect_equal(c("character", "character", "character", "POSIXct", "numeric", 
+                 "numeric", "integer", "character", "character"), 
+               unname(sapply(sapply(df, class),`[`, 1)), 
+               label="testing column CSV classes with defaults")
 })
 
-test_that("read Socrata JSON", {
+test_that("read Socrata CSV as character", {
+  df <- read.socrata('https://soda.demo.socrata.com/resource/4334-bgaj.csv',
+                     stringsAsFactors = FALSE)
+  expect_equal("data.frame", class(df), label="class")
+  expect_equal(1007, nrow(df), label="rows")
+  expect_equal(9, ncol(df), label="columns")
+  expect_equal(c("character", "character", "character", "POSIXct", "numeric", 
+                 "numeric", "integer", "character", "character"), 
+               unname(sapply(sapply(df, class),`[`, 1)))
+})
+
+test_that("read Socrata CSV as factor", {
+  df <- read.socrata('https://soda.demo.socrata.com/resource/4334-bgaj.csv',
+                     stringsAsFactors = TRUE)
+  expect_equal("data.frame", class(df), label="class")
+  expect_equal(1007, nrow(df), label="rows")
+  expect_equal(9, ncol(df), label="columns")
+  expect_equal(c("factor", "factor", "factor", "POSIXct", "numeric", "numeric", 
+                 "integer", "factor", "factor"), 
+               unname(sapply(sapply(df, class),`[`, 1)))
+})
+
+
+test_that("read Socrata JSON as default", {
   df <- read.socrata('https://soda.demo.socrata.com/resource/4334-bgaj.json')
+  expect_equal("data.frame", class(df), label="class")
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(11, ncol(df), label="columns")
+  expect_equal(c("character", "character", "character", "character", "character", 
+                 "character", "character", "character", "character", "character", 
+                 "character"), 
+               unname(sapply(sapply(df, class),`[`, 1)))
 })
+
+test_that("read Socrata JSON as character", {
+  df <- read.socrata('https://soda.demo.socrata.com/resource/4334-bgaj.json',
+                     stringsAsFactors = FALSE)
+  expect_equal("data.frame", class(df), label="class")
+  expect_equal(1007, nrow(df), label="rows")
+  expect_equal(11, ncol(df), label="columns")
+  expect_equal(c("character", "character", "character", "character", "character", 
+                 "character", "character", "character", "character", "character", 
+                 "character"), 
+               unname(sapply(sapply(df, class),`[`, 1)))
+})
+
+test_that("read Socrata JSON as factor", {
+  df <- read.socrata('https://soda.demo.socrata.com/resource/4334-bgaj.json',
+                     stringsAsFactors = TRUE)
+  expect_equal("data.frame", class(df), label="class")
+  expect_equal(1007, nrow(df), label="rows")
+  expect_equal(11, ncol(df), label="columns")
+  expect_equal(c("factor", "factor", "factor", "factor", "factor", "factor", 
+                 "factor", "factor", "factor", "factor", "factor"), 
+               unname(sapply(sapply(df, class),`[`, 1)))
+})
+
 
 test_that("read Socrata No Scheme", {
   expect_error(read.socrata('soda.demo.socrata.com/resource/4334-bgaj.csv'))
@@ -81,36 +179,19 @@ test_that("readSocrataHumanReadable", {
   expect_equal(9, ncol(df), label="columns")
 })
 
+test_that("Read data with missing dates", { # See issue #24 & #27 
+  # Query below will pull Boston's 311 requests from early July 2011. Contains NA dates.
+  df <- read.socrata("https://data.cityofboston.gov/resource/awu8-dc52.csv?$where=case_enquiry_id< 101000295717")
+  expect_equal(99, nrow(df), label="rows")
+  na_time_rows <- df[is.na(df$TARGET_DT), ]
+  expect_equal(33, length(na_time_rows), label="rows with missing TARGET_DT dates")
+})
+
 test_that("format is not supported", {
   # Unsupported data formats
   expect_error(read.socrata('http://soda.demo.socrata.com/resource/4334-bgaj.xml'))
 })
 
-context("Socrata Calendar")
-
-test_that("Calendar Date Long", {
-  df <- read.socrata('http://soda.demo.socrata.com/resource/4334-bgaj.csv')
-  dt <- df$Datetime[1] # "2012-09-14 22:38:01"
-  expect_equal("POSIXlt", class(dt)[1], label="data type of a date")
-  expect_equal(2012, dt$year + 1900, label="year")
-  expect_equal(9, dt$mon + 1, label="month")
-  expect_equal(14, dt$mday, label="day")
-  expect_equal(22, dt$hour, label="hours")
-  expect_equal(38, dt$min, label="minutes")
-  expect_equal(1, dt$sec, label="seconds")
-})
-
-test_that("Calendar Date Short", {
-  df <- read.socrata('http://data.cityofchicago.org/resource/y93d-d9e3.csv?$order=debarment_date')
-  dt <- df$DEBARMENT.DATE[1] # "05/21/1981"
-  expect_equal("POSIXlt", class(dt)[1], label="data type of a date")
-  expect_equal(81, dt$year, label="year")
-  expect_equal(5, dt$mon + 1, label="month")
-  expect_equal(21, dt$mday, label="day")
-  expect_equal(0, dt$hour, label="hours")
-  expect_equal(0, dt$min, label="minutes")
-  expect_equal(0, dt$sec, label="seconds")
-})
 
 context("Checks the validity of 4x4")
 

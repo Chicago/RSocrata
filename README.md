@@ -2,7 +2,8 @@ RSocrata
 ========
 
 [![Gitter](https://badges.gitter.im/gitterHQ/gitter.svg)](https://gitter.im/Chicago/RSocrata)
-[![](http://cranlogs.r-pkg.org/badges/RSocrata)](http://cran.rstudio.com/web/packages/RSocrata/index.html)
+[![Stories in Ready](https://badge.waffle.io/Chicago/RSocrata.svg?label=ready&title=Ready)](http://waffle.io/Chicago/RSocrata)
+[![downloads](http://cranlogs.r-pkg.org/badges/RSocrata)](http://cran.rstudio.com/web/packages/RSocrata/index.html)
 [![cran version](http://www.r-pkg.org/badges/version/RSocrata)](http://cran.rstudio.com/web/packages/RSocrata)
 
 **Master** 

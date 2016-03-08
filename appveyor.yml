@@ -1,6 +1,8 @@
 environment:
   WARNINGS_ARE_ERRORS: 1
 
+version: '{build}'
+
 init:
   ps: |
         $ErrorActionPreference = "Stop"
@@ -42,6 +44,6 @@ notifications:
 
   - provider: Webhook
     url: https://webhooks.gitter.im/e/de3afec35a1146836c43
-    on_build_success: true
+    on_build_success: false
     on_build_failure: true
     on_build_status_changed: true
