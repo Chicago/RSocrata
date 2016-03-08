@@ -180,19 +180,25 @@ getResponse <- function(url, email = NULL, password = NULL) {
 #' @noRd
 getContentAsDataFrame <- function(response) { UseMethod('response') }
 getContentAsDataFrame <- function(response) {
-	mimeType <- response$header$'content-type'
-	# skip optional parameters
-	sep <- regexpr(';', mimeType)[1]
-	if(sep != -1) mimeType <- substr(mimeType, 0, sep[1] - 1)
-	switch(mimeType,
-		'text/csv' = 
-				read.csv( textConnection(content(response, as="text", type="text/csv", encoding="utf-8")) ), # automatic parsing
-		'application/json' = 
-				if(content(response, as='text') == "[ ]") # empty json?
-					data.frame() # empty data frame
-				else
-					data.frame(t(sapply(content(response), unlist)), stringsAsFactors=FALSE)
-	) # end switch
+  mimeType <- response$header$'content-type'
+  # skip optional parameters
+  sep <- regexpr(';', mimeType)[1]
+  if(sep != -1) mimeType <- substr(mimeType, 0, sep[1] - 1)
+  switch(mimeType,
+         'text/csv' = 
+           read.csv(textConnection(httr::content(response, 
+                                                 as = "text", 
+                                                 type = "text/csv", 
+                                                 encoding = "utf-8")), 
+                    stringsAsFactors = FALSE), # automatic parsing
+         'application/json' = 
+           if(httr::content(response, 
+                            as = 'text') == "[ ]") # empty json?
+             data.frame() # empty data frame
+         else
+           data.frame(t(sapply(httr::content(response), unlist)), 
+                      stringsAsFactors=FALSE)
+  ) # end switch
 }
 
 #' Get the SoDA 2 data types
@@ -224,6 +230,7 @@ getSodaTypes <- function(response) {
 #' portal \url{http://dev.socrata.com/consumers/getting-started.html}
 #' @param email - Optional. The email to the Socrata account with read access to the dataset
 #' @param password - Optional. The password associated with the email to the Socrata account
+#' @param stringsAsFactors - Optional. Should character columns be converted to factor (TRUE or FALSE)?
 #' @return an R data frame with POSIX dates
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' @examples
@@ -245,7 +252,8 @@ getSodaTypes <- function(response) {
 #' @importFrom httr parse_url build_url
 #' @importFrom mime guess_type
 #' @export
-read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL) {
+read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL,
+                         stringsAsFactors = FALSE) {
 	validUrl <- validateUrl(url, app_token) # check url syntax, allow human-readable Socrata url
 	parsedUrl <- httr::parse_url(validUrl)
 	mimeType <- mime::guess_type(parsedUrl$path)
@@ -268,6 +276,9 @@ read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL) {
   for(columnName in colnames(page)[!is.na(dataTypes[fieldName(colnames(page))]) & dataTypes[fieldName(colnames(page))] == 'money']) {
     result[[columnName]] <- no_deniro(result[[columnName]])
   }
+  if(stringsAsFactors){
+	  result <- data.frame(unclass(result), stringsAsFactors = stringsAsFactors)
+	}
 	return(result)
 }
 
