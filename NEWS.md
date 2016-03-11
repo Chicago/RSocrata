@@ -48,6 +48,10 @@ Bug fixes:
 * Converts a Socrata money field into a proper numeric field, instead of a factor.
 * Updated build method for Travis to test using the current CRAN packages, not beta packages from GitHub.
 
+### 1.7.1 Bug fixes:
 
-
-
+* Users provided an option to handle string-like fields as characters (chr) or factors. Default is to handle string-like fields as character vectors ([#27](https://github.com/Chicago/RSocrata/issues/27))
+* Fixes bug where dates are incorrectly read when first date is a blank ([#68](https://github.com/Chicago/RSocrata/issues/68))
+* Dates are now handled using `POSIXct` instead of `POSIXlt` ([#8](https://github.com/Chicago/RSocrata/issues/8))
+* Added additional unit testing ([#28](https://github.com/Chicago/RSocrata/issues/68))
+* Artifacts from Appveyor CI can now be directly submitted to CRAN ([#77](https://github.com/Chicago/RSocrata/issues/77))
