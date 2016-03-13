@@ -3,6 +3,7 @@
 # See README.md for instructions, or for more configuration options,
 # see the wiki:
 #   http://docs.travis-ci.com/user/languages/r/
+sudo: false
 
 language: r
 cache: packages
