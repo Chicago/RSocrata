@@ -14,6 +14,9 @@ r:
 
 warnings_are_errors: true
 
+r_github_packages:
+  - hadley/httr
+
 before_script:
   - Rscript -e 'install.packages("covr", repos="http://mirror.las.iastate.edu/CRAN/")'
 

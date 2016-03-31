@@ -174,7 +174,6 @@ getResponse <- function(url, email = NULL, password = NULL) {
 #'
 #' @author Hugh J. Devlin \email{Hugh.Devlin@@cityofchicago.org}
 #' @importFrom httr content
-#' @importFrom utils read.csv
 #' @param response - an httr response object
 #' @return data frame, possibly empty
 #' @noRd
@@ -186,11 +185,7 @@ getContentAsDataFrame <- function(response) {
   if(sep != -1) mimeType <- substr(mimeType, 0, sep[1] - 1)
   switch(mimeType,
          'text/csv' = 
-           read.csv(textConnection(httr::content(response, 
-                                                 as = "text", 
-                                                 type = "text/csv", 
-                                                 encoding = "utf-8")), 
-                    stringsAsFactors = FALSE), # automatic parsing
+           content(response),
          'application/json' = 
            if(httr::content(response, 
                             as = 'text') == "[ ]") # empty json?
