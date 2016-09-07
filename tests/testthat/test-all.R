@@ -374,7 +374,6 @@ test_that("getContentAsDataFrame does not get caught in infinite loop", {
               "cleared_time,census_tract_2010_geoid",
               "&$where=incident_date=%272016-08-27%27%20and%20",
               "census_tract_2010_geoid%20is%20not%20null")
-  library(RSocrata)
   df <- read.socrata(u)
   expect_equal("data.frame", class(df), label="class")
 })
