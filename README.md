@@ -31,6 +31,22 @@ Use ```ls.socrata()``` to list all datasets available on a Socrata webserver.
 
 [testthat](http://cran.r-project.org/package=testthat) test coverage.
 
+Installation
+-------------
+
+To get the current released version from CRAN:
+
+```R
+install.packages("RSocrata")
+```
+
+To get the current development version from github:
+
+```R
+# install.packages("devtools")
+devtools::install_github("Chicago/RSocrata")
+```
+
 ### Example: Reading SoDA valid URLs
 ```r
 earthquakesDataFrame <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv")
