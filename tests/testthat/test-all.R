@@ -356,3 +356,25 @@ test_that("fully replace a dataset", {
   expect_equal(df_in$x, as.numeric(df_out$x), label = "x values")
   expect_equal(df_in$y, as.numeric(df_out$y), label = "y values")
 })
+
+
+context("getContentAsDataFrame")
+
+test_that("getContentAsDataFrame does not get caught in infinite loop", {
+  
+  ## This is the original url suggested, but it causes the rbind issue
+  # u <- paste0("https://data.smgov.net/resource/xx64-wi4x.json?$",
+  #             "select=incident_number,incident_date,call_type,received_time,",
+  #             "cleared_time,census_tract_2010_geoid",
+  #             "&$where=incident_date=%272016-08-21%27")
+  
+  ## This request has been modified to avoid the rbind issue
+  u <- paste0("https://data.smgov.net/resource/xx64-wi4x.json?$",
+              "select=incident_number,incident_date,call_type,received_time,",
+              "cleared_time,census_tract_2010_geoid",
+              "&$where=incident_date=%272016-08-27%27%20and%20",
+              "census_tract_2010_geoid%20is%20not%20null")
+  df <- read.socrata(u)
+  expect_equal("data.frame", class(df), label="class")
+})
+

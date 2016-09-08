@@ -3,9 +3,15 @@
 # See README.md for instructions, or for more configuration options,
 # see the wiki:
 #   http://docs.travis-ci.com/user/languages/r/
+sudo: false
 
-language: R
-sudo: required
+language: r
+cache: packages
+r:
+  - oldrel
+  - release
+  - devel
+
 warnings_are_errors: true
 
 before_script:
