@@ -192,8 +192,7 @@ getContentAsDataFrame <- function(response) {
                                                  encoding = "utf-8")), 
                     stringsAsFactors = FALSE), # automatic parsing
          'application/json' = 
-           if(httr::content(response, 
-                            as = 'text') == "[ ]") # empty json?
+           if(length(httr::content(response)) == 0) # empty json?
              data.frame() # empty data frame
          else
            data.frame(t(sapply(httr::content(response), unlist)), 

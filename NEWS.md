@@ -55,3 +55,5 @@ Bug fixes:
 * Dates are now handled using `POSIXct` instead of `POSIXlt` ([#8](https://github.com/Chicago/RSocrata/issues/8))
 * Added additional unit testing ([#28](https://github.com/Chicago/RSocrata/issues/68))
 * Artifacts from Appveyor CI can now be directly submitted to CRAN ([#77](https://github.com/Chicago/RSocrata/issues/77))
+* Fixed issue where JSON may occasionally come back with a final NULL that is not "[]" (in this example it was "[]\n").  This caused `getDataFrame` to get stuckin an infinite loop while waiting for "[]".  Thank you @kevinsmgov for documenting this bug in issue ([#96](https://github.com/Chicago/RSocrata/issues/96))
+
