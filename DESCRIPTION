@@ -19,7 +19,8 @@ Depends:
 Imports:
     httr (>= 1.0.0),
     jsonlite (>= 0.9.16),
-    mime (>= 0.3)
+    mime (>= 0.3),
+    plyr (>= 1.8.4)
 Suggests:
     testthat (>= 0.10.0),
     roxygen2 (>= 4.1.0),

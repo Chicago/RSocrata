@@ -175,6 +175,7 @@ getResponse <- function(url, email = NULL, password = NULL) {
 #'
 #' @author Hugh J. Devlin \email{Hugh.Devlin@@cityofchicago.org}
 #' @importFrom httr content
+#' @importFrom jsonlite fromJSON
 #' @importFrom utils read.csv
 #' @param response - an httr response object
 #' @return data frame, possibly empty
@@ -254,6 +255,7 @@ getSodaTypes <- function(response) {
 #' nrow(df)
 #' @importFrom httr parse_url build_url
 #' @importFrom mime guess_type
+#' @importFrom plyr rbind.fill
 #' @export
 read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL,
                          stringsAsFactors = FALSE) {
