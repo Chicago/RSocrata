@@ -6,6 +6,7 @@
 # library('httr')       # for access to the HTTP header
 # library('jsonlite')   # for parsing data types from Socrata
 # library('mime')       # for guessing mime type
+# library('plyr')       # for parsing JSON files
 
 #' Time-stamped message
 #'
@@ -174,6 +175,7 @@ getResponse <- function(url, email = NULL, password = NULL) {
 #'
 #' @author Hugh J. Devlin \email{Hugh.Devlin@@cityofchicago.org}
 #' @importFrom httr content
+#' @importFrom jsonlite fromJSON
 #' @importFrom utils read.csv
 #' @param response - an httr response object
 #' @return data frame, possibly empty
@@ -195,8 +197,11 @@ getContentAsDataFrame <- function(response) {
            if(length(httr::content(response)) == 0) # empty json?
              data.frame() # empty data frame
          else
-           data.frame(t(sapply(httr::content(response), unlist)), 
-                      stringsAsFactors=FALSE)
+           as.data.frame.list(fromJSON(httr::content(response,
+                                                     as = "text",
+                                                     type = "application/json",
+                                                     encoding = "utf-8")),
+                              stringsAsFactors=FALSE)
   ) # end switch
 }
 
@@ -250,6 +255,7 @@ getSodaTypes <- function(response) {
 #' nrow(df)
 #' @importFrom httr parse_url build_url
 #' @importFrom mime guess_type
+#' @importFrom plyr rbind.fill
 #' @export
 read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL,
                          stringsAsFactors = FALSE) {
@@ -266,7 +272,7 @@ read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL,
 		query <- paste(validUrl, if(is.null(parsedUrl$query)) {'?'} else {"&"}, '$offset=', nrow(result), sep='')
 		response <- getResponse(query, email, password)
 		page <- getContentAsDataFrame(response)
-		result <- rbind(result, page) # accumulate
+		result <- rbind.fill(result, page) # accumulate
 	}	
 	# convert Socrata calendar dates to posix format
 	for(columnName in colnames(page)[!is.na(dataTypes[fieldName(colnames(page))]) & dataTypes[fieldName(colnames(page))] == 'calendar_date']) {

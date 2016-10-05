@@ -125,7 +125,7 @@ test_that("read Socrata JSON as default", {
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(11, ncol(df), label="columns")
   expect_equal(c("character", "character", "character", "character", "character", 
-                 "character", "character", "character", "character", "character", 
+                 "character", "logical", "character", "character", "character", 
                  "character"), 
                unname(sapply(sapply(df, class),`[`, 1)))
 })
@@ -137,7 +137,7 @@ test_that("read Socrata JSON as character", {
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(11, ncol(df), label="columns")
   expect_equal(c("character", "character", "character", "character", "character", 
-                 "character", "character", "character", "character", "character", 
+                 "character", "logical", "character", "character", "character", 
                  "character"), 
                unname(sapply(sapply(df, class),`[`, 1)))
 })
@@ -149,7 +149,7 @@ test_that("read Socrata JSON as factor", {
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(11, ncol(df), label="columns")
   expect_equal(c("factor", "factor", "factor", "factor", "factor", "factor", 
-                 "factor", "factor", "factor", "factor", "factor"), 
+                 "logical", "factor", "factor", "factor", "factor"), 
                unname(sapply(sapply(df, class),`[`, 1)))
 })
 
