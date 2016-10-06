@@ -11,7 +11,7 @@ Description: Provides easier interaction with
     Users can upload data to Socrata portals directly
     from R.
 Version: 1.7.1-15
-Date: 2016-10-04
+Date: 2016-10-06
 Author: Hugh Devlin, Ph. D., Tom Schenk, Jr., and John Malc
 Maintainer: "Tom Schenk Jr." <developers@cityofchicago.org>
 Depends:
