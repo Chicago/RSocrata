@@ -192,6 +192,12 @@ test_that("format is not supported", {
   expect_error(read.socrata('http://soda.demo.socrata.com/resource/4334-bgaj.xml'))
 })
 
+test_that("read Socrata JSON with missing fields (issue 19)", {
+  ## Define and test issue 19
+  df <- read.socrata("https://data.cityofchicago.org/resource/kn9c-c2s2.json")
+  expect_equal(78, nrow(df), label="rows", info = "https://github.com/Chicago/RSocrata/issues/19")
+  expect_equal(9, ncol(df), label="columns", info = "https://github.com/Chicago/RSocrata/issues/19")
+})
 
 context("Checks the validity of 4x4")
 
