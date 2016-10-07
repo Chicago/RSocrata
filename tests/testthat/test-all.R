@@ -3,6 +3,7 @@ library(RSocrata)
 library(httr)
 library(jsonlite)
 library(mime)
+library(plyr)
 
 ## Credentials for testing private dataset and update dataset functionality ##
 socrataEmail <- Sys.getenv("SOCRATA_EMAIL", "mark.silverberg+soda.demo@socrata.com")
@@ -134,7 +135,7 @@ test_that("read Socrata JSON as default", {
   expect_equal("data.frame", class(df), label="class")
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(11, ncol(df), label="columns")
-  expect_equal(c("character", "character", "character", "character", "character", 
+  expect_equal(c("POSIXct", "character", "character", "character", "character", 
                  "character", "logical", "character", "character", "character", 
                  "character"), 
                unname(sapply(sapply(df, class),`[`, 1)))
@@ -146,7 +147,7 @@ test_that("read Socrata JSON as character", {
   expect_equal("data.frame", class(df), label="class")
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(11, ncol(df), label="columns")
-  expect_equal(c("character", "character", "character", "character", "character", 
+  expect_equal(c("POSIXct", "character", "character", "character", "character", 
                  "character", "logical", "character", "character", "character", 
                  "character"), 
                unname(sapply(sapply(df, class),`[`, 1)))
@@ -158,7 +159,7 @@ test_that("read Socrata JSON as factor", {
   expect_equal("data.frame", class(df), label="class")
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(11, ncol(df), label="columns")
-  expect_equal(c("factor", "factor", "factor", "factor", "factor", "factor", 
+  expect_equal(c("POSIXct", "factor", "factor", "factor", "factor", "factor", 
                  "logical", "factor", "factor", "factor", "factor"), 
                unname(sapply(sapply(df, class),`[`, 1)))
 })
