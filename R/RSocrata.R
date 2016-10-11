@@ -281,6 +281,11 @@ read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL,
   for(columnName in colnames(page)[!is.na(dataTypes[fieldName(colnames(page))]) & dataTypes[fieldName(colnames(page))] == 'money']) {
     result[[columnName]] <- no_deniro(result[[columnName]])
   }
+	# convert logical fields to character
+	for(columnName in colnames(result)) {
+	  if(typeof(result[,columnName]) == "logical")
+	    result[,columnName] <- as.character(result[,columnName])
+	}
   if(stringsAsFactors){
 	  result <- data.frame(unclass(result), stringsAsFactors = stringsAsFactors)
 	}
