@@ -262,6 +262,11 @@ read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL,
 	validUrl <- validateUrl(url, app_token) # check url syntax, allow human-readable Socrata url
 	parsedUrl <- httr::parse_url(validUrl)
 	mimeType <- mime::guess_type(parsedUrl$path)
+	orderTest <- function (x) x == "$order"
+	if (!is.null(names(parsedUrl$query))) # check if URL has any queries 
+	  if(sum(sapply(names(parsedUrl$query), orderTest)) == 0) # check if URL is sorted
+	    # sort by Socrata unique identifier
+	    validUrl <- paste(validUrl, if(is.null(parsedUrl$query)) {'?'} else {"&"}, '$order=:id', sep='') 
 	if(!(mimeType %in% c('text/csv','application/json')))
 		stop("Error in read.socrata: ", mimeType, " not a supported data format.")
 	response <- getResponse(validUrl, email, password)
