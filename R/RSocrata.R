@@ -113,11 +113,11 @@ posixify <- function(x) {
 	## which are the three formats that are supplied by Socrata. 
 	patternShortCSV <- paste0("^[[:digit:]]{1,2}/[[:digit:]]{1,2}/[[:digit:]]{4}$")
 	patternLongCSV <- paste0("^[[:digit:]]{1,2}/[[:digit:]]{1,2}/[[:digit:]]{4}",
-	                      "[[:digit:]]{1,2}:[[:digit:]]{1,2}:[[:digit:]]{1,2}",
-	                      "AM|PM", "$")
+	                         "[[:digit:]]{1,2}:[[:digit:]]{1,2}:[[:digit:]]{1,2}",
+	                         "AM|PM", "$")
 	patternJSON <- paste0("^[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}T",
 	                      "[[:digit:]]{2}:[[:digit:]]{2}:[[:digit:]]{2}.[[:digit:]]{3}","$")
-		## Find number of matches with grep
+	## Find number of matches with grep
 	nMatchesShortCSV <- grep(pattern = patternShortCSV, x)
 	nMatchesLongCSV <- grep(pattern = patternLongCSV, x)
 	nMatchesJSON <- grep(pattern = patternJSON, x)
