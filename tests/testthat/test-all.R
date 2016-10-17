@@ -3,6 +3,7 @@ library(RSocrata)
 library(httr)
 library(jsonlite)
 library(mime)
+library(plyr)
 
 ## Credentials for testing private dataset and update dataset functionality ##
 socrataEmail <- Sys.getenv("SOCRATA_EMAIL", "mark.silverberg+soda.demo@socrata.com")
