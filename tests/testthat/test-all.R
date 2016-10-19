@@ -3,6 +3,7 @@ library(RSocrata)
 library(httr)
 library(jsonlite)
 library(mime)
+library(plyr)
 
 ## Credentials for testing private dataset and update dataset functionality ##
 socrataEmail <- Sys.getenv("SOCRATA_EMAIL", "mark.silverberg+soda.demo@socrata.com")
@@ -10,11 +11,21 @@ socrataPassword <- Sys.getenv("SOCRATA_PASSWORD", "7vFDsGFDUG")
 
 context("posixify function")
 
-test_that("posixify returns Long format", {
+test_that("read Socrata CSV is compatible with posixify", {
   df <- read.socrata('http://soda.demo.socrata.com/resource/4334-bgaj.csv')
   dt <- posixify("09/14/2012 10:38:01 PM")
   expect_equal(dt, df$Datetime[1])  ## Check that download matches test
-  
+})
+
+test_that("read Socrata JSON is compatible with posixify (issue 85)", {
+  ## Define and test issue 85
+  df <- read.socrata('https://soda.demo.socrata.com/resource/9szf-fbd4.json')
+  dt <- posixify("09/14/2012 10:38:01 PM")
+  expect_equal(dt, df$datetime[1], info= "Testing Issue 85 https://github.com/Chicago/RSocrata/issues/85")  ## Check that download matches test
+})
+
+test_that("posixify returns Long format", {
+  dt <- posixify("09/14/2012 10:38:01 PM")
   expect_equal("POSIXct", class(dt)[1], label="Long format date data type")
   expect_equal("2012", format(dt, "%Y"), label="year")
   expect_equal("09", format(dt, "%m"), label="month")
@@ -124,7 +135,7 @@ test_that("read Socrata JSON as default", {
   expect_equal("data.frame", class(df), label="class")
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(11, ncol(df), label="columns")
-  expect_equal(c("character", "character", "character", "character", "character", 
+  expect_equal(c("POSIXct", "character", "character", "character", "character", 
                  "character", "logical", "character", "character", "character", 
                  "character"), 
                unname(sapply(sapply(df, class),`[`, 1)))
@@ -136,7 +147,7 @@ test_that("read Socrata JSON as character", {
   expect_equal("data.frame", class(df), label="class")
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(11, ncol(df), label="columns")
-  expect_equal(c("character", "character", "character", "character", "character", 
+  expect_equal(c("POSIXct", "character", "character", "character", "character", 
                  "character", "logical", "character", "character", "character", 
                  "character"), 
                unname(sapply(sapply(df, class),`[`, 1)))
@@ -148,7 +159,7 @@ test_that("read Socrata JSON as factor", {
   expect_equal("data.frame", class(df), label="class")
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(11, ncol(df), label="columns")
-  expect_equal(c("factor", "factor", "factor", "factor", "factor", "factor", 
+  expect_equal(c("POSIXct", "factor", "factor", "factor", "factor", "factor", 
                  "logical", "factor", "factor", "factor", "factor"), 
                unname(sapply(sapply(df, class),`[`, 1)))
 })

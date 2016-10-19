@@ -109,20 +109,26 @@ posixify <- function(x) {
 	x <- as.character(x)
 	if (length(x)==0) return(x)
 	
-	## Define regex patterns for short and long date formats, which are the two 
-	## formats that are supplied by Socrata. 
-	patternShort <- paste0("^[[:digit:]]{1,2}/[[:digit:]]{1,2}/[[:digit:]]{4}$")
-	patternLong <- paste0("^[[:digit:]]{1,2}/[[:digit:]]{1,2}/[[:digit:]]{4}",
-	                      "[[:digit:]]{1,2}:[[:digit:]]{1,2}:[[:digit:]]{1,2}",
-	                      "AM|PM", "$")
+	## Define regex patterns for short and long date formats (CSV) and ISO 8601 (JSON),  
+	## which are the three formats that are supplied by Socrata. 
+	patternShortCSV <- paste0("^[[:digit:]]{1,2}/[[:digit:]]{1,2}/[[:digit:]]{4}$")
+	patternLongCSV <- paste0("^[[:digit:]]{1,2}/[[:digit:]]{1,2}/[[:digit:]]{4}",
+	                         "[[:digit:]]{1,2}:[[:digit:]]{1,2}:[[:digit:]]{1,2}",
+	                         "AM|PM", "$")
+	patternJSON <- paste0("^[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}T",
+	                      "[[:digit:]]{2}:[[:digit:]]{2}:[[:digit:]]{2}.[[:digit:]]{3}","$")
 	## Find number of matches with grep
-	nMatchesShort <- grep(pattern = patternShort, x)
-	nMatchesLong <- grep(pattern = patternLong, x)
-	## Parse as the most likely calendar date format. Ties go to short format.
-	if(length(nMatchesLong) > length(nMatchesShort)){
-	  as.POSIXct(strptime(x, format="%m/%d/%Y %I:%M:%S %p")) # long date-time format
-	}	else {
-	  as.POSIXct(strptime(x, format="%m/%d/%Y")) # short date format
+	nMatchesShortCSV <- grep(pattern = patternShortCSV, x)
+	nMatchesLongCSV <- grep(pattern = patternLongCSV, x)
+	nMatchesJSON <- grep(pattern = patternJSON, x)
+	## Parse as the most likely calendar date format. CSV short/long ties go to short format
+	if(length(nMatchesLongCSV) > length(nMatchesShortCSV)){
+	  return(as.POSIXct(strptime(x, format="%m/%d/%Y %I:%M:%S %p"))) # long date-time format
+	}	else if (length(nMatchesJSON) == 0){
+	  return(as.POSIXct(strptime(x, format="%m/%d/%Y"))) # short date format
+	} 
+	if(length(nMatchesJSON) > 0){
+	  as.POSIXct(x, format = "%Y-%m-%dT%H:%M:%S") # JSON format
 	}
 }
 
@@ -275,10 +281,12 @@ read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL,
 		result <- rbind.fill(result, page) # accumulate
 	}	
 	# convert Socrata calendar dates to posix format
-	for(columnName in colnames(page)[!is.na(dataTypes[fieldName(colnames(page))]) & dataTypes[fieldName(colnames(page))] == 'calendar_date']) {
+	for(columnName in colnames(result)[!is.na(dataTypes[fieldName(colnames(result))]) 
+	                                   & (dataTypes[fieldName(colnames(result))] == 'calendar_date' 
+	                                      | dataTypes[fieldName(colnames(result))] == 'floating_timestamp')]) {
 		result[[columnName]] <- posixify(result[[columnName]])
 	}
-  for(columnName in colnames(page)[!is.na(dataTypes[fieldName(colnames(page))]) & dataTypes[fieldName(colnames(page))] == 'money']) {
+  for(columnName in colnames(result)[!is.na(dataTypes[fieldName(colnames(result))]) & dataTypes[fieldName(colnames(result))] == 'money']) {
     result[[columnName]] <- no_deniro(result[[columnName]])
   }
   if(stringsAsFactors){
