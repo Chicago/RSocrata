@@ -199,6 +199,59 @@ test_that("read Socrata JSON with missing fields (issue 19)", {
   expect_equal(9, ncol(df), label="columns", info = "https://github.com/Chicago/RSocrata/issues/19")
 })
 
+test_that("If URL has no queries, insert $order:id into URL", {
+  ## Define and test issue 15
+  ## Ensure that the $order=:id is inserted when no other query parameters are used.
+  df <- read.socrata("https://data.cityofchicago.org/resource/kn9c-c2s2.json")
+  expect_equal("21.5", df$percent_aged_under_18_or_over_64[7], 
+               info = "https://github.com/Chicago/RSocrata/issues/15")
+  expect_equal("38", df$percent_aged_under_18_or_over_64[23], 
+               info = "https://github.com/Chicago/RSocrata/issues/15")
+  expect_equal("40.4", df$percent_aged_under_18_or_over_64[36], 
+               info = "https://github.com/Chicago/RSocrata/issues/15")
+  expect_equal("36.1", df$percent_aged_under_18_or_over_64[42], 
+               info = "https://github.com/Chicago/RSocrata/issues/15")
+  
+})
+
+test_that("If URL has an $order clause, do not insert ?$order:id into URL", {
+  ## Define and test issue 15
+  ## Ensure that $order=:id is not used when other $order parameters are requested by the user.
+  df <- read.socrata("https://data.cityofchicago.org/resource/kn9c-c2s2.json?$order=hardship_index")
+  expect_equal("35.3", df$percent_aged_under_18_or_over_64[7], 
+               info = "https://github.com/Chicago/RSocrata/issues/15")
+  expect_equal("37.6", df$percent_aged_under_18_or_over_64[23], 
+               info = "https://github.com/Chicago/RSocrata/issues/15")
+  expect_equal("38.5", df$percent_aged_under_18_or_over_64[36], 
+               info = "https://github.com/Chicago/RSocrata/issues/15")
+  expect_equal("32", df$percent_aged_under_18_or_over_64[42], 
+               info = "https://github.com/Chicago/RSocrata/issues/15")
+})
+
+test_that("If URL has only non-order query parameters, insert $order:id into URL", {
+  ## Define and test issue 15
+  ## Ensure that $order=:id is inserted when other (non-$order) arguments are used.
+  df <- read.socrata("https://data.cityofchicago.org/resource/kn9c-c2s2.json?$limit=50")
+  expect_equal("21.5", df$percent_aged_under_18_or_over_64[7], 
+               info = "https://github.com/Chicago/RSocrata/issues/15")
+  expect_equal("38", df$percent_aged_under_18_or_over_64[23], 
+               info = "https://github.com/Chicago/RSocrata/issues/15")
+  expect_equal("40.4", df$percent_aged_under_18_or_over_64[36], 
+               info = "https://github.com/Chicago/RSocrata/issues/15")
+  expect_equal("36.1", df$percent_aged_under_18_or_over_64[42], 
+               info = "https://github.com/Chicago/RSocrata/issues/15")
+  df <- read.socrata("https://data.cityofchicago.org/resource/kn9c-c2s2.json?$where=hardship_index>20")
+  expect_equal("34", df$percent_aged_under_18_or_over_64[7], 
+               info = "https://github.com/Chicago/RSocrata/issues/15")
+  expect_equal("30.7", df$percent_aged_under_18_or_over_64[23], 
+               info = "https://github.com/Chicago/RSocrata/issues/15")
+  expect_equal("41.2", df$percent_aged_under_18_or_over_64[36], 
+               info = "https://github.com/Chicago/RSocrata/issues/15")
+  expect_equal("42.9", df$percent_aged_under_18_or_over_64[42], 
+               info = "https://github.com/Chicago/RSocrata/issues/15")  
+})
+
+
 context("Checks the validity of 4x4")
 
 test_that("is 4x4", {
