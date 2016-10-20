@@ -210,6 +210,13 @@ test_that("read Socrata JSON with missing fields (issue 19)", {
   expect_equal(9, ncol(df), label="columns", info = "https://github.com/Chicago/RSocrata/issues/19")
 })
 
+test_that("Accept a URL with a $limit= clause and properly limit the results", {
+  ## Define and test issue 83
+  df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.json?$LIMIT=500")
+  expect_equal(500, nrow(df), label="rows", info = "https://github.com/Chicago/RSocrata/issues/83")
+  expect_equal(11, ncol(df), label="columns", info = "https://github.com/Chicago/RSocrata/issues/83")
+})
+
 context("Checks the validity of 4x4")
 
 test_that("is 4x4", {
