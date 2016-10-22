@@ -5,6 +5,9 @@
 #   http://docs.travis-ci.com/user/languages/r/
 sudo: false
 
+os:
+  - linux
+  - osx
 language: r
 cache: packages
 r:
