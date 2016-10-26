@@ -212,9 +212,18 @@ test_that("read Socrata JSON with missing fields (issue 19)", {
 
 test_that("Accept a URL with a $limit= clause and properly limit the results", {
   ## Define and test issue 83
-  df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.json?$LIMIT=500")
-  expect_equal(500, nrow(df), label="rows", info = "https://github.com/Chicago/RSocrata/issues/83")
-  expect_equal(11, ncol(df), label="columns", info = "https://github.com/Chicago/RSocrata/issues/83")
+  df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.json?$LIMIT=500") # uppercase
+  expect_equal(500, nrow(df), label="rows", 
+               info = "$LIMIT in uppercase https://github.com/Chicago/RSocrata/issues/83")
+  df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.json?$limit=500") # lowercase
+  expect_equal(500, nrow(df), label="rows", 
+               info = "$limit in lowercase https://github.com/Chicago/RSocrata/issues/83")
+  df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.json?$LIMIT=1001&$order=:id") # uppercase
+  expect_equal(1001, nrow(df), label="rows", 
+               info = "$LIMIT in uppercase with 2 queries https://github.com/Chicago/RSocrata/issues/83")
+  df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.json?$limit=1001&$order=:id") # lowercase
+  expect_equal(1001, nrow(df), label="rows lowercase", 
+               info = "$LIMIT in lowercase with 2 queries https://github.com/Chicago/RSocrata/issues/83")
 })
 
 context("Checks the validity of 4x4")
