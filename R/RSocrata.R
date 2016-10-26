@@ -268,6 +268,16 @@ read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL,
 	validUrl <- validateUrl(url, app_token) # check url syntax, allow human-readable Socrata url
 	parsedUrl <- httr::parse_url(validUrl)
 	mimeType <- mime::guess_type(parsedUrl$path)
+	if (!is.null(names(parsedUrl$query))) { # check if URL has any queries 
+	  ## if there is a query, check for $order within the query
+	  orderTest <- any(names(parsedUrl$query) == "$order")
+	  if(!orderTest) # sort by Socrata unique identifier
+	    validUrl <- paste(validUrl, if(is.null(parsedUrl$query)) {'?'} else {"&"}, '$order=:id', sep='')
+	}
+	else {
+	  validUrl <- paste(validUrl, {'?'}, '$order=:id', sep='')
+	  parsedUrl <- httr::parse_url(validUrl) # reparse because URL now has a query
+	}
 	if(!(mimeType %in% c('text/csv','application/json')))
 		stop("Error in read.socrata: ", mimeType, " not a supported data format.")
 	response <- getResponse(validUrl, email, password)
@@ -289,6 +299,11 @@ read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL,
   for(columnName in colnames(result)[!is.na(dataTypes[fieldName(colnames(result))]) & dataTypes[fieldName(colnames(result))] == 'money']) {
     result[[columnName]] <- no_deniro(result[[columnName]])
   }
+	# convert logical fields to character
+	for(columnName in colnames(result)) {
+	  if(typeof(result[,columnName]) == "logical")
+	    result[,columnName] <- as.character(result[,columnName])
+	}
   if(stringsAsFactors){
 	  result <- data.frame(unclass(result), stringsAsFactors = stringsAsFactors)
 	}
