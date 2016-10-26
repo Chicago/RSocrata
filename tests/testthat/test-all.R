@@ -203,13 +203,23 @@ test_that("format is not supported", {
   expect_error(read.socrata('http://soda.demo.socrata.com/resource/4334-bgaj.xml'))
 })
 
-test_that("read Socrata JSON with missing fields (issue 19)", {
+test_that("read Socrata JSON with missing fields (issue 19 - bind within page)", {
   ## Define and test issue 19
-  df <- read.socrata("https://data.cityofchicago.org/resource/kn9c-c2s2.json")
+  expect_error(df <- read.socrata("https://data.cityofchicago.org/resource/kn9c-c2s2.json"), NA,
+               info = "https://github.com/Chicago/RSocrata/issues/19")
   expect_equal(78, nrow(df), label="rows", info = "https://github.com/Chicago/RSocrata/issues/19")
   expect_equal(9, ncol(df), label="columns", info = "https://github.com/Chicago/RSocrata/issues/19")
 })
 
+test_that("read Socrata JSON with missing fields (issue 19 - binding pages together)", {
+  ## Define and test issue 19
+  expect_error(df <- read.socrata(paste0("https://data.smgov.net/resource/ia9m-wspt.json?",
+                                         "$where=incident_date>'2010-12-15'%20AND%20incident_date<'2011-01-15'"))
+               , NA, info = "https://github.com/Chicago/RSocrata/issues/19")
+  expect_equal(7927, nrow(df), label="rows", info = "https://github.com/Chicago/RSocrata/issues/19")
+  expect_equal(18, ncol(df), label="columns", info = "https://github.com/Chicago/RSocrata/issues/19")
+})
+  
 test_that("If URL has no queries, insert $order:id into URL", {
   ## Define and test issue 15
   ## Ensure that the $order=:id is inserted when no other query parameters are used.
