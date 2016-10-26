@@ -350,6 +350,12 @@ test_that("incorrect API Query", {
   expect_equal(9, ncol(df), label="columns") 
 })
 
+test_that("Ensure filtering and app tokens can coexist - API", {
+  # Test includes filter and app_token as an R optional argument
+  df <- read.socrata("https://soda.demo.socrata.com/resource/4334-bgaj.csv?$where=magnitude > 3.0", app_token="ew2rEMuESuzWPqMkyPfOSGJgE")
+  expect_equal(193, nrow(df), label = "rows", info = "https://github.com/Chicago/RSocrata/issues/105")
+})
+
 test_that("incorrect API Query Human Readable", {
   # The query below is missing a $ before app_token.
   expect_error(read.socrata("https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj?$app_token=ew2rEMuESuzWPqMkyPfOSGJgE"))
