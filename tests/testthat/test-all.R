@@ -219,6 +219,22 @@ test_that("read Socrata JSON with missing fields (issue 19 - binding pages toget
   expect_equal(7927, nrow(df), label="rows", info = "https://github.com/Chicago/RSocrata/issues/19")
   expect_equal(18, ncol(df), label="columns", info = "https://github.com/Chicago/RSocrata/issues/19")
 })
+
+test_that("Accept a URL with a $limit= clause and properly limit the results", {
+  ## Define and test issue 83
+  df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.json?$LIMIT=500") # uppercase
+  expect_equal(500, nrow(df), label="rows", 
+               info = "$LIMIT in uppercase https://github.com/Chicago/RSocrata/issues/83")
+  df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.json?$limit=500") # lowercase
+  expect_equal(500, nrow(df), label="rows", 
+               info = "$limit in lowercase https://github.com/Chicago/RSocrata/issues/83")
+  df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.json?$LIMIT=1001&$order=:id") # uppercase
+  expect_equal(1001, nrow(df), label="rows", 
+               info = "$LIMIT in uppercase with 2 queries https://github.com/Chicago/RSocrata/issues/83")
+  df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.json?$limit=1001&$order=:id") # lowercase
+  expect_equal(1001, nrow(df), label="rows lowercase", 
+               info = "$LIMIT in lowercase with 2 queries https://github.com/Chicago/RSocrata/issues/83")
+})
   
 test_that("If URL has no queries, insert $order:id into URL", {
   ## Define and test issue 15
@@ -271,7 +287,6 @@ test_that("If URL has only non-order query parameters, insert $order:id into URL
   expect_equal("42.9", df$percent_aged_under_18_or_over_64[42], 
                info = "https://github.com/Chicago/RSocrata/issues/15")  
 })
-
 
 context("Checks the validity of 4x4")
 

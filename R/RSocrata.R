@@ -284,7 +284,32 @@ read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL,
 	page <- getContentAsDataFrame(response)
 	result <- page
 	dataTypes <- getSodaTypes(response)
-	while (nrow(page) > 0) { # more to come maybe?
+	# parse any $limit out of the URL
+	if(is.null(parsedUrl$query$`$limit`) & is.null(parsedUrl$query$`$LIMIT`))
+	  limitProvided <- FALSE
+	else { 
+	  names(parsedUrl$query) <- tolower(names(parsedUrl$query))
+	  userLimit <- as.integer(parsedUrl$query$`$limit`)
+	  limitProvided <- TRUE
+	  ##remove LIMIT from URL
+	  parsedUrl$query <- parsedUrl$query[-which(names(parsedUrl$query) == '$limit')] 
+	  validUrl <- httr::build_url(parsedUrl)
+	}
+	# PAGE through data and combine
+	# if $limit is <= 1000, do not page
+	# if $limit > 1000, page only until limit is met
+	# if no limit $provided, loop until all data is paged
+	while (nrow(page) > 0) { 
+	  if(limitProvided) 
+	    if(userLimit < 1000) break
+	  else if(userLimit - nrow(result) <= 1000) {
+	    query <- paste(validUrl, if(is.null(parsedUrl$query)) {'?'} else {"&"}, 
+	                   '$limit=', (userLimit - nrow(result)),'&$offset=', nrow(result), sep='')
+	    response <- getResponse(query, email, password)
+	    page <- getContentAsDataFrame(response)
+	    result <- rbind.fill(result, page) # accumulate
+	    break
+	  }
 		query <- paste(validUrl, if(is.null(parsedUrl$query)) {'?'} else {"&"}, '$offset=', nrow(result), sep='')
 		response <- getResponse(query, email, password)
 		page <- getContentAsDataFrame(response)
