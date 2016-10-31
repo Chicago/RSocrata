@@ -343,7 +343,10 @@ read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL,
 #' various metadata.
 #' @author Peter Schmiedeskamp \email{pschmied@@uw.edu}
 #' @examples
+#' # Download list of data sets
 #' df <- ls.socrata("http://soda.demo.socrata.com")
+#' # Check schema definition for metadata
+#' attributes(df)
 #' @importFrom jsonlite fromJSON
 #' @importFrom httr parse_url
 #' @export
