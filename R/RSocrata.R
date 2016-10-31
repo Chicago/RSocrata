@@ -354,7 +354,7 @@ ls.socrata <- function(url) {
     stop(url, " does not appear to be a valid URL.")
   parsedUrl$path <- "data.json"
   df <- jsonlite::fromJSON(httr::build_url(parsedUrl))
-  df <- as.data.frame(df$dataset)
+  df <- as.data.frame(df)
   df$issued <- as.POSIXct(df$issued)
   df$modified <- as.POSIXct(df$modified)
   df$theme <- as.character(df$theme)
