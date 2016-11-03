@@ -343,7 +343,10 @@ read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL,
 #' various metadata.
 #' @author Peter Schmiedeskamp \email{pschmied@@uw.edu}
 #' @examples
+#' # Download list of data sets
 #' df <- ls.socrata("http://soda.demo.socrata.com")
+#' # Check schema definition for metadata
+#' attributes(df)
 #' @importFrom jsonlite fromJSON
 #' @importFrom httr parse_url
 #' @export
@@ -353,14 +356,20 @@ ls.socrata <- function(url) {
   if(is.null(parsedUrl$scheme) | is.null(parsedUrl$hostname))
     stop(url, " does not appear to be a valid URL.")
   parsedUrl$path <- "data.json"
-  df <- jsonlite::fromJSON(httr::build_url(parsedUrl))
-  df <- as.data.frame(df$dataset)
-  df$issued <- as.POSIXct(df$issued)
-  df$modified <- as.POSIXct(df$modified)
-  df$theme <- as.character(df$theme)
-  return(df)
+  data_dot_json <- jsonlite::fromJSON(httr::build_url(parsedUrl))
+  data_df <- as.data.frame(data_dot_json$dataset)
+  # Assign Catalog Fields as attributes
+  attr(data_df, "@context") <- data_dot_json$`@context`
+  attr(data_df, "@id") <- data_dot_json$`@id`
+  attr(data_df, "@type") <- data_dot_json$`@type`
+  attr(data_df, "conformsTo") <- data_dot_json$conformsTo
+  attr(data_df, "describedBy") <- data_dot_json$describedBy
+  # Convert dates (strings) to POSIX-formatted dates
+  data_df$issued <- as.POSIXct(data_df$issued)
+  data_df$modified <- as.POSIXct(data_df$modified)
+  data_df$theme <- as.character(data_df$theme)
+  return(data_df)
 }
-
 
 #' Wrap httr PUT/POST in some diagnostics
 #' 

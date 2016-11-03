@@ -365,6 +365,8 @@ test_that("incorrect API Query Human Readable", {
   expect_equal(9, ncol(df), label="columns") 
 })
 
+context("ls.socrata functions correctly")
+
 test_that("List datasets available from a Socrata domain", {
   # Makes some potentially erroneous assumptions about availability
   # of soda.demo.socrata.com
@@ -380,6 +382,11 @@ test_that("List datasets available from a Socrata domain", {
   expect_equal(as.logical(rep(TRUE, length(names(df)))), names(df) %in% c(core_names))
 })
 
+test_that("Catalog Fields are assigned as attributes when listing data sets", {
+  df <- ls.socrata("https://soda.demo.socrata.com")
+  catalog_fields <- c("@context", "@id", "@type", "conformsTo", "describedBy")
+  expect_equal(as.logical(rep(TRUE, length(catalog_fields))), catalog_fields %in% names(attributes(df)))
+})
 
 context("Test reading private Socrata dataset with email and password")
 
