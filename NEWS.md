@@ -56,4 +56,10 @@ Bug fixes:
 * Added additional unit testing ([#28](https://github.com/Chicago/RSocrata/issues/68))
 * Artifacts from Appveyor CI can now be directly submitted to CRAN ([#77](https://github.com/Chicago/RSocrata/issues/77))
 * Fixed issue where JSON may occasionally come back with a final NULL that is not "[]" (in this example it was "[]\n").  This caused `getDataFrame` to get stuckin an infinite loop while waiting for "[]".  Thank you @kevinsmgov for documenting this bug in issue ([#96](https://github.com/Chicago/RSocrata/issues/96))
+* Resolved an error users would see when downloading the JSON file on a SoDA call, `Error in rbind(deparse.level, ...) : numbers of columns of arguments do not match`. ([#19](https://github.com/Chicago/RSocrata/issues/19))
+* The LIMIT argument was incorrectly interpreted by RSocrata, which sometime causes slower performance ([#83](https://github.com/Chicago/RSocrata/issues/83), [#14](https://github.com/Chicago/RSocrata/issues/14))
+* The mandatory `@context`, `@id`, `conformsTo`, and `describedBy` fields were not shown when using `ls.socrata()`. These elements are now included as attributes in the resulting data frame. ([#72](https://github.com/Chicago/RSocrata/issues/72))
+* Fixed a bug which a user-defined token was ignored when the user passed along a `$where` argument in a SoDA query. ([#105](https://github.com/Chicago/RSocrata/issues/105))
+* Fixes a bug where the POSIX date conversion would not occur when using the JSON SoDA url (#85)
+* Queries now follow SoDA guidelines and are explicitly sorted. This could have caused a silent error where some row may not have downloaded. ([#15](https://github.com/Chicago/RSocrata/issues/15))
 
