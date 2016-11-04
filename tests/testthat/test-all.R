@@ -3,6 +3,7 @@ library(RSocrata)
 library(httr)
 library(jsonlite)
 library(mime)
+library(plyr)
 
 ## Credentials for testing private dataset and update dataset functionality ##
 socrataEmail <- Sys.getenv("SOCRATA_EMAIL", "mark.silverberg+soda.demo@socrata.com")
@@ -10,11 +11,21 @@ socrataPassword <- Sys.getenv("SOCRATA_PASSWORD", "7vFDsGFDUG")
 
 context("posixify function")
 
-test_that("posixify returns Long format", {
+test_that("read Socrata CSV is compatible with posixify", {
   df <- read.socrata('http://soda.demo.socrata.com/resource/4334-bgaj.csv')
   dt <- posixify("09/14/2012 10:38:01 PM")
   expect_equal(dt, df$Datetime[1])  ## Check that download matches test
-  
+})
+
+test_that("read Socrata JSON is compatible with posixify (issue 85)", {
+  ## Define and test issue 85
+  df <- read.socrata('https://soda.demo.socrata.com/resource/9szf-fbd4.json')
+  dt <- posixify("09/14/2012 10:38:01 PM")
+  expect_equal(dt, df$datetime[1], info= "Testing Issue 85 https://github.com/Chicago/RSocrata/issues/85")  ## Check that download matches test
+})
+
+test_that("posixify returns Long format", {
+  dt <- posixify("09/14/2012 10:38:01 PM")
   expect_equal("POSIXct", class(dt)[1], label="Long format date data type")
   expect_equal("2012", format(dt, "%Y"), label="year")
   expect_equal("09", format(dt, "%m"), label="month")
@@ -124,7 +135,7 @@ test_that("read Socrata JSON as default", {
   expect_equal("data.frame", class(df), label="class")
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(11, ncol(df), label="columns")
-  expect_equal(c("character", "character", "character", "character", "character", 
+  expect_equal(c("POSIXct", "character", "character", "character", "character", 
                  "character", "character", "character", "character", "character", 
                  "character"), 
                unname(sapply(sapply(df, class),`[`, 1)))
@@ -136,7 +147,7 @@ test_that("read Socrata JSON as character", {
   expect_equal("data.frame", class(df), label="class")
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(11, ncol(df), label="columns")
-  expect_equal(c("character", "character", "character", "character", "character", 
+  expect_equal(c("POSIXct", "character", "character", "character", "character", 
                  "character", "character", "character", "character", "character", 
                  "character"), 
                unname(sapply(sapply(df, class),`[`, 1)))
@@ -148,7 +159,7 @@ test_that("read Socrata JSON as factor", {
   expect_equal("data.frame", class(df), label="class")
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(11, ncol(df), label="columns")
-  expect_equal(c("factor", "factor", "factor", "factor", "factor", "factor", 
+  expect_equal(c("POSIXct", "factor", "factor", "factor", "factor", "factor", 
                  "factor", "factor", "factor", "factor", "factor"), 
                unname(sapply(sapply(df, class),`[`, 1)))
 })
@@ -192,6 +203,90 @@ test_that("format is not supported", {
   expect_error(read.socrata('http://soda.demo.socrata.com/resource/4334-bgaj.xml'))
 })
 
+test_that("read Socrata JSON with missing fields (issue 19 - bind within page)", {
+  ## Define and test issue 19
+  expect_error(df <- read.socrata("https://data.cityofchicago.org/resource/kn9c-c2s2.json"), NA,
+               info = "https://github.com/Chicago/RSocrata/issues/19")
+  expect_equal(78, nrow(df), label="rows", info = "https://github.com/Chicago/RSocrata/issues/19")
+  expect_equal(9, ncol(df), label="columns", info = "https://github.com/Chicago/RSocrata/issues/19")
+})
+
+test_that("read Socrata JSON with missing fields (issue 19 - binding pages together)", {
+  ## Define and test issue 19
+  expect_error(df <- read.socrata(paste0("https://data.smgov.net/resource/ia9m-wspt.json?",
+                                         "$where=incident_date>'2010-12-15'%20AND%20incident_date<'2011-01-15'"))
+               , NA, info = "https://github.com/Chicago/RSocrata/issues/19")
+  expect_equal(7927, nrow(df), label="rows", info = "https://github.com/Chicago/RSocrata/issues/19")
+  expect_equal(18, ncol(df), label="columns", info = "https://github.com/Chicago/RSocrata/issues/19")
+})
+
+test_that("Accept a URL with a $limit= clause and properly limit the results", {
+  ## Define and test issue 83
+  df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.json?$LIMIT=500") # uppercase
+  expect_equal(500, nrow(df), label="rows", 
+               info = "$LIMIT in uppercase https://github.com/Chicago/RSocrata/issues/83")
+  df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.json?$limit=500") # lowercase
+  expect_equal(500, nrow(df), label="rows", 
+               info = "$limit in lowercase https://github.com/Chicago/RSocrata/issues/83")
+  df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.json?$LIMIT=1001&$order=:id") # uppercase
+  expect_equal(1001, nrow(df), label="rows", 
+               info = "$LIMIT in uppercase with 2 queries https://github.com/Chicago/RSocrata/issues/83")
+  df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.json?$limit=1001&$order=:id") # lowercase
+  expect_equal(1001, nrow(df), label="rows lowercase", 
+               info = "$LIMIT in lowercase with 2 queries https://github.com/Chicago/RSocrata/issues/83")
+})
+  
+test_that("If URL has no queries, insert $order:id into URL", {
+  ## Define and test issue 15
+  ## Ensure that the $order=:id is inserted when no other query parameters are used.
+  df <- read.socrata("https://data.cityofchicago.org/resource/kn9c-c2s2.json")
+  expect_equal("21.5", df$percent_aged_under_18_or_over_64[7], 
+               info = "https://github.com/Chicago/RSocrata/issues/15")
+  expect_equal("38", df$percent_aged_under_18_or_over_64[23], 
+               info = "https://github.com/Chicago/RSocrata/issues/15")
+  expect_equal("40.4", df$percent_aged_under_18_or_over_64[36], 
+               info = "https://github.com/Chicago/RSocrata/issues/15")
+  expect_equal("36.1", df$percent_aged_under_18_or_over_64[42], 
+               info = "https://github.com/Chicago/RSocrata/issues/15")
+  
+})
+
+test_that("If URL has an $order clause, do not insert ?$order:id into URL", {
+  ## Define and test issue 15
+  ## Ensure that $order=:id is not used when other $order parameters are requested by the user.
+  df <- read.socrata("https://data.cityofchicago.org/resource/kn9c-c2s2.json?$order=hardship_index")
+  expect_equal("35.3", df$percent_aged_under_18_or_over_64[7], 
+               info = "https://github.com/Chicago/RSocrata/issues/15")
+  expect_equal("37.6", df$percent_aged_under_18_or_over_64[23], 
+               info = "https://github.com/Chicago/RSocrata/issues/15")
+  expect_equal("38.5", df$percent_aged_under_18_or_over_64[36], 
+               info = "https://github.com/Chicago/RSocrata/issues/15")
+  expect_equal("32", df$percent_aged_under_18_or_over_64[42], 
+               info = "https://github.com/Chicago/RSocrata/issues/15")
+})
+
+test_that("If URL has only non-order query parameters, insert $order:id into URL", {
+  ## Define and test issue 15
+  ## Ensure that $order=:id is inserted when other (non-$order) arguments are used.
+  df <- read.socrata("https://data.cityofchicago.org/resource/kn9c-c2s2.json?$limit=50")
+  expect_equal("21.5", df$percent_aged_under_18_or_over_64[7], 
+               info = "https://github.com/Chicago/RSocrata/issues/15")
+  expect_equal("38", df$percent_aged_under_18_or_over_64[23], 
+               info = "https://github.com/Chicago/RSocrata/issues/15")
+  expect_equal("40.4", df$percent_aged_under_18_or_over_64[36], 
+               info = "https://github.com/Chicago/RSocrata/issues/15")
+  expect_equal("36.1", df$percent_aged_under_18_or_over_64[42], 
+               info = "https://github.com/Chicago/RSocrata/issues/15")
+  df <- read.socrata("https://data.cityofchicago.org/resource/kn9c-c2s2.json?$where=hardship_index>20")
+  expect_equal("34", df$percent_aged_under_18_or_over_64[7], 
+               info = "https://github.com/Chicago/RSocrata/issues/15")
+  expect_equal("30.7", df$percent_aged_under_18_or_over_64[23], 
+               info = "https://github.com/Chicago/RSocrata/issues/15")
+  expect_equal("41.2", df$percent_aged_under_18_or_over_64[36], 
+               info = "https://github.com/Chicago/RSocrata/issues/15")
+  expect_equal("42.9", df$percent_aged_under_18_or_over_64[42], 
+               info = "https://github.com/Chicago/RSocrata/issues/15")  
+})
 
 context("Checks the validity of 4x4")
 
@@ -255,6 +350,12 @@ test_that("incorrect API Query", {
   expect_equal(9, ncol(df), label="columns") 
 })
 
+test_that("Ensure filtering and app tokens can coexist - API", {
+  # Test includes filter and app_token as an R optional argument
+  df <- read.socrata("https://soda.demo.socrata.com/resource/4334-bgaj.csv?$where=magnitude > 3.0", app_token="ew2rEMuESuzWPqMkyPfOSGJgE")
+  expect_equal(193, nrow(df), label = "rows", info = "https://github.com/Chicago/RSocrata/issues/105")
+})
+
 test_that("incorrect API Query Human Readable", {
   # The query below is missing a $ before app_token.
   expect_error(read.socrata("https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj?$app_token=ew2rEMuESuzWPqMkyPfOSGJgE"))
@@ -263,6 +364,8 @@ test_that("incorrect API Query Human Readable", {
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(9, ncol(df), label="columns") 
 })
+
+context("ls.socrata functions correctly")
 
 test_that("List datasets available from a Socrata domain", {
   # Makes some potentially erroneous assumptions about availability
@@ -279,6 +382,11 @@ test_that("List datasets available from a Socrata domain", {
   expect_equal(as.logical(rep(TRUE, length(names(df)))), names(df) %in% c(core_names))
 })
 
+test_that("Catalog Fields are assigned as attributes when listing data sets", {
+  df <- ls.socrata("https://soda.demo.socrata.com")
+  catalog_fields <- c("@context", "@id", "@type", "conformsTo", "describedBy")
+  expect_equal(as.logical(rep(TRUE, length(catalog_fields))), catalog_fields %in% names(attributes(df)))
+})
 
 context("Test reading private Socrata dataset with email and password")
 
@@ -356,3 +464,25 @@ test_that("fully replace a dataset", {
   expect_equal(df_in$x, as.numeric(df_out$x), label = "x values")
   expect_equal(df_in$y, as.numeric(df_out$y), label = "y values")
 })
+
+
+context("getContentAsDataFrame")
+
+test_that("getContentAsDataFrame does not get caught in infinite loop", {
+  
+  ## This is the original url suggested, but it causes the rbind issue
+  # u <- paste0("https://data.smgov.net/resource/xx64-wi4x.json?$",
+  #             "select=incident_number,incident_date,call_type,received_time,",
+  #             "cleared_time,census_tract_2010_geoid",
+  #             "&$where=incident_date=%272016-08-21%27")
+  
+  ## This request has been modified to avoid the rbind issue
+  u <- paste0("https://data.smgov.net/resource/xx64-wi4x.json?$",
+              "select=incident_number,incident_date,call_type,received_time,",
+              "cleared_time,census_tract_2010_geoid",
+              "&$where=incident_date=%272016-08-27%27%20and%20",
+              "census_tract_2010_geoid%20is%20not%20null")
+  df <- read.socrata(u)
+  expect_equal("data.frame", class(df), label="class")
+})
+

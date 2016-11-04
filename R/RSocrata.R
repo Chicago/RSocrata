@@ -6,6 +6,7 @@
 # library('httr')       # for access to the HTTP header
 # library('jsonlite')   # for parsing data types from Socrata
 # library('mime')       # for guessing mime type
+# library('plyr')       # for parsing JSON files
 
 #' Time-stamped message
 #'
@@ -15,7 +16,7 @@
 #' @author Hugh J. Devlin \email{Hugh.Devlin@@cityofchicago.org}
 #' @noRd
 logMsg <- function(s) {
-	cat(format(Sys.time(), "%Y-%m-%d %H:%M:%OS3 "), as.character(sys.call(-1))[1], ": ", s, '\n', sep='')
+  cat(format(Sys.time(), "%Y-%m-%d %H:%M:%OS3 "), as.character(sys.call(-1))[1], ": ", s, '\n', sep='')
 }
 
 #' Checks the validity of the syntax for a potential Socrata dataset Unique Identifier, also known as a 4x4.
@@ -29,12 +30,12 @@ logMsg <- function(s) {
 #' @author Tom Schenk Jr \email{tom.schenk@@cityofchicago.org}
 #' @export
 isFourByFour <- function(fourByFour) {
-	fourByFour <- as.character(fourByFour)
-	if(nchar(fourByFour) != 9)
-		return(FALSE)
-	if(regexpr("[[:alnum:]]{4}-[[:alnum:]]{4}", fourByFour) == -1)
-		return(FALSE)
-	TRUE	
+  fourByFour <- as.character(fourByFour)
+  if(nchar(fourByFour) != 9)
+    return(FALSE)
+  if(regexpr("[[:alnum:]]{4}-[[:alnum:]]{4}", fourByFour) == -1)
+    return(FALSE)
+  TRUE	
 }
 
 #' Convert, if necessary, URL to valid REST API URL supported by Socrata.
@@ -53,32 +54,33 @@ isFourByFour <- function(fourByFour) {
 #' @author Tom Schenk Jr \email{tom.schenk@@cityofchicago.org}
 #' @export
 validateUrl <- function(url, app_token) {
-	url <- as.character(url)
+  url <- as.character(url)
   parsedUrl <- httr::parse_url(url)
-	if(is.null(parsedUrl$scheme) | is.null(parsedUrl$hostname) | is.null(parsedUrl$path))
-		stop(url, " does not appear to be a valid URL.")
+  if(is.null(parsedUrl$scheme) | is.null(parsedUrl$hostname) | is.null(parsedUrl$path))
+    stop(url, " does not appear to be a valid URL.")
   if(!is.null(app_token)) { # Handles the addition of API token and resolves invalid uses
     if(is.null(parsedUrl$query[["$$app_token"]])) {
       token_inclusion <- "valid_use"
     } else {
       token_inclusion <- "already_included" }
     switch(token_inclusion,
-      "already_included"={ # Token already included in url argument
-        warning(url, " already contains an API token in url. Ignoring user-defined token.")
-      },
-      "valid_use"={ # app_token argument is used, not duplicative.
-        parsedUrl$query[["app_token"]] <- as.character(paste("%24%24app_token=", app_token, sep=""))
-      })
+           "already_included"={ # Token already included in url argument
+             warning(url, " already contains an API token in url. Ignoring token supplied in the `app_token=` argument.")
+           },
+           "valid_use"={ # app_token argument is used, not duplicative.
+            parsedUrl$query$`$$app_token` <- as.character(app_token)
+           }
+          )
   } 
   if(substr(parsedUrl$path, 1, 9) == 'resource/') {
-		return(httr::build_url(parsedUrl)) # resource url already
-	}
-	fourByFour <- basename(parsedUrl$path)
+    return(httr::build_url(parsedUrl)) # resource url already
+  }
+  fourByFour <- basename(parsedUrl$path)
   if(!isFourByFour(fourByFour))
-		stop(fourByFour, " is not a valid Socrata dataset unique identifier.")
+    stop(fourByFour, " is not a valid Socrata dataset unique identifier.")
   else {
     parsedUrl$path <- paste('resource/', fourByFour, '.csv', sep="")
-    httr::build_url(parsedUrl) 
+    httr::build_url(parsedUrl)
   }
 }
 
@@ -95,7 +97,7 @@ validateUrl <- function(url, app_token) {
 #' @examples
 #' fieldName("Number.of.Stations") # number_of_stations
 fieldName <- function(humanName) {
-	tolower(gsub('\\.', '_', as.character(humanName)))	
+  tolower(gsub('\\.', '_', as.character(humanName)))	
 }
 
 #' Convert Socrata calendar_date string to POSIX
@@ -105,24 +107,30 @@ fieldName <- function(humanName) {
 #' @export
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 posixify <- function(x) {
-	x <- as.character(x)
-	if (length(x)==0) return(x)
-	
-	## Define regex patterns for short and long date formats, which are the two 
-	## formats that are supplied by Socrata. 
-	patternShort <- paste0("^[[:digit:]]{1,2}/[[:digit:]]{1,2}/[[:digit:]]{4}$")
-	patternLong <- paste0("^[[:digit:]]{1,2}/[[:digit:]]{1,2}/[[:digit:]]{4}",
-	                      "[[:digit:]]{1,2}:[[:digit:]]{1,2}:[[:digit:]]{1,2}",
-	                      "AM|PM", "$")
-	## Find number of matches with grep
-	nMatchesShort <- grep(pattern = patternShort, x)
-	nMatchesLong <- grep(pattern = patternLong, x)
-	## Parse as the most likely calendar date format. Ties go to short format.
-	if(length(nMatchesLong) > length(nMatchesShort)){
-	  as.POSIXct(strptime(x, format="%m/%d/%Y %I:%M:%S %p")) # long date-time format
-	}	else {
-	  as.POSIXct(strptime(x, format="%m/%d/%Y")) # short date format
-	}
+  x <- as.character(x)
+  if (length(x)==0) return(x)
+  
+  ## Define regex patterns for short and long date formats (CSV) and ISO 8601 (JSON),  
+  ## which are the three formats that are supplied by Socrata. 
+  patternShortCSV <- paste0("^[[:digit:]]{1,2}/[[:digit:]]{1,2}/[[:digit:]]{4}$")
+  patternLongCSV <- paste0("^[[:digit:]]{1,2}/[[:digit:]]{1,2}/[[:digit:]]{4}",
+                           "[[:digit:]]{1,2}:[[:digit:]]{1,2}:[[:digit:]]{1,2}",
+                           "AM|PM", "$")
+  patternJSON <- paste0("^[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}T",
+                        "[[:digit:]]{2}:[[:digit:]]{2}:[[:digit:]]{2}.[[:digit:]]{3}","$")
+  ## Find number of matches with grep
+  nMatchesShortCSV <- grep(pattern = patternShortCSV, x)
+  nMatchesLongCSV <- grep(pattern = patternLongCSV, x)
+  nMatchesJSON <- grep(pattern = patternJSON, x)
+  ## Parse as the most likely calendar date format. CSV short/long ties go to short format
+  if(length(nMatchesLongCSV) > length(nMatchesShortCSV)){
+    return(as.POSIXct(strptime(x, format="%m/%d/%Y %I:%M:%S %p"))) # long date-time format
+  }	else if (length(nMatchesJSON) == 0){
+    return(as.POSIXct(strptime(x, format="%m/%d/%Y"))) # short date format
+  } 
+  if(length(nMatchesJSON) > 0){
+    as.POSIXct(x, format = "%Y-%m-%dT%H:%M:%S") # JSON format
+  }
 }
 
 #' Convert Socrata money fields to numeric
@@ -148,24 +156,24 @@ no_deniro <- function(x) {
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' @noRd
 getResponse <- function(url, email = NULL, password = NULL) {
-	
-	if(is.null(email) && is.null(password)){
-		response <- httr::GET(url)
-	} else { # email and password are not NULL
-		response <- httr::GET(url, httr::authenticate(email, password))
-	}
-
-	# status <- httr::http_status(response)
-	if(response$status_code != 200) {
-		msg <- paste("Error in httr GET:", response$status_code, response$headers$statusmessage, url)
-		if(!is.null(response$headers$`content-length`) && (response$headers$`content-length` > 0)) {
-			details <- httr::content(response)
-			msg <- paste(msg, details$code[1], details$message[1])	
-		}
-		logMsg(msg)
-	}
-	httr::stop_for_status(response)
-	return(response)
+  
+  if(is.null(email) && is.null(password)){
+    response <- httr::GET(url)
+  } else { # email and password are not NULL
+    response <- httr::GET(url, httr::authenticate(email, password))
+  }
+  
+  # status <- httr::http_status(response)
+  if(response$status_code != 200) {
+    msg <- paste("Error in httr GET:", response$status_code, response$headers$statusmessage, url)
+    if(!is.null(response$headers$`content-length`) && (response$headers$`content-length` > 0)) {
+      details <- httr::content(response)
+      msg <- paste(msg, details$code[1], details$message[1])	
+    }
+    logMsg(msg)
+  }
+  httr::stop_for_status(response)
+  return(response)
 }
 
 #' Content parsers
@@ -174,6 +182,7 @@ getResponse <- function(url, email = NULL, password = NULL) {
 #'
 #' @author Hugh J. Devlin \email{Hugh.Devlin@@cityofchicago.org}
 #' @importFrom httr content
+#' @importFrom jsonlite fromJSON
 #' @importFrom utils read.csv
 #' @param response - an httr response object
 #' @return data frame, possibly empty
@@ -192,12 +201,14 @@ getContentAsDataFrame <- function(response) {
                                                  encoding = "utf-8")), 
                     stringsAsFactors = FALSE), # automatic parsing
          'application/json' = 
-           if(httr::content(response, 
-                            as = 'text') == "[ ]") # empty json?
+           if(length(httr::content(response)) == 0) # empty json?
              data.frame() # empty data frame
          else
-           data.frame(t(sapply(httr::content(response), unlist)), 
-                      stringsAsFactors=FALSE)
+           as.data.frame.list(fromJSON(httr::content(response,
+                                                     as = "text",
+                                                     type = "application/json",
+                                                     encoding = "utf-8")),
+                              stringsAsFactors=FALSE)
   ) # end switch
 }
 
@@ -211,9 +222,9 @@ getContentAsDataFrame <- function(response) {
 #' @noRd
 getSodaTypes <- function(response) { UseMethod('response') }
 getSodaTypes <- function(response) {
-	result <- jsonlite::fromJSON(response$headers[['x-soda2-types']])
-	names(result) <- jsonlite::fromJSON(response$headers[['x-soda2-fields']])
-	return(result)
+  result <- jsonlite::fromJSON(response$headers[['x-soda2-types']])
+  names(result) <- jsonlite::fromJSON(response$headers[['x-soda2-fields']])
+  return(result)
 }
 
 #' Get a full Socrata data set as an R data frame
@@ -251,35 +262,78 @@ getSodaTypes <- function(response) {
 #' nrow(df)
 #' @importFrom httr parse_url build_url
 #' @importFrom mime guess_type
+#' @importFrom plyr rbind.fill
 #' @export
 read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL,
                          stringsAsFactors = FALSE) {
-	validUrl <- validateUrl(url, app_token) # check url syntax, allow human-readable Socrata url
-	parsedUrl <- httr::parse_url(validUrl)
-	mimeType <- mime::guess_type(parsedUrl$path)
-	if(!(mimeType %in% c('text/csv','application/json')))
-		stop("Error in read.socrata: ", mimeType, " not a supported data format.")
-	response <- getResponse(validUrl, email, password)
-	page <- getContentAsDataFrame(response)
-	result <- page
-	dataTypes <- getSodaTypes(response)
-	while (nrow(page) > 0) { # more to come maybe?
-		query <- paste(validUrl, if(is.null(parsedUrl$query)) {'?'} else {"&"}, '$offset=', nrow(result), sep='')
-		response <- getResponse(query, email, password)
-		page <- getContentAsDataFrame(response)
-		result <- rbind(result, page) # accumulate
-	}	
-	# convert Socrata calendar dates to posix format
-	for(columnName in colnames(page)[!is.na(dataTypes[fieldName(colnames(page))]) & dataTypes[fieldName(colnames(page))] == 'calendar_date']) {
-		result[[columnName]] <- posixify(result[[columnName]])
-	}
-  for(columnName in colnames(page)[!is.na(dataTypes[fieldName(colnames(page))]) & dataTypes[fieldName(colnames(page))] == 'money']) {
+  validUrl <- validateUrl(url, app_token) # check url syntax, allow human-readable Socrata url
+  parsedUrl <- httr::parse_url(validUrl)
+  mimeType <- mime::guess_type(parsedUrl$path)
+  if (!is.null(names(parsedUrl$query))) { # check if URL has any queries 
+    ## if there is a query, check for $order within the query
+    orderTest <- any(names(parsedUrl$query) == "$order")
+    if(!orderTest) # sort by Socrata unique identifier
+      validUrl <- paste(validUrl, if(is.null(parsedUrl$query)) {'?'} else {"&"}, '$order=:id', sep='')
+  }
+  else {
+    validUrl <- paste(validUrl, {'?'}, '$order=:id', sep='')
+    parsedUrl <- httr::parse_url(validUrl) # reparse because URL now has a query
+  }
+  if(!(mimeType %in% c('text/csv','application/json')))
+    stop("Error in read.socrata: ", mimeType, " not a supported data format.")
+  response <- getResponse(validUrl, email, password)
+  page <- getContentAsDataFrame(response)
+  result <- page
+  dataTypes <- getSodaTypes(response)
+  # parse any $limit out of the URL
+  if(is.null(parsedUrl$query$`$limit`) & is.null(parsedUrl$query$`$LIMIT`))
+    limitProvided <- FALSE
+  else { 
+    names(parsedUrl$query) <- tolower(names(parsedUrl$query))
+    userLimit <- as.integer(parsedUrl$query$`$limit`)
+    limitProvided <- TRUE
+    ##remove LIMIT from URL
+    parsedUrl$query <- parsedUrl$query[-which(names(parsedUrl$query) == '$limit')] 
+    validUrl <- httr::build_url(parsedUrl)
+  }
+  # PAGE through data and combine
+  # if $limit is <= 1000, do not page
+  # if $limit > 1000, page only until limit is met
+  # if no limit $provided, loop until all data is paged
+  while (nrow(page) > 0) { 
+    if(limitProvided) 
+      if(userLimit < 1000) break
+    else if(userLimit - nrow(result) <= 1000) {
+      query <- paste(validUrl, if(is.null(parsedUrl$query)) {'?'} else {"&"}, 
+	                   '$limit=', (userLimit - nrow(result)),'&$offset=', nrow(result), sep='')
+      response <- getResponse(query, email, password)
+      page <- getContentAsDataFrame(response)
+      result <- rbind.fill(result, page) # accumulate
+      break
+    }
+    query <- paste(validUrl, if(is.null(parsedUrl$query)) {'?'} else {"&"}, '$offset=', nrow(result), sep='')
+    response <- getResponse(query, email, password)
+    page <- getContentAsDataFrame(response)
+    result <- rbind.fill(result, page) # accumulate
+  }	
+  # convert Socrata calendar dates to posix format
+  for(columnName in colnames(result)[!is.na(dataTypes[fieldName(colnames(result))])
+                                     & (dataTypes[fieldName(colnames(result))] == 'calendar_date'
+                                        | dataTypes[fieldName(colnames(result))] == 'floating_timestamp')]) {
+    result[[columnName]] <- posixify(result[[columnName]])
+  }
+  for(columnName in colnames(result)[!is.na(dataTypes[fieldName(colnames(result))]) & dataTypes[fieldName(colnames(result))] == 'money']) {
     result[[columnName]] <- no_deniro(result[[columnName]])
   }
+  # convert logical fields to character
+  for(columnName in colnames(result)) {
+    if(typeof(result[,columnName]) == "logical")
+      result[,columnName] <- as.character(result[,columnName])
+  }
   if(stringsAsFactors){
-	  result <- data.frame(unclass(result), stringsAsFactors = stringsAsFactors)
-	}
-	return(result)
+    result <- data.frame(unclass(result), stringsAsFactors = stringsAsFactors)
+  }
+  return(result)
 }
 
 #' List datasets available from a Socrata domain
@@ -289,24 +343,33 @@ read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL,
 #' various metadata.
 #' @author Peter Schmiedeskamp \email{pschmied@@uw.edu}
 #' @examples
+#' # Download list of data sets
 #' df <- ls.socrata("http://soda.demo.socrata.com")
+#' # Check schema definition for metadata
+#' attributes(df)
 #' @importFrom jsonlite fromJSON
 #' @importFrom httr parse_url
 #' @export
 ls.socrata <- function(url) {
-    url <- as.character(url)
-    parsedUrl <- httr::parse_url(url)
-    if(is.null(parsedUrl$scheme) | is.null(parsedUrl$hostname))
-        stop(url, " does not appear to be a valid URL.")
-    parsedUrl$path <- "data.json"
-    df <- jsonlite::fromJSON(httr::build_url(parsedUrl))
-    df <- as.data.frame(df$dataset)
-    df$issued <- as.POSIXct(df$issued)
-    df$modified <- as.POSIXct(df$modified)
-    df$theme <- as.character(df$theme)
-    return(df)
+  url <- as.character(url)
+  parsedUrl <- httr::parse_url(url)
+  if(is.null(parsedUrl$scheme) | is.null(parsedUrl$hostname))
+    stop(url, " does not appear to be a valid URL.")
+  parsedUrl$path <- "data.json"
+  data_dot_json <- jsonlite::fromJSON(httr::build_url(parsedUrl))
+  data_df <- as.data.frame(data_dot_json$dataset)
+  # Assign Catalog Fields as attributes
+  attr(data_df, "@context") <- data_dot_json$`@context`
+  attr(data_df, "@id") <- data_dot_json$`@id`
+  attr(data_df, "@type") <- data_dot_json$`@type`
+  attr(data_df, "conformsTo") <- data_dot_json$conformsTo
+  attr(data_df, "describedBy") <- data_dot_json$describedBy
+  # Convert dates (strings) to POSIX-formatted dates
+  data_df$issued <- as.POSIXct(data_df$issued)
+  data_df$modified <- as.POSIXct(data_df$modified)
+  data_df$theme <- as.character(data_df$theme)
+  return(data_df)
 }
-
 
 #' Wrap httr PUT/POST in some diagnostics
 #' 
@@ -325,18 +388,18 @@ ls.socrata <- function(url) {
 checkUpdateResponse <- function(json_data_to_upload, url, http_verb, email, password, app_token = NULL) {
   if(http_verb == "POST"){
     response <- httr::POST(url,
-      body = json_data_to_upload,
-      httr::authenticate(email, password),
-      httr::add_headers("X-App-Token" = app_token,
-                  "Content-Type" = "application/json")) #, verbose())
+                           body = json_data_to_upload,
+                           httr::authenticate(email, password),
+                           httr::add_headers("X-App-Token" = app_token,
+                                             "Content-Type" = "application/json")) #, verbose())
   } else if(http_verb == "PUT"){
     response <- httr::PUT(url,
-      body = json_data_to_upload,
-      httr::authenticate(email, password),
-      httr::add_headers("X-App-Token" = app_token,
-                  "Content-Type" = "application/json")) # , verbose())
+                          body = json_data_to_upload,
+                          httr::authenticate(email, password),
+                          httr::add_headers("X-App-Token" = app_token,
+                                            "Content-Type" = "application/json")) # , verbose())
   }
-    
+  
   return(response)
 }
 
@@ -378,14 +441,13 @@ write.socrata <- function(dataframe, dataset_json_endpoint, update_mode, email, 
   } else {
     stop("update_mode must be UPSERT or REPLACE")
   }
-
+  
   # convert dataframe to JSON
   dataframe_as_json_string <- jsonlite::toJSON(dataframe)
-
+  
   # do the actual upload
   response <- checkUpdateResponse(dataframe_as_json_string, dataset_json_endpoint, http_verb, email, password, app_token)
   
   return(response)
-
+  
 }
-
