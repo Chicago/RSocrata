@@ -3,8 +3,8 @@ RSocrata
 
 [![Gitter](https://badges.gitter.im/gitterHQ/gitter.svg)](https://gitter.im/Chicago/RSocrata)
 [![Stories in Ready](https://badge.waffle.io/Chicago/RSocrata.svg?label=ready&title=Ready)](http://waffle.io/Chicago/RSocrata)
-[![downloads](http://cranlogs.r-pkg.org/badges/RSocrata)](http://cran.rstudio.com/web/packages/RSocrata/index.html)
-[![cran version](http://www.r-pkg.org/badges/version/RSocrata)](http://cran.rstudio.com/web/packages/RSocrata)
+[![downloads](http://cranlogs.r-pkg.org/badges/RSocrata)](https://CRAN.R-project.org/package=RSocrata)
+[![cran version](http://www.r-pkg.org/badges/version/RSocrata)](https://CRAN.R-project.org/package=RSocrata)
 
 **Master** 
 
@@ -29,7 +29,7 @@ Upload data to Socrata data portals using "upsert" and "replace" methods.
 
 Use ```ls.socrata()``` to list all datasets available on a Socrata webserver.
 
-[testthat](http://cran.r-project.org/package=testthat) test coverage.
+[testthat](https://cran.r-project.org/package=testthat) test coverage.
 
 Installation
 -------------
