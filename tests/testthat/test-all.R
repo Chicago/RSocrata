@@ -24,6 +24,12 @@ test_that("read Socrata JSON is compatible with posixify (issue 85)", {
   expect_equal(dt, df$datetime[1], info= "Testing Issue 85 https://github.com/Chicago/RSocrata/issues/85")  ## Check that download matches test
 })
 
+test_that("read Socrata JSON that uses ISO 8601 but does not specify subseconds", {
+  df <- read.socrata('https://data.cityofnewyork.us/resource/qcdj-rwhu.json') # Not from #121, but smaller for shorter test process
+  null_dates <- table(is.na(df$app_status_date)) # Count number of null dates
+  expect_true(null_dates == 0, info= "Testing issue 121 https://github.com/Chicago/RSocrata/issues/121")
+})
+
 test_that("posixify returns Long format", {
   dt <- posixify("09/14/2012 10:38:01 PM")
   expect_equal("POSIXct", class(dt)[1], label="Long format date data type")
