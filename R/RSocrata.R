@@ -112,23 +112,23 @@ posixify <- function(x) {
   
   ## Define regex patterns for short and long date formats (CSV) and ISO 8601 (JSON),  
   ## which are the three formats that are supplied by Socrata. 
-  patternShortCSV <- paste0("^[[:digit:]]{1,2}/[[:digit:]]{1,2}/[[:digit:]]{4}$")
-  patternLongCSV <- paste0("^[[:digit:]]{1,2}/[[:digit:]]{1,2}/[[:digit:]]{4}",
+  patternShortCsv <- paste0("^[[:digit:]]{1,2}/[[:digit:]]{1,2}/[[:digit:]]{4}$")
+  patternLongCsv <- paste0("^[[:digit:]]{1,2}/[[:digit:]]{1,2}/[[:digit:]]{4}",
                            "[[:digit:]]{1,2}:[[:digit:]]{1,2}:[[:digit:]]{1,2}",
                            "AM|PM", "$")
-  patternJSON <- paste0("^[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}T",
+  patternJson <- paste0("^[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}T",
                         "[[:digit:]]{2}:[[:digit:]]{2}:[[:digit:]]{2}.[[:digit:]]{3}","$")
   ## Find number of matches with grep
-  nMatchesShortCSV <- grep(pattern = patternShortCSV, x)
-  nMatchesLongCSV <- grep(pattern = patternLongCSV, x)
-  nMatchesJSON <- grep(pattern = patternJSON, x)
+  nMatchesShortCsv <- grep(pattern = patternShortCsv, x)
+  nMatchesLongCsv <- grep(pattern = patternLongCsv, x)
+  nMatchesJson <- grep(pattern = patternJson, x)
   ## Parse as the most likely calendar date format. CSV short/long ties go to short format
-  if(length(nMatchesLongCSV) > length(nMatchesShortCSV)){
+  if(length(nMatchesLongCsv) > length(nMatchesShortCSV)){
     return(as.POSIXct(strptime(x, format="%m/%d/%Y %I:%M:%S %p"))) # long date-time format
-  }	else if (length(nMatchesJSON) == 0){
+  }	else if (length(nMatchesJson) == 0){
     return(as.POSIXct(strptime(x, format="%m/%d/%Y"))) # short date format
   } 
-  if(length(nMatchesJSON) > 0){
+  if(length(nMatchesJson) > 0){
     as.POSIXct(x, format = "%Y-%m-%dT%H:%M:%S") # JSON format
   }
 }
