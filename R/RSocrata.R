@@ -133,6 +133,9 @@ posixify <- function(x) {
   } 
   if( any(nMatchesJsonDecimal == TRUE) | any(nMatchesJsonNoDecimal == TRUE) ){
     return(as.POSIXct(x, format = "%Y-%m-%dT%H:%M:%S")) # JSON format
+  } else {
+    warning("Unable to properly format date field; formatted as character string.")
+    return(x)
   }
 }
 

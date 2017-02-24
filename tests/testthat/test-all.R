@@ -81,13 +81,12 @@ test_that("Date is not entirely NA if the first record is bad (issue 68)", {
   ## Define smaller tests
   dates_clean <- posixify(c("01/01/2011", "01/01/2011", "01/01/2011"))
   dates_mixed <- posixify(c("Date", "01/01/2011", "01/01/2011"))
-  dates_dirty <- posixify(c("Date", "junk", "junk"))
   
   ## Execute smaller tests
   expect_true(all(!is.na(dates_clean)))  ## Nothing should be NA
   expect_true(any(is.na(dates_mixed)))   ## Some should be NA
   expect_true(any(!is.na(dates_mixed)))  ## Some should not be NA
-  expect_true(all(is.na(dates_dirty)))   ## Everything should be NA
+  expect_warning(posixify(c("Date", "junk", "junk"))) ## Should return warning
 })
 
 context("change money to numeric")
