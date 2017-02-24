@@ -294,6 +294,16 @@ test_that("If URL has only non-order query parameters, insert $order:id into URL
                info = "https://github.com/Chicago/RSocrata/issues/15")  
 })
 
+test_that("Handle URL with query that does not return :id", {
+  ## Define and test issue 120
+  ## Ensure that the $order=:id is inserted when no other query parameters are used.
+  qurl <-  "https://data.cityofchicago.org/resource/wrvz-psew.csv?$select=count(trip_id)&$where=trip_start_timestamp between '2016-04-01T00:00:00' and '2016-04-05T00:00:00'"
+  dat <- read.socrata(qurl)
+  expect_equal(1, ncol(dat), 
+               info = "https://github.com/Chicago/RSocrata/issues/120")
+})
+
+
 context("Checks the validity of 4x4")
 
 test_that("is 4x4", {

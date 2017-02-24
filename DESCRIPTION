@@ -10,8 +10,8 @@ Description: Provides easier interaction with
     format and manages throttling by 'Socrata'.
     Users can upload data to Socrata portals directly
     from R.
-Version: 1.7.2-1
-Date: 2017-02-23
+Version: 1.7.2-5
+Date: 2017-2-23
 Author: Hugh Devlin, Ph. D., Tom Schenk, Jr., and John Malc
 Maintainer: "Tom Schenk Jr." <developers@cityofchicago.org>
 Depends:
