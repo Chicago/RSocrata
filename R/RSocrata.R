@@ -112,24 +112,27 @@ posixify <- function(x) {
   
   ## Define regex patterns for short and long date formats (CSV) and ISO 8601 (JSON),  
   ## which are the three formats that are supplied by Socrata. 
-  patternShortCsv <- paste0("^[[:digit:]]{1,2}/[[:digit:]]{1,2}/[[:digit:]]{4}$")
-  patternLongCsv <- paste0("^[[:digit:]]{1,2}/[[:digit:]]{1,2}/[[:digit:]]{4}",
+  patternShortCsv <- paste0("^[[:digit:]]{1,2}/[[:digit:]]{1,2}/[[:digit:]]{4}$") # MM/DD/YYYY
+  patternLongCsv <- paste("^[[:digit:]]{1,2}/[[:digit:]]{1,2}/[[:digit:]]{4}", 
                            "[[:digit:]]{1,2}:[[:digit:]]{1,2}:[[:digit:]]{1,2}",
-                           "AM|PM", "$")
-  patternJson <- paste0("^[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}T",
-                        "[[:digit:]]{2}:[[:digit:]]{2}:[[:digit:]]{2}.[[:digit:]]{3}","$")
+                           ".M$") # MM/DD/YYYY hh:mm:ss AM/PM
+  patternJsonDecimal <- paste0("^[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}T",
+                               "[[:digit:]]{2}:[[:digit:]]{2}:[[:digit:]]{2}.[[:digit:]]{3}","$") # YYYY-MM-DDThh:mm:ss.sss
+  patternJsonNoDecimal <- paste0("^[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}T",
+                                 "[[:digit:]]{2}:[[:digit:]]{2}:[[:digit:]]{2}","$") # YYYY-MM-DDThh:mm:ss
   ## Find number of matches with grep
-  nMatchesShortCsv <- grep(pattern = patternShortCsv, x)
-  nMatchesLongCsv <- grep(pattern = patternLongCsv, x)
-  nMatchesJson <- grep(pattern = patternJson, x)
+  nMatchesShortCsv <- grepl(pattern = patternShortCsv, x)
+  nMatchesLongCsv <- grepl(pattern = patternLongCsv, x)
+  nMatchesJsonDecimal <- grepl(pattern = patternJsonDecimal, x)
+  nMatchesJsonNoDecimal <- grepl(pattern = patternJsonNoDecimal, x)
   ## Parse as the most likely calendar date format. CSV short/long ties go to short format
-  if(length(nMatchesLongCsv) > length(nMatchesShortCSV)){
+  if( any(nMatchesLongCsv == TRUE) ){
     return(as.POSIXct(strptime(x, format="%m/%d/%Y %I:%M:%S %p"))) # long date-time format
-  }	else if (length(nMatchesJson) == 0){
+  }	else if ( any(nMatchesShortCsv == TRUE) ){
     return(as.POSIXct(strptime(x, format="%m/%d/%Y"))) # short date format
   } 
-  if(length(nMatchesJson) > 0){
-    as.POSIXct(x, format = "%Y-%m-%dT%H:%M:%S") # JSON format
+  if( any(nMatchesJsonDecimal == TRUE) | any(nMatchesJsonNoDecimal == TRUE) ){
+    return(as.POSIXct(x, format = "%Y-%m-%dT%H:%M:%S")) # JSON format
   }
 }
 
