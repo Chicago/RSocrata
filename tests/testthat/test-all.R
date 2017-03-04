@@ -194,6 +194,18 @@ test_that("readSocrataHumanReadable", {
   expect_equal(9, ncol(df), label="columns")
 })
 
+test_that("Read URL provided by data.json from ls.socrata() - CSV", {
+  df <- read.socrata('https://soda.demo.socrata.com/api/views/4334-bgaj/rows.csv?accessType=DOWNLOAD')
+  expect_equal(1007, nrow(df), label="rows", info="Testing for issue #124")
+  expect_equal(9, ncol(df), label="columns")
+})
+
+test_that("Read URL provided by data.json from ls.socrata() - JSON", {
+  df <- read.socrata('https://soda.demo.socrata.com/api/views/4334-bgaj/rows.json?accessType=DOWNLOAD')
+  expect_equal(1007, nrow(df), label="rows", info="Testing for issue #124")
+  expect_equal(9, ncol(df), label="columns")
+})
+
 test_that("Read data with missing dates", { # See issue #24 & #27 
   # Query below will pull Boston's 311 requests from early July 2011. Contains NA dates.
   df <- read.socrata("https://data.cityofboston.gov/resource/awu8-dc52.csv?$where=case_enquiry_id< 101000295717")
