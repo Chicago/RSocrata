@@ -74,7 +74,11 @@ validateUrl <- function(url, app_token) {
   } 
   if(substr(parsedUrl$path, 1, 9) == 'resource/') {
     return(httr::build_url(parsedUrl)) # resource url already
+  } else if(basename(parsedUrl$path) == "rows.json" | basename(parsedUrl$path) == "rows.csv") { # See issue #124
+    parsedUrl$path <- substr(parsedUrl$path, start = 11, stop = 19)
+    parsedUrl$query <- NULL
   }
+  
   fourByFour <- basename(parsedUrl$path)
   if(!isFourByFour(fourByFour))
     stop(fourByFour, " is not a valid Socrata dataset unique identifier.")
