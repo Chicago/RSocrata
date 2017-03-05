@@ -19,6 +19,29 @@ logMsg <- function(s) {
   cat(format(Sys.time(), "%Y-%m-%d %H:%M:%OS3 "), as.character(sys.call(-1))[1], ": ", s, '\n', sep='')
 }
 
+#' Compiles the information to be used in HTTP headers
+#' 
+#' Grabs the headers (RSocrata version, OS, and R version) to be used while
+#' making HTTP requests with Socrata. This enables Socrata's team to track
+#' the usage of RSocrata.
+#' @return a string
+#' @author Tom Schenk Jr \email{tom.schenk@@cityofchicago.org}
+#' @noRd
+fetch_header <- function() {
+  rSocrataVersion <- packageVersion("RSocrata")
+  operatingSystem <- Sys.info()[["sysname"]]
+  operatingSystemVersion <- paste(Sys.info()[["release"]], Sys.info()[["version"]])
+  rVersion <- paste(R.version$major, R.version$minor, sep=".")
+  
+  header <- paste0( "RSocrata/",
+                    rSocrataVersion, " (",
+                    operatingSystem, "/",
+                    operatingSystemVersion, "; ",
+                    "R/", rVersion,
+                    ")"
+  )
+}
+
 #' Checks the validity of the syntax for a potential Socrata dataset Unique Identifier, also known as a 4x4.
 #'
 #' Will check the validity of a potential dataset unique identifier
