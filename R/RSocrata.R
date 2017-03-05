@@ -25,6 +25,7 @@ logMsg <- function(s) {
 #' making HTTP requests with Socrata. This enables Socrata's team to track
 #' the usage of RSocrata.
 #' @return a string
+#' @importFrom utils packageVersion
 #' @author Tom Schenk Jr \email{tom.schenk@@cityofchicago.org}
 #' @noRd
 fetch_header <- function() {
