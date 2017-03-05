@@ -31,7 +31,7 @@ fetch_header <- function() {
   rSocrataVersion <- packageVersion("RSocrata")
   operatingSystem <- Sys.info()[["sysname"]]
   operatingSystemVersion <- paste(Sys.info()[["release"]], Sys.info()[["version"]])
-  rVersion <- paste(R.version$major, R.version$minor, sep=".")
+  rVersion <- paste0(R.version$major, ".", R.version$minor, "-", R.version$status)
   
   header <- paste0( "RSocrata/",
                     rSocrataVersion, " (",
@@ -40,6 +40,7 @@ fetch_header <- function() {
                     "R/", rVersion,
                     ")"
   )
+  print(header)
 }
 
 #' Checks the validity of the syntax for a potential Socrata dataset Unique Identifier, also known as a 4x4.
@@ -191,9 +192,9 @@ no_deniro <- function(x) {
 getResponse <- function(url, email = NULL, password = NULL) {
   
   if(is.null(email) && is.null(password)){
-    response <- httr::GET(url)
+    response <- httr::GET(url, add_headers = fetch_header())
   } else { # email and password are not NULL
-    response <- httr::GET(url, httr::authenticate(email, password))
+    response <- httr::GET(url, httr::authenticate(email, password), add_headers = fetch_header())
   }
   
   # status <- httr::http_status(response)
@@ -423,13 +424,15 @@ checkUpdateResponse <- function(json_data_to_upload, url, http_verb, email, pass
     response <- httr::POST(url,
                            body = json_data_to_upload,
                            httr::authenticate(email, password),
-                           httr::add_headers("X-App-Token" = app_token,
+                           httr::add_headers("Version" = fetch_header(),
+                                             "X-App-Token" = app_token,
                                              "Content-Type" = "application/json")) #, verbose())
   } else if(http_verb == "PUT"){
     response <- httr::PUT(url,
                           body = json_data_to_upload,
                           httr::authenticate(email, password),
-                          httr::add_headers("X-App-Token" = app_token,
+                          httr::add_headers("Version" = fetch_header(),
+                                            "X-App-Token" = app_token,
                                             "Content-Type" = "application/json")) # , verbose())
   }
   
