@@ -284,7 +284,7 @@ read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL,
     parsedUrl <- httr::parse_url(validUrl) # reparse because URL now has a query
   }
   if(!is.null(offset)){
-    validUrl <- paste(validUrl, '&', sprintf('$offset=%s',limit) , sep='')
+    validUrl <- paste(validUrl, '&', sprintf('$offset=%s',offset) , sep='')
     parsedUrl <- httr::parse_url(validUrl) # reparse because URL now has a query
   }
   if(!(mimeType %in% c('text/csv','application/json')))
