@@ -271,7 +271,7 @@ getSodaTypes <- function(response) {
 #' @importFrom plyr rbind.fill
 #' @export
 read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL,
-                         stringsAsFactors = FALSE) {
+                         stringsAsFactors = FALSE, limit = NULL, offset = NULL) {
   validUrl <- validateUrl(url, app_token) # check url syntax, allow human-readable Socrata url
   parsedUrl <- httr::parse_url(validUrl)
   mimeType <- mime::guess_type(parsedUrl$path)
@@ -283,6 +283,14 @@ read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL,
   }
   else {
     validUrl <- paste(validUrl, {'?'}, '$order=:id', sep='')
+    parsedUrl <- httr::parse_url(validUrl) # reparse because URL now has a query
+  }
+  if(!is.null(limit)){
+    validUrl <- paste(validUrl, '&', sprintf('$limit=%s',limit) , sep='')
+    parsedUrl <- httr::parse_url(validUrl) # reparse because URL now has a query
+  }
+  if(!is.null(offset)){
+    validUrl <- paste(validUrl, '&', sprintf('$offset=%s',offset) , sep='')
     parsedUrl <- httr::parse_url(validUrl) # reparse because URL now has a query
   }
   if(!(mimeType %in% c('text/csv','application/json')))
