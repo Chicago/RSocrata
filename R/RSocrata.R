@@ -280,9 +280,11 @@ read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL,
   parsedUrl <- httr::parse_url(validUrl)
   mimeType <- mime::guess_type(parsedUrl$path)
   if (!is.null(names(parsedUrl$query))) { # check if URL has any queries 
-    ## if there is a query, check for $order within the query
+    ## if there is a query, check for specific queries and handle them
     orderTest <- any(names(parsedUrl$query) == "$order")
-    if(!orderTest) # sort by Socrata unique identifier
+    queries <- unlist(parsedUrl$query)
+    countTest <- any(startsWith(queries, "count"))
+    if(!orderTest & !countTest) # sort by Socrata unique identifier
       validUrl <- paste(validUrl, if(is.null(parsedUrl$query)) {'?'} else {"&"}, '$order=:id', sep='')
   }
   else {
