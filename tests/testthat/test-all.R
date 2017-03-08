@@ -24,6 +24,11 @@ test_that("read Socrata JSON is compatible with posixify (issue 85)", {
   expect_equal(dt, df$datetime[1], info= "Testing Issue 85 https://github.com/Chicago/RSocrata/issues/85")  ## Check that download matches test
 })
 
+test_that("read Socrata JSON that uses ISO 8601 but does not specify subseconds", {
+  df <- read.socrata('https://data.cityofnewyork.us/resource/qcdj-rwhu.json') # Not from #121, but smaller for shorter test process
+  expect_false(anyNA(df$app_status_date), info= "Testing issue 121 https://github.com/Chicago/RSocrata/issues/121")
+})
+
 test_that("posixify returns Long format", {
   dt <- posixify("09/14/2012 10:38:01 PM")
   expect_equal("POSIXct", class(dt)[1], label="Long format date data type")
@@ -76,13 +81,12 @@ test_that("Date is not entirely NA if the first record is bad (issue 68)", {
   ## Define smaller tests
   dates_clean <- posixify(c("01/01/2011", "01/01/2011", "01/01/2011"))
   dates_mixed <- posixify(c("Date", "01/01/2011", "01/01/2011"))
-  dates_dirty <- posixify(c("Date", "junk", "junk"))
   
   ## Execute smaller tests
   expect_true(all(!is.na(dates_clean)))  ## Nothing should be NA
   expect_true(any(is.na(dates_mixed)))   ## Some should be NA
   expect_true(any(!is.na(dates_mixed)))  ## Some should not be NA
-  expect_true(all(is.na(dates_dirty)))   ## Everything should be NA
+  expect_warning(posixify(c("Date", "junk", "junk"))) ## Should return warning
 })
 
 context("change money to numeric")
@@ -187,6 +191,18 @@ test_that("URL is private (Unauthorized) (will fail)", {
 test_that("readSocrataHumanReadable", {
   df <- read.socrata('https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj')
   expect_equal(1007, nrow(df), label="rows")
+  expect_equal(9, ncol(df), label="columns")
+})
+
+test_that("Read URL provided by data.json from ls.socrata() - CSV", {
+  df <- read.socrata('https://soda.demo.socrata.com/api/views/4334-bgaj/rows.csv?accessType=DOWNLOAD')
+  expect_equal(1007, nrow(df), label="rows", info="Testing for issue #124")
+  expect_equal(9, ncol(df), label="columns")
+})
+
+test_that("Read URL provided by data.json from ls.socrata() - JSON", {
+  df <- read.socrata('https://soda.demo.socrata.com/api/views/4334-bgaj/rows.json?accessType=DOWNLOAD')
+  expect_equal(1007, nrow(df), label="rows", info="Testing for issue #124")
   expect_equal(9, ncol(df), label="columns")
 })
 
