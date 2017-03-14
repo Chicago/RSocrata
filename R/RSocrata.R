@@ -74,7 +74,11 @@ validateUrl <- function(url, app_token) {
   } 
   if(substr(parsedUrl$path, 1, 9) == 'resource/') {
     return(httr::build_url(parsedUrl)) # resource url already
+  } else if(basename(parsedUrl$path) == "rows.json" | basename(parsedUrl$path) == "rows.csv") { # See issue #124
+    parsedUrl$path <- substr(parsedUrl$path, start = 11, stop = 19)
+    parsedUrl$query <- NULL
   }
+  
   fourByFour <- basename(parsedUrl$path)
   if(!isFourByFour(fourByFour))
     stop(fourByFour, " is not a valid Socrata dataset unique identifier.")
@@ -112,24 +116,30 @@ posixify <- function(x) {
   
   ## Define regex patterns for short and long date formats (CSV) and ISO 8601 (JSON),  
   ## which are the three formats that are supplied by Socrata. 
-  patternShortCSV <- paste0("^[[:digit:]]{1,2}/[[:digit:]]{1,2}/[[:digit:]]{4}$")
-  patternLongCSV <- paste0("^[[:digit:]]{1,2}/[[:digit:]]{1,2}/[[:digit:]]{4}",
+  patternShortCsv <- paste0("^[[:digit:]]{1,2}/[[:digit:]]{1,2}/[[:digit:]]{4}$") # MM/DD/YYYY
+  patternLongCsv <- paste("^[[:digit:]]{1,2}/[[:digit:]]{1,2}/[[:digit:]]{4}", 
                            "[[:digit:]]{1,2}:[[:digit:]]{1,2}:[[:digit:]]{1,2}",
-                           "AM|PM", "$")
-  patternJSON <- paste0("^[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}T",
-                        "[[:digit:]]{2}:[[:digit:]]{2}:[[:digit:]]{2}.[[:digit:]]{3}","$")
+                           ".M$") # MM/DD/YYYY hh:mm:ss AM/PM
+  patternJsonDecimal <- paste0("^[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}T",
+                               "[[:digit:]]{2}:[[:digit:]]{2}:[[:digit:]]{2}.[[:digit:]]{3}","$") # YYYY-MM-DDThh:mm:ss.sss
+  patternJsonNoDecimal <- paste0("^[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}T",
+                                 "[[:digit:]]{2}:[[:digit:]]{2}:[[:digit:]]{2}","$") # YYYY-MM-DDThh:mm:ss
   ## Find number of matches with grep
-  nMatchesShortCSV <- grep(pattern = patternShortCSV, x)
-  nMatchesLongCSV <- grep(pattern = patternLongCSV, x)
-  nMatchesJSON <- grep(pattern = patternJSON, x)
+  nMatchesShortCsv <- grepl(pattern = patternShortCsv, x)
+  nMatchesLongCsv <- grepl(pattern = patternLongCsv, x)
+  nMatchesJsonDecimal <- grepl(pattern = patternJsonDecimal, x)
+  nMatchesJsonNoDecimal <- grepl(pattern = patternJsonNoDecimal, x)
   ## Parse as the most likely calendar date format. CSV short/long ties go to short format
-  if(length(nMatchesLongCSV) > length(nMatchesShortCSV)){
+  if( any(nMatchesLongCsv == TRUE) ){
     return(as.POSIXct(strptime(x, format="%m/%d/%Y %I:%M:%S %p"))) # long date-time format
-  }	else if (length(nMatchesJSON) == 0){
+  }	else if ( any(nMatchesShortCsv == TRUE) ){
     return(as.POSIXct(strptime(x, format="%m/%d/%Y"))) # short date format
   } 
-  if(length(nMatchesJSON) > 0){
-    as.POSIXct(x, format = "%Y-%m-%dT%H:%M:%S") # JSON format
+  if( any(nMatchesJsonDecimal == TRUE) | any(nMatchesJsonNoDecimal == TRUE) ){
+    return(as.POSIXct(x, format = "%Y-%m-%dT%H:%M:%S")) # JSON format
+  } else {
+    warning("Unable to properly format date field; formatted as character string.")
+    return(x)
   }
 }
 
@@ -291,29 +301,14 @@ read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL,
   if(is.null(parsedUrl$query$`$limit`) & is.null(parsedUrl$query$`$LIMIT`))
     limitProvided <- FALSE
   else { 
-    names(parsedUrl$query) <- tolower(names(parsedUrl$query))
-    userLimit <- as.integer(parsedUrl$query$`$limit`)
     limitProvided <- TRUE
-    ##remove LIMIT from URL
-    parsedUrl$query <- parsedUrl$query[-which(names(parsedUrl$query) == '$limit')] 
-    validUrl <- httr::build_url(parsedUrl)
   }
   # PAGE through data and combine
-  # if $limit is <= 1000, do not page
-  # if $limit > 1000, page only until limit is met
+  # if user limit is provided do not page
   # if no limit $provided, loop until all data is paged
-  while (nrow(page) > 0) { 
-    if(limitProvided) 
-      if(userLimit < 1000) break
-    else if(userLimit - nrow(result) <= 1000) {
-      query <- paste(validUrl, if(is.null(parsedUrl$query)) {'?'} else {"&"}, 
-	                   '$limit=', (userLimit - nrow(result)),'&$offset=', nrow(result), sep='')
-      response <- getResponse(query, email, password)
-      page <- getContentAsDataFrame(response)
-      result <- rbind.fill(result, page) # accumulate
-      break
-    }
-    query <- paste(validUrl, if(is.null(parsedUrl$query)) {'?'} else {"&"}, '$offset=', nrow(result), sep='')
+  while (nrow(page) > 0 & !limitProvided) { 
+    query <- paste(validUrl, if(is.null(parsedUrl$query)) {'?'} else {"&"}, 
+                   '$limit=50000&$offset=', nrow(result), sep='')
     response <- getResponse(query, email, password)
     page <- getContentAsDataFrame(response)
     result <- rbind.fill(result, page) # accumulate

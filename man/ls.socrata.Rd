@@ -17,7 +17,10 @@ various metadata.
 List datasets available from a Socrata domain
 }
 \examples{
+# Download list of data sets
 df <- ls.socrata("http://soda.demo.socrata.com")
+# Check schema definition for metadata
+attributes(df)
 }
 \author{
 Peter Schmiedeskamp \email{pschmied@uw.edu}
