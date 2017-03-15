@@ -10,12 +10,12 @@ Description: Provides easier interaction with
     format and manages throttling by 'Socrata'.
     Users can upload data to Socrata portals directly
     from R.
-Version: 1.7.2-8
-Date: 2017-03-09
+Version: 1.7.2-9
+Date: 2017-03-15
 Author: Hugh Devlin, Ph. D., Tom Schenk, Jr., and John Malc
 Maintainer: "Tom Schenk Jr." <developers@cityofchicago.org>
 Depends:
-    R (>= 3.1.0)
+    R (>= 3.3.0)
 Imports:
     httr (>= 1.0.0),
     jsonlite (>= 0.9.16),
