@@ -11,11 +11,15 @@ Description: Provides easier interaction with
     Users can upload data to Socrata portals directly
     from R.
 Version: 1.7.2-5
+<<<<<<< HEAD
 Date: 2017-2-23
+=======
+Date: 2017-02-23
+>>>>>>> c05d94ba16e1ca18e3aa38aa5c95e8ccd8a9da0d
 Author: Hugh Devlin, Ph. D., Tom Schenk, Jr., and John Malc
 Maintainer: "Tom Schenk Jr." <developers@cityofchicago.org>
 Depends:
-    R (>= 3.0.0)
+    R (>= 3.1.0)
 Imports:
     httr (>= 1.0.0),
     jsonlite (>= 0.9.16),
