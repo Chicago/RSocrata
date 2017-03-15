@@ -8,9 +8,13 @@ RSocrata
 
 **Master** 
 
+Stable beta branch. Test about-to-be-released features in a stable pre-release build before it is submitted to CRAN.
+
 [![Linux build - Master](https://img.shields.io/travis/Chicago/RSocrata/master.svg?style=flat-square&label=Linux build)](https://travis-ci.org/Chicago/RSocrata)[![Windows build - Master](https://img.shields.io/appveyor/ci/tomschenkjr/RSocrata/master.svg?style=flat-square&label=Windows build)](https://ci.appveyor.com/project/tomschenkjr/rsocrata/branch/master)[![Coverage - Master](https://img.shields.io/coveralls/Chicago/RSocrata/master.svg?style=flat-square&label=Coverage - Master)](https://coveralls.io/r/Chicago/RSocrata?branch=master)
 
 **Dev**
+
+"Nightly" alpha branch. Test the latest features and bug fixes -- enjoy at your own risk.
 
 [![Linux build - Dev](https://img.shields.io/travis/Chicago/RSocrata/dev.svg?style=flat-square&label=Linux build)](https://travis-ci.org/Chicago/RSocrata)[![Windows build - Dev](https://img.shields.io/appveyor/ci/tomschenkjr/RSocrata/dev.svg?style=flat-square&label=Windows build)](https://ci.appveyor.com/project/tomschenkjr/rsocrata/branch/dev)[![Coverage - Dev](https://img.shields.io/coveralls/Chicago/RSocrata/dev.svg?style=flat-square&label=Coverage status - Dev)](https://coveralls.io/r/Chicago/RSocrata?branch=dev)
 
@@ -40,11 +44,18 @@ To get the current released version from CRAN:
 install.packages("RSocrata")
 ```
 
-To get the current development version from github:
+To get the current beta with soon-to-be-released changes is on GitHub:
 
 ```R
 # install.packages("devtools")
 devtools::install_github("Chicago/RSocrata")
+```
+
+The "nightly" version with the most recent bug fixes and features is also available:
+
+```R
+# install.packages("devtools")
+devtools::install_github("Chicago/RSocrata", ref="dev")
 ```
 
 ### Example: Reading SoDA valid URLs
