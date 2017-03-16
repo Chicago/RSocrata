@@ -114,9 +114,8 @@ test_that("read Socrata CSV as default", {
 test_that("read Socrata CSV from New Backend (NBE) endpoint", {
   df <- read.socrata("https://odn.data.socrata.com/resource/pvug-y23y.csv")
   expect_equal("data.frame", class(df), label="class", info="https://github.com/Chicago/RSocrata/issues/118")
-  expect_equal(68087, nrow(df), label="rows", info="https://github.com/Chicago/RSocrata/issues/118")
   expect_equal(4, ncol(df), label="columns", info="https://github.com/Chicago/RSocrata/issues/118")
-  expect_equal(c("character", "character", "character", "numeric"), 
+  expect_equal(c("character", "character", "integer", "character"), 
                unname(sapply(sapply(df, class),`[`, 1)), 
                label="testing column CSV classes with defaults")
 })
