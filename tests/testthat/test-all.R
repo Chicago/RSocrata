@@ -120,6 +120,12 @@ test_that("read Socrata CSV from New Backend (NBE) endpoint", {
                label="testing column CSV classes with defaults")
 })
 
+test_that("Warn instead of fail if X-SODA2-* headers are missing", {
+  dfJson <- read.socrata("https://data.healthcare.gov/resource/enx3-h2qp.json")
+  dfCsv <- read.socrata("https://data.healthcare.gov/resource/enx3-h2qp.csv")
+  ## the above will fail, more tests to come 
+})
+
 test_that("read Socrata CSV as character", {
   df <- read.socrata('https://soda.demo.socrata.com/resource/4334-bgaj.csv',
                      stringsAsFactors = FALSE)
