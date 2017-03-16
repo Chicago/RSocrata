@@ -121,9 +121,16 @@ test_that("read Socrata CSV from New Backend (NBE) endpoint", {
 })
 
 test_that("Warn instead of fail if X-SODA2-* headers are missing", {
-  dfJson <- read.socrata("https://data.healthcare.gov/resource/enx3-h2qp.json")
-  dfCsv <- read.socrata("https://data.healthcare.gov/resource/enx3-h2qp.csv")
-  ## the above will fail, more tests to come 
+  expect_warning(dfCsv <- read.socrata("https://data.healthcare.gov/resource/enx3-h2qp.csv?$limit=1000"),
+                info="https://github.com/Chicago/RSocrata/issues/118")
+  expect_warning(dfJson <- read.socrata("https://data.healthcare.gov/resource/enx3-h2qp.json?$limit=1000"),
+                info="https://github.com/Chicago/RSocrata/issues/118")
+  expect_silent(df <- read.socrata("https://odn.data.socrata.com/resource/pvug-y23y.csv"))
+  expect_silent(df <- read.socrata("https://odn.data.socrata.com/resource/pvug-y23y.json"))
+  expect_equal("data.frame", class(dfCsv), label="class", info="https://github.com/Chicago/RSocrata/issues/118")
+  expect_equal("data.frame", class(dfJson), label="class", info="https://github.com/Chicago/RSocrata/issues/118")
+  expect_equal(150, ncol(dfCsv), label="columns", info="https://github.com/Chicago/RSocrata/issues/118")
+  expect_equal(140, ncol(dfJson), label="columns", info="https://github.com/Chicago/RSocrata/issues/118")
 })
 
 test_that("read Socrata CSV as character", {

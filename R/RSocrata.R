@@ -232,9 +232,15 @@ getContentAsDataFrame <- function(response) {
 #' @noRd
 getSodaTypes <- function(response) { UseMethod('response') }
 getSodaTypes <- function(response) {
-  result <- jsonlite::fromJSON(response$headers[['x-soda2-types']])
-  names(result) <- jsonlite::fromJSON(response$headers[['x-soda2-fields']])
-  return(result)
+  dataTypes <- response$headers[['x-soda2-types']]
+  if (is.null(dataTypes)) {
+    return(NULL)
+  }
+  else {
+    result <- jsonlite::fromJSON(response$headers[['x-soda2-types']])
+    names(result) <- jsonlite::fromJSON(response$headers[['x-soda2-fields']])
+    return(result)
+  }
 }
 
 #' Get a full Socrata data set as an R data frame
@@ -313,14 +319,18 @@ read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL,
     page <- getContentAsDataFrame(response)
     result <- rbind.fill(result, page) # accumulate
   }	
-  # convert Socrata calendar dates to posix format
-  for(columnName in colnames(result)[!is.na(dataTypes[fieldName(colnames(result))])
-                                     & (dataTypes[fieldName(colnames(result))] == 'calendar_date'
-                                        | dataTypes[fieldName(colnames(result))] == 'floating_timestamp')]) {
-    result[[columnName]] <- posixify(result[[columnName]])
-  }
-  for(columnName in colnames(result)[!is.na(dataTypes[fieldName(colnames(result))]) & dataTypes[fieldName(colnames(result))] == 'money']) {
-    result[[columnName]] <- no_deniro(result[[columnName]])
+  if (is.null(dataTypes)) {
+    warning("Dates and currency fields will be converted to character")
+  } else {
+    # convert Socrata calendar dates to posix format
+    for(columnName in colnames(result)[!is.na(dataTypes[fieldName(colnames(result))])
+                                       & (dataTypes[fieldName(colnames(result))] == 'calendar_date'
+                                          | dataTypes[fieldName(colnames(result))] == 'floating_timestamp')]) {
+      result[[columnName]] <- posixify(result[[columnName]])
+    }
+    for(columnName in colnames(result)[!is.na(dataTypes[fieldName(colnames(result))]) & dataTypes[fieldName(colnames(result))] == 'money']) {
+      result[[columnName]] <- no_deniro(result[[columnName]])
+    }
   }
   # convert logical fields to character
   for(columnName in colnames(result)) {
