@@ -44,14 +44,14 @@ To get the current released version from CRAN:
 install.packages("RSocrata")
 ```
 
-To get the current beta with soon-to-be-released changes is on GitHub:
+The most recent beta with soon-to-be-released changes can be installed from GitHub:
 
 ```R
 # install.packages("devtools")
 devtools::install_github("Chicago/RSocrata")
 ```
 
-The "nightly" version with the most recent bug fixes and features is also available:
+The "nightly" version with the most recent bug fixes and features is also available. This version is always an alpha and may contain significant bugs. You can install it from the `dev` branch from GitHub:
 
 ```R
 # install.packages("devtools")
