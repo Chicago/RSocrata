@@ -35,8 +35,8 @@ Use ```ls.socrata()``` to list all datasets available on a Socrata webserver.
 
 [testthat](https://cran.r-project.org/package=testthat) test coverage.
 
-Installation
--------------
+## Installation
+
 
 To get the current released version from CRAN:
 
@@ -58,28 +58,31 @@ The "nightly" version with the most recent bug fixes and features is also availa
 devtools::install_github("Chicago/RSocrata", ref="dev")
 ```
 
-### Example: Reading SoDA valid URLs
+Examples
+--------
+
+### Reading SoDA valid URLs
 ```r
 earthquakesDataFrame <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv")
 nrow(earthquakesDataFrame) # 1007 (two "pages")
 class(earthquakesDataFrame$Datetime[1]) # POSIXlt
 ```
 
-### Example: Reading "human-readable" URLs
+### Reading "human-readable" URLs
 ```r
 earthquakesDataFrame <- read.socrata("https://soda.demo.socrata.com/dataset/USGS-Earthquakes-for-2012-11-01-API-School-Demo/4334-bgaj")
 nrow(earthquakesDataFrame) # 1007 (two "pages")
 class(earthquakesDataFrame$Datetime[1]) # POSIXlt
 ```
 
-### Example: Using API key to read datasets
+### Using API key to read datasets
 ```r
 token <- "ew2rEMuESuzWPqMkyPfOSGJgE"
 earthquakesDataFrame <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv", app_token = token)
 nrow(earthquakesDataFrame)
 ```
 
-### Example: Download private datasets from portal
+### Download private datasets from portal
 ```r
 # Store user email and password
 socrataEmail <- Sys.getenv("SOCRATA_EMAIL", "mark.silverberg+soda.demo@socrata.com")
@@ -90,14 +93,14 @@ privateResourceToReadCsvUrl <- "https://soda.demo.socrata.com/resource/a9g2-feh2
 read.socrata(url = privateResourceToReadCsvUrl, email = socrataEmail, password = socrataPassword)
 ```
 
-### Example: List all datasets on portal
+### List all datasets on portal
 ```r
 allSitesDataFrame <- ls.socrata("https://soda.demo.socrata.com")
 nrow(allSitesDataFrame) # Number of datasets
 allSitesDataFrame$title # Names of each dataset
 ```
 
-### Example: Upload data to portal
+### Upload data to portal
 ```r
 # Store user email and password
 socrataEmail <- Sys.getenv("SOCRATA_EMAIL", "mark.silverberg+soda.demo@socrata.com")
@@ -114,10 +117,10 @@ df_in <- data.frame(x,y)
 write.socrata(df_in,datasetToAddToUrl,"UPSERT",socrataEmail,socrataPassword)
 ```
 
-### Issues
+## Issues
 
 Please report issues, request enhancements or fork us at the [City of Chicago github](https://github.com/Chicago/RSocrata/issues).
 
-### Contributing
+## Contributing
 
 If you would like to contribute to this project, please see the [contributing documentation](CONTRIBUTING.md) and the [product roadmap](https://github.com/Chicago/RSocrata/wiki/Roadmap#planned-releases).
