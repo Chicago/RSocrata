@@ -63,3 +63,13 @@ Bug fixes:
 * Fixes a bug where the POSIX date conversion would not occur when using the JSON SoDA url (#85)
 * Queries now follow SoDA guidelines and are explicitly sorted. This could have caused a silent error where some row may not have downloaded. ([#15](https://github.com/Chicago/RSocrata/issues/15))
 
+### 1.7.2 Several changes:
+
+Internal changes:
+
+* By default, 1000 rows at a time were being retreived for each API call while paging through data. Increased to retreive 50,000 rows for each API call.
+
+Bug fixes:
+
+* Fixed a bug which caused an error if a ```select=count()``` statement was present in a URL. ([#120](https://github.com/Chicago/RSocrata/issues/120))
+* Fixed a bug when data types are not found because there are no ```X-SODA2-*``` headers available in the API response. Users will now get a warning and data will be returned as ```character```. ([#118](https://github.com/Chicago/RSocrata/issues/118))
