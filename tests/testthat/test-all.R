@@ -111,6 +111,28 @@ test_that("read Socrata CSV as default", {
                label="testing column CSV classes with defaults")
 })
 
+test_that("read Socrata CSV from New Backend (NBE) endpoint", {
+  df <- read.socrata("https://odn.data.socrata.com/resource/pvug-y23y.csv")
+  expect_equal("data.frame", class(df), label="class", info="https://github.com/Chicago/RSocrata/issues/118")
+  expect_equal(4, ncol(df), label="columns", info="https://github.com/Chicago/RSocrata/issues/118")
+  expect_equal(c("character", "character", "integer", "character"), 
+               unname(sapply(sapply(df, class),`[`, 1)), 
+               label="testing column CSV classes with defaults")
+})
+
+test_that("Warn instead of fail if X-SODA2-* headers are missing", {
+  expect_warning(dfCsv <- read.socrata("https://data.healthcare.gov/resource/enx3-h2qp.csv?$limit=1000"),
+                info="https://github.com/Chicago/RSocrata/issues/118")
+  expect_warning(dfJson <- read.socrata("https://data.healthcare.gov/resource/enx3-h2qp.json?$limit=1000"),
+                info="https://github.com/Chicago/RSocrata/issues/118")
+  expect_silent(df <- read.socrata("https://odn.data.socrata.com/resource/pvug-y23y.csv"))
+  expect_silent(df <- read.socrata("https://odn.data.socrata.com/resource/pvug-y23y.json"))
+  expect_equal("data.frame", class(dfCsv), label="class", info="https://github.com/Chicago/RSocrata/issues/118")
+  expect_equal("data.frame", class(dfJson), label="class", info="https://github.com/Chicago/RSocrata/issues/118")
+  expect_equal(150, ncol(dfCsv), label="columns", info="https://github.com/Chicago/RSocrata/issues/118")
+  expect_equal(140, ncol(dfJson), label="columns", info="https://github.com/Chicago/RSocrata/issues/118")
+})
+
 test_that("read Socrata CSV as character", {
   df <- read.socrata('https://soda.demo.socrata.com/resource/4334-bgaj.csv',
                      stringsAsFactors = FALSE)
@@ -191,6 +213,18 @@ test_that("URL is private (Unauthorized) (will fail)", {
 test_that("readSocrataHumanReadable", {
   df <- read.socrata('https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj')
   expect_equal(1007, nrow(df), label="rows")
+  expect_equal(9, ncol(df), label="columns")
+})
+
+test_that("Read URL provided by data.json from ls.socrata() - CSV", {
+  df <- read.socrata('https://soda.demo.socrata.com/api/views/4334-bgaj/rows.csv?accessType=DOWNLOAD')
+  expect_equal(1007, nrow(df), label="rows", info="Testing for issue #124")
+  expect_equal(9, ncol(df), label="columns")
+})
+
+test_that("Read URL provided by data.json from ls.socrata() - JSON", {
+  df <- read.socrata('https://soda.demo.socrata.com/api/views/4334-bgaj/rows.json?accessType=DOWNLOAD')
+  expect_equal(1007, nrow(df), label="rows", info="Testing for issue #124")
   expect_equal(9, ncol(df), label="columns")
 })
 
@@ -291,6 +325,16 @@ test_that("If URL has only non-order query parameters, insert $order:id into URL
   expect_equal("42.9", df$percent_aged_under_18_or_over_64[42], 
                info = "https://github.com/Chicago/RSocrata/issues/15")  
 })
+
+test_that("Handle URL with query that does not return :id", {
+  ## Define and test issue 120
+  ## Ensure that the $order=:id is inserted when no other query parameters are used.
+  qurl <-  "https://data.cityofchicago.org/resource/wrvz-psew.csv?$select=count(trip_id)&$where=trip_start_timestamp between '2016-04-01T00:00:00' and '2016-04-05T00:00:00'"
+  dat <- read.socrata(qurl)
+  expect_equal(1, ncol(dat), 
+               info = "https://github.com/Chicago/RSocrata/issues/120")
+})
+
 
 context("Checks the validity of 4x4")
 

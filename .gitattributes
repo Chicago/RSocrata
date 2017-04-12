@@ -1,0 +1,2 @@
+# Declare R files to use CRLF line endings
+*.R text col=crlf

@@ -74,7 +74,11 @@ validateUrl <- function(url, app_token) {
   } 
   if(substr(parsedUrl$path, 1, 9) == 'resource/') {
     return(httr::build_url(parsedUrl)) # resource url already
+  } else if(basename(parsedUrl$path) == "rows.json" | basename(parsedUrl$path) == "rows.csv") { # See issue #124
+    parsedUrl$path <- substr(parsedUrl$path, start = 11, stop = 19)
+    parsedUrl$query <- NULL
   }
+  
   fourByFour <- basename(parsedUrl$path)
   if(!isFourByFour(fourByFour))
     stop(fourByFour, " is not a valid Socrata dataset unique identifier.")
@@ -228,9 +232,15 @@ getContentAsDataFrame <- function(response) {
 #' @noRd
 getSodaTypes <- function(response) { UseMethod('response') }
 getSodaTypes <- function(response) {
-  result <- jsonlite::fromJSON(response$headers[['x-soda2-types']])
-  names(result) <- jsonlite::fromJSON(response$headers[['x-soda2-fields']])
-  return(result)
+  dataTypes <- response$headers[['x-soda2-types']]
+  if (is.null(dataTypes)) {
+    return(NULL)
+  }
+  else {
+    result <- jsonlite::fromJSON(response$headers[['x-soda2-types']])
+    names(result) <- jsonlite::fromJSON(response$headers[['x-soda2-fields']])
+    return(result)
+  }
 }
 
 #' Get a full Socrata data set as an R data frame
@@ -276,9 +286,11 @@ read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL,
   parsedUrl <- httr::parse_url(validUrl)
   mimeType <- mime::guess_type(parsedUrl$path)
   if (!is.null(names(parsedUrl$query))) { # check if URL has any queries 
-    ## if there is a query, check for $order within the query
+    ## if there is a query, check for specific queries and handle them
     orderTest <- any(names(parsedUrl$query) == "$order")
-    if(!orderTest) # sort by Socrata unique identifier
+    queries <- unlist(parsedUrl$query)
+    countTest <- any(startsWith(queries, "count"))
+    if(!orderTest & !countTest) # sort by Socrata unique identifier
       validUrl <- paste(validUrl, if(is.null(parsedUrl$query)) {'?'} else {"&"}, '$order=:id', sep='')
   }
   else {
@@ -295,41 +307,30 @@ read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL,
   if(is.null(parsedUrl$query$`$limit`) & is.null(parsedUrl$query$`$LIMIT`))
     limitProvided <- FALSE
   else { 
-    names(parsedUrl$query) <- tolower(names(parsedUrl$query))
-    userLimit <- as.integer(parsedUrl$query$`$limit`)
     limitProvided <- TRUE
-    ##remove LIMIT from URL
-    parsedUrl$query <- parsedUrl$query[-which(names(parsedUrl$query) == '$limit')] 
-    validUrl <- httr::build_url(parsedUrl)
   }
   # PAGE through data and combine
-  # if $limit is <= 1000, do not page
-  # if $limit > 1000, page only until limit is met
+  # if user limit is provided do not page
   # if no limit $provided, loop until all data is paged
-  while (nrow(page) > 0) { 
-    if(limitProvided) 
-      if(userLimit < 1000) break
-    else if(userLimit - nrow(result) <= 1000) {
-      query <- paste(validUrl, if(is.null(parsedUrl$query)) {'?'} else {"&"}, 
-	                   '$limit=', (userLimit - nrow(result)),'&$offset=', nrow(result), sep='')
-      response <- getResponse(query, email, password)
-      page <- getContentAsDataFrame(response)
-      result <- rbind.fill(result, page) # accumulate
-      break
-    }
-    query <- paste(validUrl, if(is.null(parsedUrl$query)) {'?'} else {"&"}, '$offset=', nrow(result), sep='')
+  while (nrow(page) > 0 & !limitProvided) { 
+    query <- paste(validUrl, if(is.null(parsedUrl$query)) {'?'} else {"&"}, 
+                   '$limit=50000&$offset=', nrow(result), sep='')
     response <- getResponse(query, email, password)
     page <- getContentAsDataFrame(response)
     result <- rbind.fill(result, page) # accumulate
   }	
-  # convert Socrata calendar dates to posix format
-  for(columnName in colnames(result)[!is.na(dataTypes[fieldName(colnames(result))])
-                                     & (dataTypes[fieldName(colnames(result))] == 'calendar_date'
-                                        | dataTypes[fieldName(colnames(result))] == 'floating_timestamp')]) {
-    result[[columnName]] <- posixify(result[[columnName]])
-  }
-  for(columnName in colnames(result)[!is.na(dataTypes[fieldName(colnames(result))]) & dataTypes[fieldName(colnames(result))] == 'money']) {
-    result[[columnName]] <- no_deniro(result[[columnName]])
+  if (is.null(dataTypes)) {
+    warning("Dates and currency fields will be converted to character")
+  } else {
+    # convert Socrata calendar dates to posix format
+    for(columnName in colnames(result)[!is.na(dataTypes[fieldName(colnames(result))])
+                                       & (dataTypes[fieldName(colnames(result))] == 'calendar_date'
+                                          | dataTypes[fieldName(colnames(result))] == 'floating_timestamp')]) {
+      result[[columnName]] <- posixify(result[[columnName]])
+    }
+    for(columnName in colnames(result)[!is.na(dataTypes[fieldName(colnames(result))]) & dataTypes[fieldName(colnames(result))] == 'money']) {
+      result[[columnName]] <- no_deniro(result[[columnName]])
+    }
   }
   # convert logical fields to character
   for(columnName in colnames(result)) {

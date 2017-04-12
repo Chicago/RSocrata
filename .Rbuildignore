@@ -1,4 +1,5 @@
 \.gitignore
+\.gitattributes
 \.project
 \.settings
 \.Rbuildignore
