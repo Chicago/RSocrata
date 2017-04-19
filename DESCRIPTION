@@ -2,7 +2,7 @@ Package: RSocrata
 Type: Package
 Title: Download or Upload 'Socrata' Data Sets
 Description: Provides easier interaction with
-    Socrata open data portals http://dev.socrata.com.
+    Socrata open data portals <http://dev.socrata.com>.
     Users can provide a 'Socrata' data set resource URL,
     or a 'Socrata' Open Data API (SoDA) web query,
     or a 'Socrata' "human-friendly" URL,
