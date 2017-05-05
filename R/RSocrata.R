@@ -458,3 +458,38 @@ write.socrata <- function(dataframe, dataset_json_endpoint, update_mode, email, 
   return(response)
   
 }
+
+#' Exports CSVs from Socrata data portals
+#' 
+#' Input the URL of a data portal (e.g., "data.cityofchicago.org") and
+#' will download all CSV files (no other files supported) and saved in
+#' a single directory named after the root URL (e.g., "data.cityofchicago.org/").
+#' Downloaded files are compressed to GZip format and timestamped so the download
+#' time is saved. No data is saved within the R workspace.
+#' @param url - the base URL of a domain (e.g., "data.cityofchicago.org")
+#' @return a Gzipped file with the four-by-four and timestamp of when the download began in filename
+#' @author Tom Schenk Jr \email{tom.schenk@@cityofchicago.org}
+#' @export
+export.socrata <- function(url) {
+  dir.create(basename(url), showWarnings = FALSE) # Create directory based on URL
+  ls <- ls.socrata(url = url)
+  for (i in 1:dim(ls)[1]) {
+    # Track timestamp before download
+    downloadTime <- Sys.time()
+    downloadTz <- Sys.timezone()
+    
+    # Download data
+    downloadUrl <- ls$distribution[[i]]$downloadURL[1] # Currently grabs CSV, which is the first element
+    d <- read.socrata(downloadUrl)
+    
+    # Construct the filename output
+    downloadTimeChr <- gsub('\\s+','_',downloadTime) # Remove spaces and replaces with underscore
+    downloadTimeChr <- gsub(':', '', downloadTimeChr) # Removes colon from timestamp to be valid filename
+    filename <- httr::parse_url(ls$identifier[i])
+    filename$path <- substr(filename$path, 11, 19)
+    filename <- paste0(filename$hostname, "/", filename$path, "_", downloadTimeChr, ".", default_format, ".gz")
+    
+    # Write file
+    write.csv(d, file = gzfile(filename))
+  }
+}
