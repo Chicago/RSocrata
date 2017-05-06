@@ -24,4 +24,3 @@ fieldName("Number.of.Stations") # number_of_stations
 \author{
 Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@cityofchicago.org}
 }
-

@@ -42,4 +42,3 @@ write.socrata(df_in,datasetToAddToUrl,"UPSERT",socrataEmail,socrataPassword)
 \author{
 Mark Silverberg \email{mark.silverberg@socrata.com}
 }
-

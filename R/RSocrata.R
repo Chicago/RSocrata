@@ -467,12 +467,14 @@ write.socrata <- function(dataframe, dataset_json_endpoint, update_mode, email, 
 #' Downloaded files are compressed to GZip format and timestamped so the download
 #' time is saved. No data is saved within the R workspace.
 #' @param url - the base URL of a domain (e.g., "data.cityofchicago.org")
+#' @param app_token - a string; SODA API token used to query the data 
+#' portal \url{http://dev.socrata.com/consumers/getting-started.html} 
 #' @return a Gzipped file with the four-by-four and timestamp of when the download began in filename
 #' @author Tom Schenk Jr \email{tom.schenk@@cityofchicago.org}
 #' @importFrom httr GET
 #' @importFrom utils write.csv
 #' @export
-export.socrata <- function(url) {
+export.socrata <- function(url, app_token = NULL) {
   dir.create(basename(url), showWarnings = FALSE) # Create directory based on URL
   ls <- ls.socrata(url = url)
   for (i in 1:dim(ls)[1]) {
@@ -483,7 +485,7 @@ export.socrata <- function(url) {
     # Download data
     downloadUrl <- ls$distribution[[i]]$downloadURL[1] # Currently grabs CSV, which is the first element
     if (grepl(".csv", downloadUrl)) {
-      d <- read.socrata(downloadUrl)
+      d <- read.socrata(downloadUrl, app_token)
       
       # Construct the filename output
       default_format <- "csv"
@@ -500,8 +502,10 @@ export.socrata <- function(url) {
       response <- GET(downloadUrl)
 
       # Construct the filename output
-      default_format <- response$headers$`content-disposition`
-      default_format <- strsplit(default_format, "filename=")[[1]][2]
+      content_disposition <- response$headers$`content-disposition`
+      default_format_raw <- strsplit(content_disposition, "filename=")[[1]][2]
+      default_format_cleaned <- gsub('"', "", default_format_raw)
+      default_format <- file_ext(default_format_cleaned)
       downloadTimeChr <- gsub('\\s+','_',downloadTime) # Remove spaces and replaces with underscore
       downloadTimeChr <- gsub(':', '', downloadTimeChr) # Removes colon from timestamp to be valid filename
       filename <- httr::parse_url(ls$identifier[i])

@@ -50,4 +50,3 @@ nrow(df)
 \author{
 Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@cityofchicago.org}
 }
-
