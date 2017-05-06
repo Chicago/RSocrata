@@ -469,6 +469,8 @@ write.socrata <- function(dataframe, dataset_json_endpoint, update_mode, email, 
 #' @param url - the base URL of a domain (e.g., "data.cityofchicago.org")
 #' @return a Gzipped file with the four-by-four and timestamp of when the download began in filename
 #' @author Tom Schenk Jr \email{tom.schenk@@cityofchicago.org}
+#' @importFrom httr GET
+#' @importFrom utils write.csv
 #' @export
 export.socrata <- function(url) {
   dir.create(basename(url), showWarnings = FALSE) # Create directory based on URL
@@ -480,16 +482,35 @@ export.socrata <- function(url) {
     
     # Download data
     downloadUrl <- ls$distribution[[i]]$downloadURL[1] # Currently grabs CSV, which is the first element
-    d <- read.socrata(downloadUrl)
-    
-    # Construct the filename output
-    downloadTimeChr <- gsub('\\s+','_',downloadTime) # Remove spaces and replaces with underscore
-    downloadTimeChr <- gsub(':', '', downloadTimeChr) # Removes colon from timestamp to be valid filename
-    filename <- httr::parse_url(ls$identifier[i])
-    filename$path <- substr(filename$path, 11, 19)
-    filename <- paste0(filename$hostname, "/", filename$path, "_", downloadTimeChr, ".", default_format, ".gz")
-    
-    # Write file
-    write.csv(d, file = gzfile(filename))
+    if (grepl(".csv", downloadUrl)) {
+      d <- read.socrata(downloadUrl)
+      
+      # Construct the filename output
+      default_format <- "csv"
+      downloadTimeChr <- gsub('\\s+','_',downloadTime) # Remove spaces and replaces with underscore
+      downloadTimeChr <- gsub(':', '', downloadTimeChr) # Removes colon from timestamp to be valid filename
+      filename <- httr::parse_url(ls$identifier[i])
+      filename$path <- substr(filename$path, 11, 19)
+      filename <- paste0(filename$hostname, "/", filename$path, "_", downloadTimeChr, ".", default_format, ".gz")
+      
+      # Write file
+      write.csv(d, file = gzfile(filename))
+      
+    } else {
+      response <- GET(downloadUrl)
+
+      # Construct the filename output
+      default_format <- response$headers$`content-disposition`
+      default_format <- strsplit(default_format, "filename=")[[1]][2]
+      downloadTimeChr <- gsub('\\s+','_',downloadTime) # Remove spaces and replaces with underscore
+      downloadTimeChr <- gsub(':', '', downloadTimeChr) # Removes colon from timestamp to be valid filename
+      filename <- httr::parse_url(ls$identifier[i])
+      filename$path <- substr(filename$path, 11, 19)
+      filename <- paste0(filename$hostname, "/", filename$path, "_", downloadTimeChr, ".", default_format)
+      
+      # Write file
+      writeBin(response$content, filename)
+    }
+
   }
 }
