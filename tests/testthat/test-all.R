@@ -468,7 +468,7 @@ test_that("converts money fields to numeric", {
   expect_equal(15000, numeric_money, label="dollars")
   # Use data from Socrata
   df <- read.socrata("https://data.cityofchicago.org/Administration-Finance/Current-Employee-Names-Salaries-and-Position-Title/xzkq-xp2w")
-  expect_equal("numeric", class(df$Employee.Annual.Salary))
+  expect_equal("numeric", class(df$Annual.Salary))
 })
   
 context("write Socrata datasets")
