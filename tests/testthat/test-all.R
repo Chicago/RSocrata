@@ -98,6 +98,12 @@ test_that("Fields with currency symbols remove the symbol and convert to money",
   expect_equal("numeric", class(deniro), label="output of money fields")
 })
 
+test_that("converts money fields to numeric from Socrata", {
+  df <- read.socrata("https://data.cityofchicago.org/Administration-Finance/Current-Employee-Names-Salaries-and-Position-Title/xzkq-xp2w")
+  expect_equal("numeric", class(df$Annual.Salary), label="dollars")
+  expect_equal("numeric", class(df$Annual.Salary), label="output of money fields")
+})
+
 context("read Socrata")
 
 test_that("read Socrata CSV as default", {
@@ -461,16 +467,6 @@ test_that("read Socrata JSON that requires a login", {
   expect_equal(3, nrow(df), label="rows")
 })
 
-test_that("converts money fields to numeric", {
-  # Manual check 
-  money <- "$15000"
-  numeric_money <- no_deniro(money)
-  expect_equal(15000, numeric_money, label="dollars")
-  # Use data from Socrata
-  df <- read.socrata("https://data.cityofchicago.org/Administration-Finance/Current-Employee-Names-Salaries-and-Position-Title/xzkq-xp2w")
-  expect_equal("numeric", class(df$Employee.Annual.Salary))
-})
-  
 context("write Socrata datasets")
 
 test_that("add a row to a dataset", {
