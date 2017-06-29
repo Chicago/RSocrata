@@ -27,5 +27,6 @@ When you want to make a change, either to fix a bug or introduce a new feature, 
   * If your contribution takes several commits, please increment the build number (e.g., x.y.z-build) so there is a unique relationship of the version-build number to each commit.
 * Update the DESCRIPTION file for any new dependencies on packages or minimum verson of R required (up to the current release of R).
 * Run all tests in `tests/testthat/`.
+* Sign the [Contributor License Agreement](https://www.clahub.com/agreements/Chicago/RSocrata). If you have any questions or issues, please visit the [license agreement's repository](https://github.com/Chicago/contributor-license-agreement).
 * Create a pull request with a robust description or [reference the issue number](https://github.com/Chicago/RSocrata/issues) to the `dev` branch (read the package's [formal git-flow policy](https://github.com/Chicago/RSocrata/wiki/Git-Flow)).
 
