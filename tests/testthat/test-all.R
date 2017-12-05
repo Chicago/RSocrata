@@ -419,6 +419,17 @@ test_that("incorrect API Query Human Readable", {
   expect_equal(9, ncol(df), label="columns") 
 })
 
+context("URL suffixes from Socrata are handled")
+
+test_that("Handle /data suffix", {
+  df1 <- read.socrata('https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj/data')
+  expect_equal(1007, nrow(df1), label="rows")
+  expect_equal(9, ncol(df1), label="columns")
+  df2 <- read.socrata('https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj/data/')
+  expect_equal(1007, nrow(df2), label="rows")
+  expect_equal(9, ncol(df2), label="columns")
+})
+
 context("ls.socrata functions correctly")
 
 test_that("List datasets available from a Socrata domain", {
