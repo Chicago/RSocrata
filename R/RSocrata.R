@@ -79,6 +79,16 @@ validateUrl <- function(url, app_token) {
     parsedUrl$query <- NULL
   }
   
+  # if /data appended to URL, remove it
+  pathLength <- nchar(parsedUrl$path)
+  if(substr(parsedUrl$path, pathLength - 4, pathLength) == '/data') {
+     parsedUrl$path <- substr(parsedUrl$path, 1, pathLength - 5)
+  }
+  if(substr(parsedUrl$path, pathLength - 5, pathLength) == '/data/')  {
+    parsedUrl$path <- substr(parsedUrl$path, 1, pathLength - 6)
+  }
+
+  
   fourByFour <- basename(parsedUrl$path)
   if(!isFourByFour(fourByFour))
     stop(fourByFour, " is not a valid Socrata dataset unique identifier.")
