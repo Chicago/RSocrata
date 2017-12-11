@@ -98,6 +98,12 @@ test_that("Fields with currency symbols remove the symbol and convert to money",
   expect_equal("numeric", class(deniro), label="output of money fields")
 })
 
+test_that("converts money fields to numeric from Socrata", {
+  df <- read.socrata("https://data.cityofchicago.org/Administration-Finance/Current-Employee-Names-Salaries-and-Position-Title/xzkq-xp2w")
+  expect_equal("numeric", class(df$Annual.Salary), label="dollars")
+  expect_equal("numeric", class(df$Annual.Salary), label="output of money fields")
+})
+
 context("read Socrata")
 
 test_that("read Socrata CSV as default", {
@@ -109,6 +115,28 @@ test_that("read Socrata CSV as default", {
                  "numeric", "integer", "character", "character"), 
                unname(sapply(sapply(df, class),`[`, 1)), 
                label="testing column CSV classes with defaults")
+})
+
+test_that("read Socrata CSV from New Backend (NBE) endpoint", {
+  df <- read.socrata("https://odn.data.socrata.com/resource/pvug-y23y.csv")
+  expect_equal("data.frame", class(df), label="class", info="https://github.com/Chicago/RSocrata/issues/118")
+  expect_equal(4, ncol(df), label="columns", info="https://github.com/Chicago/RSocrata/issues/118")
+  expect_equal(c("character", "character", "integer", "character"), 
+               unname(sapply(sapply(df, class),`[`, 1)), 
+               label="testing column CSV classes with defaults")
+})
+
+test_that("Warn instead of fail if X-SODA2-* headers are missing", {
+  expect_warning(dfCsv <- read.socrata("https://data.healthcare.gov/resource/enx3-h2qp.csv?$limit=1000"),
+                info="https://github.com/Chicago/RSocrata/issues/118")
+  expect_warning(dfJson <- read.socrata("https://data.healthcare.gov/resource/enx3-h2qp.json?$limit=1000"),
+                info="https://github.com/Chicago/RSocrata/issues/118")
+  expect_silent(df <- read.socrata("https://odn.data.socrata.com/resource/pvug-y23y.csv"))
+  expect_silent(df <- read.socrata("https://odn.data.socrata.com/resource/pvug-y23y.json"))
+  expect_equal("data.frame", class(dfCsv), label="class", info="https://github.com/Chicago/RSocrata/issues/118")
+  expect_equal("data.frame", class(dfJson), label="class", info="https://github.com/Chicago/RSocrata/issues/118")
+  expect_equal(150, ncol(dfCsv), label="columns", info="https://github.com/Chicago/RSocrata/issues/118")
+  expect_equal(140, ncol(dfJson), label="columns", info="https://github.com/Chicago/RSocrata/issues/118")
 })
 
 test_that("read Socrata CSV as character", {
@@ -206,13 +234,13 @@ test_that("Read URL provided by data.json from ls.socrata() - JSON", {
   expect_equal(9, ncol(df), label="columns")
 })
 
-test_that("Read data with missing dates", { # See issue #24 & #27 
-  # Query below will pull Boston's 311 requests from early July 2011. Contains NA dates.
-  df <- read.socrata("https://data.cityofboston.gov/resource/awu8-dc52.csv?$where=case_enquiry_id< 101000295717")
-  expect_equal(99, nrow(df), label="rows")
-  na_time_rows <- df[is.na(df$TARGET_DT), ]
-  expect_equal(33, length(na_time_rows), label="rows with missing TARGET_DT dates")
-})
+# test_that("Read data with missing dates", { # See issue #24 & #27 
+#   # Query below will pull Boston's 311 requests from early July 2011. Contains NA dates.
+#   df <- read.socrata("https://data.cityofboston.gov/resource/awu8-dc52.csv?$where=case_enquiry_id< 101000295717")
+#   expect_equal(99, nrow(df), label="rows")
+#   na_time_rows <- df[is.na(df$TARGET_DT), ]
+#   expect_equal(33, length(na_time_rows), label="rows with missing TARGET_DT dates")
+# })
 
 test_that("format is not supported", {
   # Unsupported data formats
@@ -304,6 +332,16 @@ test_that("If URL has only non-order query parameters, insert $order:id into URL
                info = "https://github.com/Chicago/RSocrata/issues/15")  
 })
 
+test_that("Handle URL with query that does not return :id", {
+  ## Define and test issue 120
+  ## Ensure that the $order=:id is inserted when no other query parameters are used.
+  qurl <-  "https://data.cityofchicago.org/resource/wrvz-psew.csv?$select=count(trip_id)&$where=trip_start_timestamp between '2016-04-01T00:00:00' and '2016-04-05T00:00:00'"
+  dat <- read.socrata(qurl)
+  expect_equal(1, ncol(dat), 
+               info = "https://github.com/Chicago/RSocrata/issues/120")
+})
+
+
 context("Checks the validity of 4x4")
 
 test_that("is 4x4", {
@@ -381,6 +419,17 @@ test_that("incorrect API Query Human Readable", {
   expect_equal(9, ncol(df), label="columns") 
 })
 
+context("URL suffixes from Socrata are handled")
+
+test_that("Handle /data suffix", {
+  df1 <- read.socrata('https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj/data')
+  expect_equal(1007, nrow(df1), label="rows")
+  expect_equal(9, ncol(df1), label="columns")
+  df2 <- read.socrata('https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj/data/')
+  expect_equal(1007, nrow(df2), label="rows")
+  expect_equal(9, ncol(df2), label="columns")
+})
+
 context("ls.socrata functions correctly")
 
 test_that("List datasets available from a Socrata domain", {
@@ -429,16 +478,6 @@ test_that("read Socrata JSON that requires a login", {
   expect_equal(3, nrow(df), label="rows")
 })
 
-test_that("converts money fields to numeric", {
-  # Manual check 
-  money <- "$15000"
-  numeric_money <- no_deniro(money)
-  expect_equal(15000, numeric_money, label="dollars")
-  # Use data from Socrata
-  df <- read.socrata("https://data.cityofchicago.org/Administration-Finance/Current-Employee-Names-Salaries-and-Position-Title/xzkq-xp2w")
-  expect_equal("numeric", class(df$Employee.Annual.Salary))
-})
-  
 context("write Socrata datasets")
 
 test_that("add a row to a dataset", {
@@ -450,14 +489,11 @@ test_that("add a row to a dataset", {
   df_in <- data.frame(x,y)
 
   # write to dataset
-  write.socrata(df_in,datasetToAddToUrl,"UPSERT",socrataEmail,socrataPassword)
+  res <- write.socrata(df_in,datasetToAddToUrl,"UPSERT",socrataEmail,socrataPassword)
+  
+  # Check that the dataset was written without error
+  expect_equal(res$status_code, 200L)
 
-  # read from dataset and store last (most recent) row for comparisons / tests
-  df_out <- read.socrata(url = datasetToAddToUrl, email = socrataEmail, password = socrataPassword)
-  df_out_last_row <- tail(df_out, n=1)
-
-  expect_equal(df_in$x, as.numeric(df_out_last_row$x), label = "x value")
-  expect_equal(df_in$y, as.numeric(df_out_last_row$y), label = "y value")
 })
 
 
@@ -470,15 +506,10 @@ test_that("fully replace a dataset", {
   df_in <- data.frame(x,y)
 
   # write to dataset
-  write.socrata(df_in,datasetToReplaceUrl,"REPLACE",socrataEmail,socrataPassword)
+  res <- write.socrata(df_in,datasetToReplaceUrl,"REPLACE",socrataEmail,socrataPassword)
 
-  # read from dataset for comparisons / tests
-  df_out <- read.socrata(url = datasetToReplaceUrl, email = socrataEmail, password = socrataPassword)
-
-  expect_equal(ncol(df_in), ncol(df_out), label="columns")
-  expect_equal(nrow(df_in), nrow(df_out), label="rows")
-  expect_equal(df_in$x, as.numeric(df_out$x), label = "x values")
-  expect_equal(df_in$y, as.numeric(df_out$y), label = "y values")
+  # Check that the dataset was written without error
+  expect_equal(res$status_code, 200L)
 })
 
 

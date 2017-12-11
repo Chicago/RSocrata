@@ -8,11 +8,15 @@ RSocrata
 
 **Master** 
 
-[![Linux build - Master](https://img.shields.io/travis/Chicago/RSocrata/master.svg?style=flat-square&label=Linux build)](https://travis-ci.org/Chicago/RSocrata)[![Windows build - Master](https://img.shields.io/appveyor/ci/tomschenkjr/RSocrata/master.svg?style=flat-square&label=Windows build)](https://ci.appveyor.com/project/tomschenkjr/rsocrata/branch/master)[![Coverage - Master](https://img.shields.io/coveralls/Chicago/RSocrata/master.svg?style=flat-square&label=Coverage - Master)](https://coveralls.io/r/Chicago/RSocrata?branch=master)
+Stable beta branch. Test about-to-be-released features in a stable pre-release build before it is submitted to CRAN.
+
+[![Linux build - Master](https://img.shields.io/travis/Chicago/RSocrata/master.svg?style=flat-square&label=Linux%20build)](https://travis-ci.org/Chicago/RSocrata)[![Windows build - Master](https://img.shields.io/appveyor/ci/tomschenkjr/RSocrata/master.svg?style=flat-square&label=Windows%20build)](https://ci.appveyor.com/project/tomschenkjr/rsocrata/branch/master)[![Coverage - Master](https://img.shields.io/coveralls/Chicago/RSocrata/master.svg?style=flat-square&label=Coverage)](https://coveralls.io/r/Chicago/RSocrata?branch=master)
 
 **Dev**
 
-[![Linux build - Dev](https://img.shields.io/travis/Chicago/RSocrata/dev.svg?style=flat-square&label=Linux build)](https://travis-ci.org/Chicago/RSocrata)[![Windows build - Dev](https://img.shields.io/appveyor/ci/tomschenkjr/RSocrata/dev.svg?style=flat-square&label=Windows build)](https://ci.appveyor.com/project/tomschenkjr/rsocrata/branch/dev)[![Coverage - Dev](https://img.shields.io/coveralls/Chicago/RSocrata/dev.svg?style=flat-square&label=Coverage status - Dev)](https://coveralls.io/r/Chicago/RSocrata?branch=dev)
+"Nightly" alpha branch. Test the latest features and bug fixes -- enjoy at your own risk.
+
+[![Linux build - Dev](https://img.shields.io/travis/Chicago/RSocrata/dev.svg?style=flat-square&label=Linux%20build)](https://travis-ci.org/Chicago/RSocrata)[![Windows build - Dev](https://img.shields.io/appveyor/ci/tomschenkjr/RSocrata/dev.svg?style=flat-square&label=Windows%20build)](https://ci.appveyor.com/project/tomschenkjr/rsocrata/branch/dev)[![Coverage - Dev](https://img.shields.io/coveralls/Chicago/RSocrata/dev.svg?style=flat-square&label=Coverage)](https://coveralls.io/r/Chicago/RSocrata?branch=dev)
 
 A tool for downloading and uploading Socrata datasets
 -----------------------------------------------------
@@ -31,8 +35,8 @@ Use ```ls.socrata()``` to list all datasets available on a Socrata webserver.
 
 [testthat](https://cran.r-project.org/package=testthat) test coverage.
 
-Installation
--------------
+## Installation
+
 
 To get the current released version from CRAN:
 
@@ -40,35 +44,45 @@ To get the current released version from CRAN:
 install.packages("RSocrata")
 ```
 
-To get the current development version from github:
+The most recent beta with soon-to-be-released changes can be installed from GitHub:
 
 ```R
 # install.packages("devtools")
 devtools::install_github("Chicago/RSocrata")
 ```
 
-### Example: Reading SoDA valid URLs
+The "nightly" version with the most recent bug fixes and features is also available. This version is always an alpha and may contain significant bugs. You can install it from the `dev` branch from GitHub:
+
+```R
+# install.packages("devtools")
+devtools::install_github("Chicago/RSocrata", ref="dev")
+```
+
+Examples
+--------
+
+### Reading SoDA valid URLs
 ```r
 earthquakesDataFrame <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv")
 nrow(earthquakesDataFrame) # 1007 (two "pages")
 class(earthquakesDataFrame$Datetime[1]) # POSIXlt
 ```
 
-### Example: Reading "human-readable" URLs
+### Reading "human-readable" URLs
 ```r
 earthquakesDataFrame <- read.socrata("https://soda.demo.socrata.com/dataset/USGS-Earthquakes-for-2012-11-01-API-School-Demo/4334-bgaj")
 nrow(earthquakesDataFrame) # 1007 (two "pages")
 class(earthquakesDataFrame$Datetime[1]) # POSIXlt
 ```
 
-### Example: Using API key to read datasets
+### Using API key to read datasets
 ```r
 token <- "ew2rEMuESuzWPqMkyPfOSGJgE"
 earthquakesDataFrame <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv", app_token = token)
 nrow(earthquakesDataFrame)
 ```
 
-### Example: Download private datasets from portal
+### Download private datasets from portal
 ```r
 # Store user email and password
 socrataEmail <- Sys.getenv("SOCRATA_EMAIL", "mark.silverberg+soda.demo@socrata.com")
@@ -79,14 +93,14 @@ privateResourceToReadCsvUrl <- "https://soda.demo.socrata.com/resource/a9g2-feh2
 read.socrata(url = privateResourceToReadCsvUrl, email = socrataEmail, password = socrataPassword)
 ```
 
-### Example: List all datasets on portal
+### List all datasets on portal
 ```r
 allSitesDataFrame <- ls.socrata("https://soda.demo.socrata.com")
 nrow(allSitesDataFrame) # Number of datasets
 allSitesDataFrame$title # Names of each dataset
 ```
 
-### Example: Upload data to portal
+### Upload data to portal
 ```r
 # Store user email and password
 socrataEmail <- Sys.getenv("SOCRATA_EMAIL", "mark.silverberg+soda.demo@socrata.com")
@@ -103,10 +117,10 @@ df_in <- data.frame(x,y)
 write.socrata(df_in,datasetToAddToUrl,"UPSERT",socrataEmail,socrataPassword)
 ```
 
-### Issues
+## Issues
 
 Please report issues, request enhancements or fork us at the [City of Chicago github](https://github.com/Chicago/RSocrata/issues).
 
-### Contributing
+## Contributing
 
 If you would like to contribute to this project, please see the [contributing documentation](CONTRIBUTING.md) and the [product roadmap](https://github.com/Chicago/RSocrata/wiki/Roadmap#planned-releases).
