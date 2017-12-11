@@ -19,6 +19,38 @@ logMsg <- function(s) {
   cat(format(Sys.time(), "%Y-%m-%d %H:%M:%OS3 "), as.character(sys.call(-1))[1], ": ", s, '\n', sep='')
 }
 
+#' Compiles the information to be used in HTTP headers
+#' 
+#' Grabs the headers (RSocrata version, OS, and R version) to be used while
+#' making HTTP requests with Socrata. This enables Socrata's team to track
+#' the usage of RSocrata.
+#' @return a string
+#' @importFrom utils packageVersion
+#' @author Tom Schenk Jr \email{tom.schenk@@cityofchicago.org}
+#' @noRd
+fetch_user_agent <- function() {
+  rSocrataVersion <- packageVersion("RSocrata")
+  operatingSystem <- Sys.info()[["sysname"]]
+  operatingSystemVersion <- paste(Sys.info()[["release"]], Sys.info()[["version"]])
+  rVersion <- paste0(R.version$major, 
+                     ".", 
+                     R.version$minor, 
+                     ifelse( # Checks if version has status, e.g., "rev"
+                       R.version$status == "", 
+                       "", 
+                       paste0("-",R.version$status))
+  )
+  
+  header <- paste0( "RSocrata/",
+                    rSocrataVersion, " (",
+                    operatingSystem, "/",
+                    operatingSystemVersion, "; ",
+                    "R/", rVersion,
+                    ")"
+  )
+  return(header)
+}
+
 #' Checks the validity of the syntax for a potential Socrata dataset Unique Identifier, also known as a 4x4.
 #'
 #' Will check the validity of a potential dataset unique identifier
@@ -178,9 +210,9 @@ no_deniro <- function(x) {
 getResponse <- function(url, email = NULL, password = NULL) {
   
   if(is.null(email) && is.null(password)){
-    response <- httr::GET(url)
+    response <- httr::GET(url, user_agent(fetch_user_agent()))
   } else { # email and password are not NULL
-    response <- httr::GET(url, httr::authenticate(email, password))
+    response <- httr::GET(url, httr::authenticate(email, password), user_agent(fetch_user_agent()))
   }
   
   # status <- httr::http_status(response)
@@ -373,7 +405,10 @@ ls.socrata <- function(url) {
   if(is.null(parsedUrl$scheme) | is.null(parsedUrl$hostname))
     stop(url, " does not appear to be a valid URL.")
   parsedUrl$path <- "data.json"
-  data_dot_json <- jsonlite::fromJSON(httr::build_url(parsedUrl))
+  #Download data
+  response <- httr::GET(httr::build_url(parsedUrl), user_agent(fetch_user_agent()))
+  data_dot_json <- jsonlite::fromJSON(content(response, "text"))
+  
   data_df <- as.data.frame(data_dot_json$dataset)
   # Assign Catalog Fields as attributes
   attr(data_df, "@context") <- data_dot_json$`@context`
@@ -407,12 +442,14 @@ checkUpdateResponse <- function(json_data_to_upload, url, http_verb, email, pass
     response <- httr::POST(url,
                            body = json_data_to_upload,
                            httr::authenticate(email, password),
+                           httr::user_agent(fetch_user_agent()),
                            httr::add_headers("X-App-Token" = app_token,
                                              "Content-Type" = "application/json")) #, verbose())
   } else if(http_verb == "PUT"){
     response <- httr::PUT(url,
                           body = json_data_to_upload,
                           httr::authenticate(email, password),
+                          httr::user_agent(fetch_user_agent()),
                           httr::add_headers("X-App-Token" = app_token,
                                             "Content-Type" = "application/json")) # , verbose())
   }
