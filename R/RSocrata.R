@@ -204,7 +204,7 @@ no_deniro <- function(x) {
 #' @param email - Optional. The email to the Socrata account with read access to the dataset.
 #' @param password - Optional. The password associated with the email to the Socrata account
 #' @return httr response object
-#' @importFrom httr http_status GET content stop_for_status
+#' @importFrom httr http_status GET content stop_for_status user_agent
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' @noRd
 getResponse <- function(url, email = NULL, password = NULL) {
@@ -397,7 +397,7 @@ read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL,
 #' # Check schema definition for metadata
 #' attributes(df)
 #' @importFrom jsonlite fromJSON
-#' @importFrom httr parse_url
+#' @importFrom httr GET build_url parse_url content user_agent
 #' @export
 ls.socrata <- function(url) {
   url <- as.character(url)
@@ -434,7 +434,7 @@ ls.socrata <- function(url) {
 #' @param password - password associated with Socrata account (will need write access to dataset)
 #' @param app_token - optional app_token associated with Socrata account
 #' @return httr a response object
-#' @importFrom httr GET
+#' @importFrom httr GET POST PUT authenticate user_agent add_headers
 #' 
 #' @noRd
 checkUpdateResponse <- function(json_data_to_upload, url, http_verb, email, password, app_token = NULL) {
