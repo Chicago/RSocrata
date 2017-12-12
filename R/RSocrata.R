@@ -210,9 +210,9 @@ no_deniro <- function(x) {
 getResponse <- function(url, email = NULL, password = NULL) {
   
   if(is.null(email) && is.null(password)){
-    response <- httr::GET(url, user_agent(fetch_user_agent()))
+    response <- httr::GET(url, httr::user_agent(fetch_user_agent()))
   } else { # email and password are not NULL
-    response <- httr::GET(url, httr::authenticate(email, password), user_agent(fetch_user_agent()))
+    response <- httr::GET(url, httr::authenticate(email, password), httr::user_agent(fetch_user_agent()))
   }
   
   # status <- httr::http_status(response)
@@ -406,7 +406,7 @@ ls.socrata <- function(url) {
     stop(url, " does not appear to be a valid URL.")
   parsedUrl$path <- "data.json"
   #Download data
-  response <- httr::GET(httr::build_url(parsedUrl), user_agent(fetch_user_agent()))
+  response <- httr::GET(httr::build_url(parsedUrl), httr::user_agent(fetch_user_agent()))
   data_dot_json <- jsonlite::fromJSON(content(response, "text"))
   
   data_df <- as.data.frame(data_dot_json$dataset)

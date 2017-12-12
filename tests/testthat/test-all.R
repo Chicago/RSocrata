@@ -234,6 +234,9 @@ test_that("Read URL provided by data.json from ls.socrata() - JSON", {
   expect_equal(9, ncol(df), label="columns")
 })
 
+# This test is commented out because of issue #137 as a temporary work-around. 
+# Test should be re-enabled in the future with a work-around.
+# 
 # test_that("Read data with missing dates", { # See issue #24 & #27 
 #   # Query below will pull Boston's 311 requests from early July 2011. Contains NA dates.
 #   df <- read.socrata("https://data.cityofboston.gov/resource/awu8-dc52.csv?$where=case_enquiry_id< 101000295717")
