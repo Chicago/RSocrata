@@ -330,9 +330,21 @@ read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL,
   if (!is.null(names(parsedUrl$query))) { # check if URL has any queries 
     ## if there is a query, check for specific queries and handle them
     orderTest <- any(names(parsedUrl$query) == "$order")
+    soqlQueryTest <- any(names(parsedUrl$query) == "$query")
     queries <- unlist(parsedUrl$query)
     countTest <- any(startsWith(queries, "count"))
-    if(!orderTest & !countTest) # sort by Socrata unique identifier
+    queryTest <- any(names(parsedUrl$query) == '$query')
+    # soql query strings need to be at the end, so we reparse and reorder the query list here
+    if(soqlQueryTest){
+      fullQuery <- parsedUrl$query
+      soqlQueryString <- fullQuery$`$query`
+      soqlQueryList <- list(soqlQueryString)
+      names(soqlQueryList) <- ('$query')
+      fullQuery$`$query` <- NULL
+      parsedUrl$query <- c(fullQuery, soqlQueryList)
+      validUrl <- httr::build_url(parsedUrl)
+    }
+    if(!orderTest & !countTest & !queryTest) # sort by Socrata unique identifier
       validUrl <- paste(validUrl, if(is.null(parsedUrl$query)) {'?'} else {"&"}, '$order=:id', sep='')
   }
   else {
@@ -345,8 +357,8 @@ read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL,
   page <- getContentAsDataFrame(response)
   result <- page
   dataTypes <- getSodaTypes(response)
-  # parse any $limit out of the URL
-  if(is.null(parsedUrl$query$`$limit`) & is.null(parsedUrl$query$`$LIMIT`))
+  # parse any $limit out of the URL -- a soql $query is a de-facto limit
+  if(is.null(parsedUrl$query$`$limit`) & is.null(parsedUrl$query$`$LIMIT`) & is.null(parsedUrl$query$`$query`)) 
     limitProvided <- FALSE
   else { 
     limitProvided <- TRUE

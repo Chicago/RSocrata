@@ -375,6 +375,12 @@ test_that("CSV with Token", {
   expect_equal(9, ncol(df), label="columns")  
 })
 
+test_that("CSV with Token and query string", {
+  df <- read.socrata('https://soda.demo.socrata.com/resource/4334-bgaj.csv?$query=select depth', app_token="ew2rEMuESuzWPqMkyPfOSGJgE")
+  expect_equal(1000, nrow(df), label="rows")
+  expect_equal(1, ncol(df), label="columns")  
+})
+
 
 test_that("readSocrataHumanReadableToken", {
   df <- read.socrata('https://soda.demo.socrata.com/dataset/USGS-Earthquake-Reports/4334-bgaj', app_token="ew2rEMuESuzWPqMkyPfOSGJgE")
