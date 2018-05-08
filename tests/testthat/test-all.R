@@ -342,6 +342,14 @@ test_that("Handle URL with query that does not return :id", {
   dat <- read.socrata(qurl)
   expect_equal(1, ncol(dat), 
                info = "https://github.com/Chicago/RSocrata/issues/120")
+  
+  ## Test piping feature documented in query syntax
+  qurl <- paste0("https://data.cityofchicago.org/resource/r5kz-chrr.json?",
+                 "$query=SELECT license_description, COUNT(*) AS count GROUP BY license_description|>",
+                 " SELECT COUNT(license_description) AS num_types, SUM(count) AS license_description_totals")
+  expect_error(df <- read.socrata(qurl), 
+               NA,    ## NA here means "no error"
+               info = "https://github.com/Chicago/RSocrata/issues/120")
 })
 
 
@@ -373,6 +381,12 @@ test_that("CSV with Token", {
   df <- read.socrata('https://soda.demo.socrata.com/resource/4334-bgaj.csv', app_token="ew2rEMuESuzWPqMkyPfOSGJgE")
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(9, ncol(df), label="columns")  
+})
+
+test_that("CSV with Token and query string", {
+  df <- read.socrata('https://soda.demo.socrata.com/resource/4334-bgaj.csv?$query=select depth', app_token="ew2rEMuESuzWPqMkyPfOSGJgE")
+  expect_equal(1000, nrow(df), label="rows")
+  expect_equal(1, ncol(df), label="columns")  
 })
 
 
