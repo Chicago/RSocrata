@@ -550,3 +550,14 @@ test_that("getContentAsDataFrame does not get caught in infinite loop", {
   expect_equal("data.frame", class(df), label="class")
 })
 
+
+context("User-defined offset")
+
+test_that("User can specify offset", {
+  
+  rows_hist = 108000 # rows of data previously read
+  df <- read.socrata(url = paste0("https://data.cambridgema.gov/resource/gxzm-dpwp.csv?$offset=", rows_hist))
+  
+  expect_equal("data.frame", class(df), label="class")
+})
+
