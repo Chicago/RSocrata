@@ -465,41 +465,55 @@ write.socrata <- function(dataframe, dataset_json_endpoint, update_mode, email, 
 #' will download all CSV files (no other files supported) and saved in
 #' a single directory named after the root URL (e.g., "data.cityofchicago.org/").
 #' Downloaded files are compressed to GZip format and timestamped so the download
-#' time is saved. No data is saved within the R workspace.
+#' time is cataloged. The site's data.json file is downloaded as a canonical index
+#' of data saved from the website. Users can cross-reference the data.json file
+#' by matching the "four-by-four" in data.json with the first 5 letters of GZipped
+#' files.
 #' @param url - the base URL of a domain (e.g., "data.cityofchicago.org")
 #' @param app_token - a string; SODA API token used to query the data 
 #' portal \url{http://dev.socrata.com/consumers/getting-started.html} 
 #' @return a Gzipped file with the four-by-four and timestamp of when the download began in filename
 #' @author Tom Schenk Jr \email{tom.schenk@@cityofchicago.org}
 #' @importFrom httr GET
+#' @importFrom jsonlite write_json
 #' @importFrom utils write.csv
 #' @export
 export.socrata <- function(url, app_token = NULL) {
   dir.create(basename(url), showWarnings = FALSE) # Create directory based on URL
-  ls <- ls.socrata(url = url)
+  
+  downloadTime <- Sys.time()     # Grab timestamp when data.json was downloaded
+  downloadTz <- Sys.timezone()   # Timezone on system that downloaded data.json -- not used
+  ls <- ls.socrata(url = url)    # Downloads data.json file
+  
+  downloadTimeChr <- gsub('\\s+','_',downloadTime)  # Remove spaces and replaces with underscore
+  downloadTimeChr <- gsub(':', '', downloadTimeChr) # Removes colon from timestamp to be valid filename
+  ls_filename <- paste0(basename(url), "/", "data_json", "_", downloadTimeChr, ".json")  # Creates path and filename for data.json file
+  jsonlite::write_json(ls, path = ls_filename)      # Writes data.json contents to directory
+  
   for (i in 1:dim(ls)[1]) {
     # Track timestamp before download
-    downloadTime <- Sys.time()
-    downloadTz <- Sys.timezone()
+    downloadTime <- Sys.time()    # Denotes when data began download
+    downloadTz <- Sys.timezone()  # Timezone o n system that downloaded data.json -- not used
     
     # Download data
     downloadUrl <- ls$distribution[[i]]$downloadURL[1] # Currently grabs CSV, which is the first element
-    if (grepl(".csv", downloadUrl)) {
+    if(is.null(downloadUrl)) {                         # Skips if not a data file (e.g., Socrata Pages)
+      next
+    } else if (grepl(".csv", downloadUrl)) {           # Downloads if it's a CSV
       d <- read.socrata(downloadUrl, app_token)
       
       # Construct the filename output
       default_format <- "csv"
-      downloadTimeChr <- gsub('\\s+','_',downloadTime) # Remove spaces and replaces with underscore
+      downloadTimeChr <- gsub('\\s+','_',downloadTime)  # Remove spaces and replaces with underscore
       downloadTimeChr <- gsub(':', '', downloadTimeChr) # Removes colon from timestamp to be valid filename
-      filename <- httr::parse_url(ls$identifier[i])
-      filename$path <- substr(filename$path, 11, 19)
+      filename <- httr::parse_url(ls$identifier[i])     # Determines four-by-four for file name
+      filename$path <- substr(filename$path, 11, 19)    # Determines four-by-four for file name
       filename <- paste0(filename$hostname, "/", filename$path, "_", downloadTimeChr, ".", default_format, ".gz")
       
       # Write file
-      write.csv(d, file = gzfile(filename))
-      
+      write.csv(d, file = gzfile(filename))             # Writes g-zipped file
     } else {
-      response <- GET(downloadUrl)
+      response <- GET(downloadUrl)                      # Downloads non-CSVs
 
       # Construct the filename output
       content_disposition <- response$headers$`content-disposition`
@@ -513,8 +527,7 @@ export.socrata <- function(url, app_token = NULL) {
       filename <- paste0(filename$hostname, "/", filename$path, "_", downloadTimeChr, ".", default_format)
       
       # Write file
-      writeBin(response$content, filename)
+      writeBin(response$content, filename)              # Writes non-CSVs to directory
     }
-
   }
 }
