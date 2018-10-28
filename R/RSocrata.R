@@ -499,7 +499,7 @@ export.socrata <- function(url, app_token = NULL) {
     downloadUrl <- ls$distribution[[i]]$downloadURL[1] # Currently grabs CSV, which is the first element
     if(is.null(downloadUrl)) {                         # Skips if not a data file (e.g., Socrata Pages)
       next
-    } else if (grepl(".csv", downloadUrl)) {           # Downloads if it's a CSV
+    } else if(grepl(".csv", downloadUrl)) {           # Downloads if it's a CSV
       d <- read.socrata(downloadUrl, app_token)
       
       # Construct the filename output
@@ -516,6 +516,9 @@ export.socrata <- function(url, app_token = NULL) {
       response <- GET(downloadUrl)                      # Downloads non-CSVs
 
       # Construct the filename output
+      if(is.null(response$headers$`content-disposition`)) {
+        next
+      }
       content_disposition <- response$headers$`content-disposition`
       default_format_raw <- strsplit(content_disposition, "filename=")[[1]][2]
       default_format_cleaned <- gsub('"', "", default_format_raw)
