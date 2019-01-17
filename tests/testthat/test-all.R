@@ -100,8 +100,8 @@ test_that("Fields with currency symbols remove the symbol and convert to money",
 
 test_that("converts money fields to numeric from Socrata", {
   df <- read.socrata("https://data.cityofchicago.org/Administration-Finance/Current-Employee-Names-Salaries-and-Position-Title/xzkq-xp2w")
-  expect_equal("numeric", class(df$Annual.Salary), label="dollars")
-  expect_equal("numeric", class(df$Annual.Salary), label="output of money fields")
+  expect_equal("numeric", class(df$annual_salary), label="dollars")
+  expect_equal("numeric", class(df$annual_salary), label="output of money fields")
 })
 
 context("read Socrata")
