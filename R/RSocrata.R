@@ -318,6 +318,7 @@ getSodaTypes <- function(response) {
 #' df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv", 
 #'                    app_token = token)
 #' nrow(df)
+#' closeAllConnections()
 #' @importFrom httr parse_url build_url
 #' @importFrom mime guess_type
 #' @importFrom plyr rbind.fill
