@@ -204,16 +204,15 @@ no_deniro <- function(x) {
 #' @param email - Optional. The email to the Socrata account with read access to the dataset.
 #' @param password - Optional. The password associated with the email to the Socrata account
 #' @return httr response object
-#' @importFrom httr http_status GET content stop_for_status user_agent config
+#' @importFrom httr http_status GET content stop_for_status user_agent
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' @noRd
 getResponse <- function(url, email = NULL, password = NULL) {
   
   if(is.null(email) && is.null(password)){
-    response <- httr::GET(url, httr::user_agent(fetch_user_agent()), httr::config(forbid_reuse = 1))
+    response <- httr::GET(url, httr::user_agent(fetch_user_agent()))
   } else { # email and password are not NULL
-    response <- httr::GET(url, httr::authenticate(email, password), httr::user_agent(fetch_user_agent()),
-                          httr::config(forbid_reuse = 1))
+    response <- httr::GET(url, httr::authenticate(email, password), httr::user_agent(fetch_user_agent()))
   }
   
   # status <- httr::http_status(response)
@@ -319,6 +318,7 @@ getSodaTypes <- function(response) {
 #' df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv", 
 #'                    app_token = token)
 #' nrow(df)
+#' closeAllConnections()
 #' @importFrom httr parse_url build_url
 #' @importFrom mime guess_type
 #' @importFrom plyr rbind.fill
@@ -398,7 +398,7 @@ read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL,
 #' # Check schema definition for metadata
 #' attributes(df)
 #' @importFrom jsonlite fromJSON
-#' @importFrom httr GET build_url parse_url content user_agent config
+#' @importFrom httr GET build_url parse_url content user_agent
 #' @export
 ls.socrata <- function(url) {
   url <- as.character(url)
@@ -407,8 +407,7 @@ ls.socrata <- function(url) {
     stop(url, " does not appear to be a valid URL.")
   parsedUrl$path <- "data.json"
   #Download data
-  response <- httr::GET(httr::build_url(parsedUrl), httr::user_agent(fetch_user_agent()),
-                        httr::config(forbid_reuse = 1))
+  response <- httr::GET(httr::build_url(parsedUrl), httr::user_agent(fetch_user_agent()))
   data_dot_json <- jsonlite::fromJSON(content(response, "text"))
   
   data_df <- as.data.frame(data_dot_json$dataset)
