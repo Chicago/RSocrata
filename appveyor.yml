@@ -10,6 +10,7 @@ init:
         Import-Module '..\appveyor-tool.ps1'
 install:
   ps: Bootstrap
+  sh: sudo apt-get install -y libssl-dev
 
 build_script:
   - travis-tool.sh install_deps
