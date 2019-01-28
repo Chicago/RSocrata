@@ -367,13 +367,19 @@ read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL,
   # PAGE through data and combine
   # if user limit is provided do not page
   # if no limit $provided, loop until all data is paged
-  while (nrow(page) > 0 & !limitProvided) { 
-    query <- paste(validUrl, if(is.null(parsedUrl$query)) {'?'} else {"&"}, 
-                   '$limit=50000&$offset=', nrow(result), sep='')
-    response <- getResponse(query, email, password)
-    page <- getContentAsDataFrame(response)
-    result <- rbind.fill(result, page) # accumulate
-  }	
+  
+  # If an offset has been used, and limit has not been provided, skip the paging and return a message 
+  if(!is.null(parsedUrl$query$`$offset`) & !limitProvided){
+    message(paste('Returning results from offset of', format(parsedUrl$query$`$offset`, big.mark=",")))
+  } else {
+    while (nrow(page) > 0 & !limitProvided) { 
+      query <- paste(validUrl, if(is.null(parsedUrl$query)) {'?'} else {"&"}, 
+                     '$limit=50000&$offset=', nrow(result), sep='')
+      response <- getResponse(query, email, password)
+      page <- getContentAsDataFrame(response)
+      result <- rbind.fill(result, page) # accumulate
+    }	
+  }
   if (is.null(dataTypes)) {
     warning("Dates and currency fields will be converted to character")
   } else {
