@@ -14,7 +14,7 @@ context("posixify function")
 test_that("read Socrata CSV is compatible with posixify", {
   df <- read.socrata('http://soda.demo.socrata.com/resource/4334-bgaj.csv')
   dt <- posixify("09/14/2012 10:38:01 PM")
-  expect_equal(dt, df$Datetime[1])  ## Check that download matches test
+  expect_equal(dt, df$datetime[1])  ## Check that download matches test
 })
 
 test_that("read Socrata JSON is compatible with posixify (issue 85)", {
@@ -111,8 +111,8 @@ test_that("read Socrata CSV as default", {
   expect_equal("data.frame", class(df), label="class")
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(9, ncol(df), label="columns")
-  expect_equal(c("character", "character", "character", "POSIXct", "numeric", 
-                 "numeric", "integer", "character", "character"), 
+  expect_equal(c("POSIXct", "numeric", "character", "character", "numeric", 
+                 "integer", "character", "character", "character"), 
                unname(sapply(sapply(df, class),`[`, 1)), 
                label="testing column CSV classes with defaults")
 })
@@ -145,8 +145,8 @@ test_that("read Socrata CSV as character", {
   expect_equal("data.frame", class(df), label="class")
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(9, ncol(df), label="columns")
-  expect_equal(c("character", "character", "character", "POSIXct", "numeric", 
-                 "numeric", "integer", "character", "character"), 
+  expect_equal(c("POSIXct", "numeric", "character", "character", "numeric", 
+                 "integer", "character", "character", "character"), 
                unname(sapply(sapply(df, class),`[`, 1)))
 })
 
@@ -156,8 +156,8 @@ test_that("read Socrata CSV as factor", {
   expect_equal("data.frame", class(df), label="class")
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(9, ncol(df), label="columns")
-  expect_equal(c("factor", "factor", "factor", "POSIXct", "numeric", "numeric", 
-                 "integer", "factor", "factor"), 
+  expect_equal(c("POSIXct", "numeric", "factor", "factor", "numeric", 
+                 "integer", "factor", "factor", "factor"), 
                unname(sapply(sapply(df, class),`[`, 1)))
 })
 
@@ -166,9 +166,9 @@ test_that("read Socrata JSON as default", {
   df <- read.socrata('https://soda.demo.socrata.com/resource/4334-bgaj.json')
   expect_equal("data.frame", class(df), label="class")
   expect_equal(1007, nrow(df), label="rows")
-  expect_equal(11, ncol(df), label="columns")
+  expect_equal(10, ncol(df), label="columns")
   expect_equal(c("POSIXct", "character", "character", "character", "character", 
-                 "character", "character", "character", "character", "character", 
+                 "character", "character", "character", "character", 
                  "character"), 
                unname(sapply(sapply(df, class),`[`, 1)))
 })
@@ -178,9 +178,9 @@ test_that("read Socrata JSON as character", {
                      stringsAsFactors = FALSE)
   expect_equal("data.frame", class(df), label="class")
   expect_equal(1007, nrow(df), label="rows")
-  expect_equal(11, ncol(df), label="columns")
+  expect_equal(10, ncol(df), label="columns")
   expect_equal(c("POSIXct", "character", "character", "character", "character", 
-                 "character", "character", "character", "character", "character", 
+                 "character", "character", "character", "character",  
                  "character"), 
                unname(sapply(sapply(df, class),`[`, 1)))
 })
@@ -190,9 +190,9 @@ test_that("read Socrata JSON as factor", {
                      stringsAsFactors = TRUE)
   expect_equal("data.frame", class(df), label="class")
   expect_equal(1007, nrow(df), label="rows")
-  expect_equal(11, ncol(df), label="columns")
+  expect_equal(10, ncol(df), label="columns")
   expect_equal(c("POSIXct", "factor", "factor", "factor", "factor", "factor", 
-                 "factor", "factor", "factor", "factor", "factor"), 
+                 "factor", "factor", "factor", "factor"), 
                unname(sapply(sapply(df, class),`[`, 1)))
 })
 
