@@ -207,11 +207,6 @@ test_that("readSoQL", {
   expect_equal(1, ncol(df), label="columns")
 })
 
-test_that("readSoQLColumnNotFound (will fail)", {
-  # SoQL API uses field names, not human names
-  expect_error(read.socrata('http://soda.demo.socrata.com/resource/4334-bgaj.csv?$select=Region'))
-})
-
 test_that("URL is private (Unauthorized) (will fail)", {
   expect_error(read.socrata('http://data.cityofchicago.org/resource/j8vp-2qpg.json'))
 })
