@@ -56,7 +56,7 @@ context("Socrata Calendar")
 
 test_that("Calendar Date Short", {
   df <- read.socrata('http://data.cityofchicago.org/resource/y93d-d9e3.csv?$order=debarment_date')
-  dt <- df$DEBARMENT.DATE[1] # "05/21/1981"
+  dt <- df$debarment_date[1] # "05/21/1981"
   expect_equal("POSIXct", class(dt)[1], label="data type of a date")
   expect_equal("81", format(dt, "%y"), label="year")
   expect_equal("05", format(dt, "%m"), label="month")
