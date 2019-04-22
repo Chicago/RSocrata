@@ -14,7 +14,7 @@ context("posixify function")
 test_that("read Socrata CSV is compatible with posixify", {
   df <- read.socrata('http://soda.demo.socrata.com/resource/4334-bgaj.csv')
   dt <- posixify("09/14/2012 10:38:01 PM")
-  expect_equal(dt, df$Datetime[1])  ## Check that download matches test
+  expect_equal(dt, df$datetime[1])  ## Check that download matches test
 })
 
 test_that("read Socrata JSON is compatible with posixify (issue 85)", {
@@ -56,7 +56,7 @@ context("Socrata Calendar")
 
 test_that("Calendar Date Short", {
   df <- read.socrata('http://data.cityofchicago.org/resource/y93d-d9e3.csv?$order=debarment_date')
-  dt <- df$DEBARMENT.DATE[1] # "05/21/1981"
+  dt <- df$debarment_date[1] # "05/21/1981"
   expect_equal("POSIXct", class(dt)[1], label="data type of a date")
   expect_equal("81", format(dt, "%y"), label="year")
   expect_equal("05", format(dt, "%m"), label="month")
@@ -111,8 +111,8 @@ test_that("read Socrata CSV as default", {
   expect_equal("data.frame", class(df), label="class")
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(9, ncol(df), label="columns")
-  expect_equal(c("character", "character", "character", "POSIXct", "numeric", 
-                 "numeric", "integer", "character", "character"), 
+  expect_equal(c("POSIXct", "numeric", "character", "character", "numeric", 
+                 "integer", "character", "character", "character"), 
                unname(sapply(sapply(df, class),`[`, 1)), 
                label="testing column CSV classes with defaults")
 })
@@ -145,8 +145,8 @@ test_that("read Socrata CSV as character", {
   expect_equal("data.frame", class(df), label="class")
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(9, ncol(df), label="columns")
-  expect_equal(c("character", "character", "character", "POSIXct", "numeric", 
-                 "numeric", "integer", "character", "character"), 
+  expect_equal(c("POSIXct", "numeric", "character", "character", "numeric", 
+                 "integer", "character", "character", "character"), 
                unname(sapply(sapply(df, class),`[`, 1)))
 })
 
@@ -156,8 +156,8 @@ test_that("read Socrata CSV as factor", {
   expect_equal("data.frame", class(df), label="class")
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(9, ncol(df), label="columns")
-  expect_equal(c("factor", "factor", "factor", "POSIXct", "numeric", "numeric", 
-                 "integer", "factor", "factor"), 
+  expect_equal(c("POSIXct", "numeric", "factor", "factor", "numeric", 
+                 "integer", "factor", "factor", "factor"), 
                unname(sapply(sapply(df, class),`[`, 1)))
 })
 
@@ -166,9 +166,9 @@ test_that("read Socrata JSON as default", {
   df <- read.socrata('https://soda.demo.socrata.com/resource/4334-bgaj.json')
   expect_equal("data.frame", class(df), label="class")
   expect_equal(1007, nrow(df), label="rows")
-  expect_equal(11, ncol(df), label="columns")
+  expect_equal(10, ncol(df), label="columns")
   expect_equal(c("POSIXct", "character", "character", "character", "character", 
-                 "character", "character", "character", "character", "character", 
+                 "character", "character", "character", "character", 
                  "character"), 
                unname(sapply(sapply(df, class),`[`, 1)))
 })
@@ -178,9 +178,9 @@ test_that("read Socrata JSON as character", {
                      stringsAsFactors = FALSE)
   expect_equal("data.frame", class(df), label="class")
   expect_equal(1007, nrow(df), label="rows")
-  expect_equal(11, ncol(df), label="columns")
+  expect_equal(10, ncol(df), label="columns")
   expect_equal(c("POSIXct", "character", "character", "character", "character", 
-                 "character", "character", "character", "character", "character", 
+                 "character", "character", "character", "character",  
                  "character"), 
                unname(sapply(sapply(df, class),`[`, 1)))
 })
@@ -190,9 +190,9 @@ test_that("read Socrata JSON as factor", {
                      stringsAsFactors = TRUE)
   expect_equal("data.frame", class(df), label="class")
   expect_equal(1007, nrow(df), label="rows")
-  expect_equal(11, ncol(df), label="columns")
+  expect_equal(10, ncol(df), label="columns")
   expect_equal(c("POSIXct", "factor", "factor", "factor", "factor", "factor", 
-                 "factor", "factor", "factor", "factor", "factor"), 
+                 "factor", "factor", "factor", "factor"), 
                unname(sapply(sapply(df, class),`[`, 1)))
 })
 
@@ -205,11 +205,6 @@ test_that("readSoQL", {
   df <- read.socrata('http://soda.demo.socrata.com/resource/4334-bgaj.csv?$select=region')
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(1, ncol(df), label="columns")
-})
-
-test_that("readSoQLColumnNotFound (will fail)", {
-  # SoQL API uses field names, not human names
-  expect_error(read.socrata('http://soda.demo.socrata.com/resource/4334-bgaj.csv?$select=Region'))
 })
 
 test_that("URL is private (Unauthorized) (will fail)", {
