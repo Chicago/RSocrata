@@ -74,7 +74,7 @@ test_that("Date is not entirely NA if the first record is bad (issue 68)", {
   #              "Testing issue 68 https://github.com/Chicago/RSocrata/issues/68")
   
   df <- read.socrata("https://data.cityofchicago.org/resource/4h87-zdcp.csv")
-  expect_false(object = all(is.na(df$DATE.RECEIVED)),
+  expect_false(object = all(is.na(df$date_received)),
                "Testing issue 68 https://github.com/Chicago/RSocrata/issues/68")
   
   
