@@ -11,7 +11,7 @@ Description: Provides easier interaction with
     Users can upload data to 'Socrata' portals directly
     from R.
 Version: 1.7.7-1
-Date: 2019-04-26
+Date: 2019-05-13
 Author: Hugh Devlin, Ph. D., Tom Schenk, Jr., Gene Leynes, Nick Lucius, John Malc, Mark Silverberg, and Peter Schmeideskamp
 Maintainer: "Tom Schenk Jr." <developers@cityofchicago.org>
 Depends:
