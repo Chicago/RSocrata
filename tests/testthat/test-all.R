@@ -74,7 +74,7 @@ test_that("Date is not entirely NA if the first record is bad (issue 68)", {
   #              "Testing issue 68 https://github.com/Chicago/RSocrata/issues/68")
   
   df <- read.socrata("https://data.cityofchicago.org/resource/4h87-zdcp.csv")
-  expect_false(object = all(is.na(df$DATE.RECEIVED)),
+  expect_false(object = all(is.na(df$date_received)),
                "Testing issue 68 https://github.com/Chicago/RSocrata/issues/68")
   
   
@@ -255,11 +255,11 @@ test_that("read Socrata JSON with missing fields (issue 19 - bind within page)",
 
 test_that("read Socrata JSON with missing fields (issue 19 - binding pages together)", {
   ## Define and test issue 19
-  expect_error(df <- read.socrata(paste0("https://data.smgov.net/resource/ia9m-wspt.json?",
-                                         "$where=incident_date>'2010-12-15'%20AND%20incident_date<'2011-01-15'"))
-               , NA, info = "https://github.com/Chicago/RSocrata/issues/19")
-  expect_equal(7927, nrow(df), label="rows", info = "https://github.com/Chicago/RSocrata/issues/19")
-  expect_equal(18, ncol(df), label="columns", info = "https://github.com/Chicago/RSocrata/issues/19")
+  df <- read.socrata(paste0("https://data.smgov.net/resource/ia9m-wspt.json?",
+                            "$where=incident_date>='2011-01-01'%20AND%20incident_date<'2011-01-15'"))
+  expect_error(df, NA, info = "https://github.com/Chicago/RSocrata/issues/19")
+  expect_equal(3719, nrow(df), label="rows", info = "https://github.com/Chicago/RSocrata/issues/19")
+  expect_equal(15, ncol(df), label="columns", info = "https://github.com/Chicago/RSocrata/issues/19")
 })
 
 test_that("Accept a URL with a $limit= clause and properly limit the results", {
