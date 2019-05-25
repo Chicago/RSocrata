@@ -111,8 +111,8 @@ test_that("read Socrata CSV as default", {
   expect_equal("data.frame", class(df), label="class")
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(9, ncol(df), label="columns")
-  expect_equal(c("POSIXct", "numeric", "character", "character", "numeric", 
-                 "integer", "character", "character", "character"), 
+  expect_equal(c("character", "character", "character", "POSIXct", "numeric", 
+                 "numeric", "integer", "character", "character"), 
                unname(sapply(sapply(df, class),`[`, 1)), 
                label="testing column CSV classes with defaults")
 })
@@ -121,7 +121,7 @@ test_that("read Socrata CSV from New Backend (NBE) endpoint", {
   df <- read.socrata("https://odn.data.socrata.com/resource/pvug-y23y.csv")
   expect_equal("data.frame", class(df), label="class", info="https://github.com/Chicago/RSocrata/issues/118")
   expect_equal(4, ncol(df), label="columns", info="https://github.com/Chicago/RSocrata/issues/118")
-  expect_equal(c("character", "character", "integer", "character"), 
+  expect_equal(c("character", "character", "character", "integer"), 
                unname(sapply(sapply(df, class),`[`, 1)), 
                label="testing column CSV classes with defaults")
 })
@@ -145,8 +145,8 @@ test_that("read Socrata CSV as character", {
   expect_equal("data.frame", class(df), label="class")
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(9, ncol(df), label="columns")
-  expect_equal(c("POSIXct", "numeric", "character", "character", "numeric", 
-                 "integer", "character", "character", "character"), 
+  expect_equal(c("character", "character", "character", "POSIXct", "numeric", 
+                 "numeric", "integer", "character", "character"), 
                unname(sapply(sapply(df, class),`[`, 1)))
 })
 
@@ -156,8 +156,8 @@ test_that("read Socrata CSV as factor", {
   expect_equal("data.frame", class(df), label="class")
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(9, ncol(df), label="columns")
-  expect_equal(c("POSIXct", "numeric", "factor", "factor", "numeric", 
-                 "integer", "factor", "factor", "factor"), 
+  expect_equal(c("factor", "factor", "factor", "POSIXct", "numeric", 
+                 "numeric", "integer", "factor", "factor"), 
                unname(sapply(sapply(df, class),`[`, 1)))
 })
 
@@ -167,7 +167,7 @@ test_that("read Socrata JSON as default", {
   expect_equal("data.frame", class(df), label="class")
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(10, ncol(df), label="columns")
-  expect_equal(c("POSIXct", "character", "character", "character", "character", 
+  expect_equal(c("character", "character", "character", "POSIXct", "character", 
                  "character", "character", "character", "character", 
                  "character"), 
                unname(sapply(sapply(df, class),`[`, 1)))
@@ -179,7 +179,7 @@ test_that("read Socrata JSON as character", {
   expect_equal("data.frame", class(df), label="class")
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(10, ncol(df), label="columns")
-  expect_equal(c("POSIXct", "character", "character", "character", "character", 
+  expect_equal(c("character", "character", "character", "POSIXct", "character", 
                  "character", "character", "character", "character",  
                  "character"), 
                unname(sapply(sapply(df, class),`[`, 1)))
@@ -191,7 +191,7 @@ test_that("read Socrata JSON as factor", {
   expect_equal("data.frame", class(df), label="class")
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(10, ncol(df), label="columns")
-  expect_equal(c("POSIXct", "factor", "factor", "factor", "factor", "factor", 
+  expect_equal(c("factor", "factor", "factor", "POSIXct", "factor", "factor", 
                  "factor", "factor", "factor", "factor"), 
                unname(sapply(sapply(df, class),`[`, 1)))
 })
