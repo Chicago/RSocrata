@@ -6,6 +6,8 @@ library(mime)
 library(plyr)
 
 ## Credentials for testing private dataset and update dataset functionality ##
+# This is commented out because of issue #174 as a temporary work-around. 
+# This should be re-enabled in the future with a work-around.
 socrataEmail <- Sys.getenv("SOCRATA_EMAIL", "mark.silverberg+soda.demo@socrata.com")
 socrataPassword <- Sys.getenv("SOCRATA_PASSWORD", "7vFDsGFDUG")
 
@@ -457,6 +459,7 @@ privateResourceToReadCsvUrl <- "https://soda.demo.socrata.com/resource/a9g2-feh2
 privateResourceToReadJsonUrl <- "https://soda.demo.socrata.com/resource/a9g2-feh2.json"
 
 test_that("read Socrata CSV that requires a login", {
+  skip('See Issue #174')
   # should error when no email and password are sent with the request
   expect_error(read.socrata(url = privateResourceToReadCsvUrl))
   # try again, this time with email and password in the request
@@ -467,6 +470,7 @@ test_that("read Socrata CSV that requires a login", {
 })
 
 test_that("read Socrata JSON that requires a login", {
+  skip('See Issue #174')
   # should error when no email and password are sent with the request
   expect_error(read.socrata(url = privateResourceToReadJsonUrl))
   # try again, this time with email and password in the request
@@ -479,6 +483,7 @@ test_that("read Socrata JSON that requires a login", {
 context("write Socrata datasets")
 
 test_that("add a row to a dataset", {
+  skip('See Issue #174')
   datasetToAddToUrl <- "https://soda.demo.socrata.com/resource/xh6g-yugi.json"
 
   # populate df_in with two columns, each with a random number
@@ -496,6 +501,7 @@ test_that("add a row to a dataset", {
 
 
 test_that("fully replace a dataset", {
+  skip('See Issue #174')
   datasetToReplaceUrl <- "https://soda.demo.socrata.com/resource/kc76-ybeq.json"
 
   # populate df_in with two columns of random numbers
