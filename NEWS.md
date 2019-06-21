@@ -81,3 +81,12 @@ Deprecation:
 RSocrata's core development team has stated a formal policy to only support the most recent release of R. Until now, RSocrata was tested against the penultimate release of R; however, testing will be limited to the current version of R and the current development release. The project's [contributing guidelines](https://github.com/Chicago/RSocrata/blob/master/CONTRIBUTING.md) have been updated to reflect that accepted changes to RSocrata must pass tests on the current and penulimate versions of R.
 
 While RSocrata is only tested on the current and penultimate version, the core development team expects it will work on older versions most of the time. See [#132](https://github.com/Chicago/RSocrata/issues/132) for more information.
+
+### 1.7.9-4 
+
+CRAN bug fixes
+
+The updates from 1.7.8 to 1.7.9 are all realated to minor bug fixes to pass CRAN tests, which were caused by changes by the data portal vendor.
+
+* Tests have been updated to reflect changes in the order in which columns are returned
+* Tests have been skipped to reflect the vendor's deletion of user accounts that are consistent with their security policy.
