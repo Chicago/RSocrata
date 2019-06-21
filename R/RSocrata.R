@@ -303,6 +303,7 @@ getSodaTypes <- function(response) {
 #' @return an R data frame with POSIX dates
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' @examples
+#' \dontrun{
 #' # Human-readable URL:
 #' url <- "https://soda.demo.socrata.com/dataset/USGS-Earthquakes-for-2012-11-01-API/4334-bgaj"
 #' df <- read.socrata(url)
@@ -319,6 +320,7 @@ getSodaTypes <- function(response) {
 #'                    app_token = token)
 #' nrow(df)
 #' closeAllConnections()
+#' }
 #' @importFrom httr parse_url build_url
 #' @importFrom mime guess_type
 #' @importFrom plyr rbind.fill
@@ -472,6 +474,7 @@ checkUpdateResponse <- function(json_data_to_upload, url, http_verb, email, pass
 #' @author Mark Silverberg \email{mark.silverberg@@socrata.com}
 #' @importFrom httr parse_url build_url
 #' @examples
+#' \dontrun{
 #' # Store user email and password
 #' socrataEmail <- Sys.getenv("SOCRATA_EMAIL", "mark.silverberg+soda.demo@@socrata.com")
 #' socrataPassword <- Sys.getenv("SOCRATA_PASSWORD", "7vFDsGFDUG")
@@ -485,6 +488,7 @@ checkUpdateResponse <- function(json_data_to_upload, url, http_verb, email, pass
 #' 
 #' # Upload to Socrata
 #' write.socrata(df_in,datasetToAddToUrl,"UPSERT",socrataEmail,socrataPassword)
+#' }
 #' @export
 write.socrata <- function(dataframe, dataset_json_endpoint, update_mode, email, password, app_token = NULL) {
   

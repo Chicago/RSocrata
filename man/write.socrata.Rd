@@ -25,6 +25,7 @@ portal \url{http://dev.socrata.com/consumers/getting-started.html}}
 Method for updating Socrata datasets
 }
 \examples{
+\dontrun{
 # Store user email and password
 socrataEmail <- Sys.getenv("SOCRATA_EMAIL", "mark.silverberg+soda.demo@socrata.com")
 socrataPassword <- Sys.getenv("SOCRATA_PASSWORD", "7vFDsGFDUG")
@@ -39,7 +40,7 @@ df_in <- data.frame(x,y)
 # Upload to Socrata
 write.socrata(df_in,datasetToAddToUrl,"UPSERT",socrataEmail,socrataPassword)
 }
+}
 \author{
 Mark Silverberg \email{mark.silverberg@socrata.com}
 }
-
