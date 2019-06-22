@@ -31,6 +31,7 @@ an R data frame with POSIX dates
 Manages throttling and POSIX date-time conversions
 }
 \examples{
+\dontrun{
 # Human-readable URL:
 url <- "https://soda.demo.socrata.com/dataset/USGS-Earthquakes-for-2012-11-01-API/4334-bgaj"
 df <- read.socrata(url)
@@ -47,6 +48,7 @@ df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv",
                    app_token = token)
 nrow(df)
 closeAllConnections()
+}
 }
 \author{
 Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@cityofchicago.org}
