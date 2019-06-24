@@ -2,7 +2,6 @@ RSocrata
 ========
 
 [![Gitter](https://badges.gitter.im/gitterHQ/gitter.svg)](https://gitter.im/Chicago/RSocrata)
-[![Stories in Ready](https://badge.waffle.io/Chicago/RSocrata.svg?label=ready&title=Ready)](http://waffle.io/Chicago/RSocrata)
 [![downloads](http://cranlogs.r-pkg.org/badges/RSocrata)](https://CRAN.R-project.org/package=RSocrata)
 [![cran version](http://www.r-pkg.org/badges/version/RSocrata)](https://CRAN.R-project.org/package=RSocrata)
 
@@ -123,4 +122,4 @@ Please report issues, request enhancements or fork us at the [City of Chicago gi
 
 ## Contributing
 
-If you would like to contribute to this project, please see the [contributing documentation](CONTRIBUTING.md) and the [product roadmap](https://github.com/Chicago/RSocrata/wiki/Roadmap#planned-releases).
+If you would like to contribute to this project, please see the [contributing documentation](https://github.com/Chicago/RSocrata/blob/master/CONTRIBUTING.md) and the [product roadmap](https://github.com/Chicago/RSocrata/wiki/Roadmap#planned-releases).
