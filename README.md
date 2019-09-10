@@ -101,6 +101,9 @@ allSitesDataFrame$title # Names of each dataset
 ```
 
 ### Upload data to portal
+
+Note: ```write.socrata()``` writes directly to Socrata datasets using the Socrata Open Data API, which differs in functionality from the [Socrata Data Management API](https://socratapublishing.docs.apiary.io/#). Creating datasets with the Socrata user interface, or directly with the Data Management API, uses drafts to stage and transform data during the data ingress cycle. With any data updates to Socrata datasets that utilize one or more on-platform data transformations (like adding a georeference), use the Data Management API to continue to apply those transformations to any new data. If your dataset schema is exactly the same between your source and the Socrata dataset, and you do not need the on-platform transform functionality, the SODA API and ```write.socrata()``` will continue to perform as expected. For more on the difference between the SODA API and the Socrata Data Management API, see the latter API's documentation [here](https://socratapublishing.docs.apiary.io/#).
+
 ```r
 # Store user email and password
 socrataEmail <- Sys.getenv("SOCRATA_EMAIL", "mark.silverberg+soda.demo@socrata.com")
