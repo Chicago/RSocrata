@@ -472,7 +472,14 @@ checkUpdateResponse <- function(json_data_to_upload, url, http_verb, email, pass
 
 #' Write to a Socrata dataset (full replace or upsert)
 #'
-#' @description Method for updating Socrata datasets 
+#' @description Method for updating Socrata datasets with the Socrata Open Data API (SODA). 
+#' 
+#' Note: SODA differs in functionality from the Socrata Data Management API.
+#' The Data Management API stages and transforms data in drafts on Socrata during the data ingress cycle. With any data updates to Socrata datasets that utilize
+#' one or more on-platform data transformations, use the Data Management API to continue to apply those transformations to any new data.
+#' 
+#' If you do not need or use the on-platform transform functionality for a given dataset, the SODA API and \code{write.socrata()}
+#' will continue to perform as expected. For more on the Socrata Data Management API, see the latter API's documentation \url{https://socratapublishing.docs.apiary.io/#}  
 #'
 #' @param dataframe - dataframe to upload to Socrata
 #' @param dataset_json_endpoint - Socrata Open Data Application Program Interface (SODA) endpoint (JSON only for now)

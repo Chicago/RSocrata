@@ -4,8 +4,8 @@
 \alias{write.socrata}
 \title{Write to a Socrata dataset (full replace or upsert)}
 \usage{
-write.socrata(dataframe, dataset_json_endpoint, update_mode, email, password,
-  app_token = NULL)
+write.socrata(dataframe, dataset_json_endpoint, update_mode, email,
+  password, app_token = NULL)
 }
 \arguments{
 \item{dataframe}{- dataframe to upload to Socrata}
@@ -22,7 +22,14 @@ write.socrata(dataframe, dataset_json_endpoint, update_mode, email, password,
 portal \url{http://dev.socrata.com/consumers/getting-started.html}}
 }
 \description{
-Method for updating Socrata datasets
+Method for updating Socrata datasets with the Socrata Open Data API (SODA). 
+
+Note: SODA differs in functionality from the Socrata Data Management API.
+The Data Management API stages and transforms data in drafts on Socrata during the data ingress cycle. With any data updates to Socrata datasets that utilize
+one or more on-platform data transformations, use the Data Management API to continue to apply those transformations to any new data.
+
+If you do not need or use the on-platform transform functionality for a given dataset, the SODA API and \code{write.socrata()}
+will continue to perform as expected. For more on the Socrata Data Management API, see the latter API's documentation \url{https://socratapublishing.docs.apiary.io/#}
 }
 \examples{
 # Store user email and password
@@ -42,4 +49,3 @@ write.socrata(df_in,datasetToAddToUrl,"UPSERT",socrataEmail,socrataPassword)
 \author{
 Mark Silverberg \email{mark.silverberg@socrata.com}
 }
-

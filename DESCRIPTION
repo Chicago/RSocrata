@@ -29,4 +29,4 @@ Suggests:
 License: MIT + file LICENSE
 URL: https://github.com/Chicago/RSocrata
 BugReports: https://github.com/Chicago/RSocrata/issues
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
