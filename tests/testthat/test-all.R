@@ -137,7 +137,7 @@ test_that("Warn instead of fail if X-SODA2-* headers are missing", {
   expect_silent(df <- read.socrata("https://odn.data.socrata.com/resource/pvug-y23y.json"))
   expect_equal("data.frame", class(dfCsv), label="class", info="https://github.com/Chicago/RSocrata/issues/118")
   expect_equal("data.frame", class(dfJson), label="class", info="https://github.com/Chicago/RSocrata/issues/118")
-  expect_equal(150, ncol(dfCsv), label="columns", info="https://github.com/Chicago/RSocrata/issues/118")
+  expect_equal(146, ncol(dfCsv), label="columns", info="https://github.com/Chicago/RSocrata/issues/118")
   expect_equal(140, ncol(dfJson), label="columns", info="https://github.com/Chicago/RSocrata/issues/118")
 })
 
