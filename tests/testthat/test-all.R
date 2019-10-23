@@ -140,7 +140,7 @@ test_that("Warn instead of fail if X-SODA2-* headers are missing", {
   url_csv_complete <- "https://odn.data.socrata.com/resource/pvug-y23y.csv"
   url_json_complete <- "https://odn.data.socrata.com/resource/pvug-y23y.json"
   
-  msg <- ="https://github.com/Chicago/RSocrata/issues/118"
+  msg <- "https://github.com/Chicago/RSocrata/issues/118"
   
   ## Check that the soda2 headers are missing
   expect_null(RSocrata:::getResponse(url_csv_missing)$headers[['x-soda2-types']], info=msg)
