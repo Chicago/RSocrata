@@ -146,8 +146,8 @@ test_that("Warn instead of fail if X-SODA2-* headers are missing", {
   
   ## Check for warning that the header is missing, which causes the column 
   ## classes to be returned as character
-  expect_warning(dfCsv <- read.socrata(url_csv), info="https://github.com/Chicago/RSocrata/issues/118")
-  expect_warning(dfJson <- read.socrata(url_json), info="https://github.com/Chicago/RSocrata/issues/118")
+  expect_warning(dfCsv <- read.socrata(url_csv_missing), info="https://github.com/Chicago/RSocrata/issues/118")
+  expect_warning(dfJson <- read.socrata(url_json_missing), info="https://github.com/Chicago/RSocrata/issues/118")
   
   ## Check that the soda2 headers are present
   expect_false(is.null(RSocrata:::getResponse(url_csv_complete)$headers[['x-soda2-types']]))
