@@ -156,8 +156,8 @@ test_that("Warn instead of fail if X-SODA2-* headers are missing", {
   expect_false(is.null(RSocrata:::getResponse(url_json_complete)$headers[['x-soda2-types']]), info=msg)
   
   ## Check that they return results without warning
-  expect_silent(df <- read.socrata(url_csv_complete), info=msg)
-  expect_silent(df <- read.socrata(url_json_complete), info=msg)
+  expect_silent(df <- read.socrata(url_csv_complete))
+  expect_silent(df <- read.socrata(url_json_complete))
   
 })
 
