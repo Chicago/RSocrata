@@ -140,22 +140,24 @@ test_that("Warn instead of fail if X-SODA2-* headers are missing", {
   url_csv_complete <- "https://odn.data.socrata.com/resource/pvug-y23y.csv"
   url_json_complete <- "https://odn.data.socrata.com/resource/pvug-y23y.json"
   
+  msg <- ="https://github.com/Chicago/RSocrata/issues/118"
+  
   ## Check that the soda2 headers are missing
-  expect_null(RSocrata:::getResponse(url_csv_missing)$headers[['x-soda2-types']])
-  expect_null(RSocrata:::getResponse(url_json_missing)$headers[['x-soda2-types']])
+  expect_null(RSocrata:::getResponse(url_csv_missing)$headers[['x-soda2-types']], info=msg)
+  expect_null(RSocrata:::getResponse(url_json_missing)$headers[['x-soda2-types']], info=msg)
   
   ## Check for warning that the header is missing, which causes the column 
   ## classes to be returned as character
-  expect_warning(dfCsv <- read.socrata(url_csv_missing), info="https://github.com/Chicago/RSocrata/issues/118")
-  expect_warning(dfJson <- read.socrata(url_json_missing), info="https://github.com/Chicago/RSocrata/issues/118")
+  expect_warning(dfCsv <- read.socrata(url_csv_missing), info=msg)
+  expect_warning(dfJson <- read.socrata(url_json_missing), info=msg)
   
   ## Check that the soda2 headers are present
-  expect_false(is.null(RSocrata:::getResponse(url_csv_complete)$headers[['x-soda2-types']]))
-  expect_false(is.null(RSocrata:::getResponse(url_json_complete)$headers[['x-soda2-types']]))
+  expect_false(is.null(RSocrata:::getResponse(url_csv_complete)$headers[['x-soda2-types']]), info=msg)
+  expect_false(is.null(RSocrata:::getResponse(url_json_complete)$headers[['x-soda2-types']]), info=msg)
   
   ## Check that they return results without warning
-  expect_silent(df <- read.socrata(url_csv_complete))
-  expect_silent(df <- read.socrata(url_json_complete))
+  expect_silent(df <- read.socrata(url_csv_complete), info=msg)
+  expect_silent(df <- read.socrata(url_json_complete), info=msg)
   
 })
 
