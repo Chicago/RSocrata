@@ -19,6 +19,38 @@ logMsg <- function(s) {
   cat(format(Sys.time(), "%Y-%m-%d %H:%M:%OS3 "), as.character(sys.call(-1))[1], ": ", s, '\n', sep='')
 }
 
+#' Compiles the information to be used in HTTP headers
+#' 
+#' Grabs the headers (RSocrata version, OS, and R version) to be used while
+#' making HTTP requests with Socrata. This enables Socrata's team to track
+#' the usage of RSocrata.
+#' @return a string
+#' @importFrom utils packageVersion
+#' @author Tom Schenk Jr \email{tom.schenk@@cityofchicago.org}
+#' @noRd
+fetch_user_agent <- function() {
+  rSocrataVersion <- packageVersion("RSocrata")
+  operatingSystem <- Sys.info()[["sysname"]]
+  operatingSystemVersion <- paste(Sys.info()[["release"]], Sys.info()[["version"]])
+  rVersion <- paste0(R.version$major, 
+                     ".", 
+                     R.version$minor, 
+                     ifelse( # Checks if version has status, e.g., "rev"
+                       R.version$status == "", 
+                       "", 
+                       paste0("-",R.version$status))
+  )
+  
+  header <- paste0( "RSocrata/",
+                    rSocrataVersion, " (",
+                    operatingSystem, "/",
+                    operatingSystemVersion, "; ",
+                    "R/", rVersion,
+                    ")"
+  )
+  return(header)
+}
+
 #' Checks the validity of the syntax for a potential Socrata dataset Unique Identifier, also known as a 4x4.
 #'
 #' Will check the validity of a potential dataset unique identifier
@@ -78,6 +110,16 @@ validateUrl <- function(url, app_token) {
     parsedUrl$path <- substr(parsedUrl$path, start = 11, stop = 19)
     parsedUrl$query <- NULL
   }
+  
+  # if /data appended to URL, remove it
+  pathLength <- nchar(parsedUrl$path)
+  if(substr(parsedUrl$path, pathLength - 4, pathLength) == '/data') {
+     parsedUrl$path <- substr(parsedUrl$path, 1, pathLength - 5)
+  }
+  if(substr(parsedUrl$path, pathLength - 5, pathLength) == '/data/')  {
+    parsedUrl$path <- substr(parsedUrl$path, 1, pathLength - 6)
+  }
+
   
   fourByFour <- basename(parsedUrl$path)
   if(!isFourByFour(fourByFour))
@@ -162,15 +204,15 @@ no_deniro <- function(x) {
 #' @param email - Optional. The email to the Socrata account with read access to the dataset.
 #' @param password - Optional. The password associated with the email to the Socrata account
 #' @return httr response object
-#' @importFrom httr http_status GET content stop_for_status
+#' @importFrom httr http_status GET content stop_for_status user_agent
 #' @author Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@@cityofchicago.org}
 #' @noRd
 getResponse <- function(url, email = NULL, password = NULL) {
   
   if(is.null(email) && is.null(password)){
-    response <- httr::GET(url)
+    response <- httr::GET(url, httr::user_agent(fetch_user_agent()))
   } else { # email and password are not NULL
-    response <- httr::GET(url, httr::authenticate(email, password))
+    response <- httr::GET(url, httr::authenticate(email, password), httr::user_agent(fetch_user_agent()))
   }
   
   # status <- httr::http_status(response)
@@ -276,6 +318,7 @@ getSodaTypes <- function(response) {
 #' df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv", 
 #'                    app_token = token)
 #' nrow(df)
+#' closeAllConnections()
 #' @importFrom httr parse_url build_url
 #' @importFrom mime guess_type
 #' @importFrom plyr rbind.fill
@@ -288,9 +331,21 @@ read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL,
   if (!is.null(names(parsedUrl$query))) { # check if URL has any queries 
     ## if there is a query, check for specific queries and handle them
     orderTest <- any(names(parsedUrl$query) == "$order")
+    soqlQueryTest <- any(names(parsedUrl$query) == "$query")
     queries <- unlist(parsedUrl$query)
     countTest <- any(startsWith(queries, "count"))
-    if(!orderTest & !countTest) # sort by Socrata unique identifier
+    queryTest <- any(names(parsedUrl$query) == '$query')
+    # soql query strings need to be at the end, so we reparse and reorder the query list here
+    if(soqlQueryTest){
+      fullQuery <- parsedUrl$query
+      soqlQueryString <- fullQuery$`$query`
+      soqlQueryList <- list(soqlQueryString)
+      names(soqlQueryList) <- ('$query')
+      fullQuery$`$query` <- NULL
+      parsedUrl$query <- c(fullQuery, soqlQueryList)
+      validUrl <- httr::build_url(parsedUrl)
+    }
+    if(!orderTest & !countTest & !queryTest) # sort by Socrata unique identifier
       validUrl <- paste(validUrl, if(is.null(parsedUrl$query)) {'?'} else {"&"}, '$order=:id', sep='')
   }
   else {
@@ -303,8 +358,8 @@ read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL,
   page <- getContentAsDataFrame(response)
   result <- page
   dataTypes <- getSodaTypes(response)
-  # parse any $limit out of the URL
-  if(is.null(parsedUrl$query$`$limit`) & is.null(parsedUrl$query$`$LIMIT`))
+  # parse any $limit out of the URL -- a soql $query is a de-facto limit
+  if(is.null(parsedUrl$query$`$limit`) & is.null(parsedUrl$query$`$LIMIT`) & is.null(parsedUrl$query$`$query`)) 
     limitProvided <- FALSE
   else { 
     limitProvided <- TRUE
@@ -355,7 +410,7 @@ read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL,
 #' # Check schema definition for metadata
 #' attributes(df)
 #' @importFrom jsonlite fromJSON
-#' @importFrom httr parse_url
+#' @importFrom httr GET build_url parse_url content user_agent
 #' @export
 ls.socrata <- function(url) {
   url <- as.character(url)
@@ -363,7 +418,10 @@ ls.socrata <- function(url) {
   if(is.null(parsedUrl$scheme) | is.null(parsedUrl$hostname))
     stop(url, " does not appear to be a valid URL.")
   parsedUrl$path <- "data.json"
-  data_dot_json <- jsonlite::fromJSON(httr::build_url(parsedUrl))
+  #Download data
+  response <- httr::GET(httr::build_url(parsedUrl), httr::user_agent(fetch_user_agent()))
+  data_dot_json <- jsonlite::fromJSON(content(response, "text"))
+  
   data_df <- as.data.frame(data_dot_json$dataset)
   # Assign Catalog Fields as attributes
   attr(data_df, "@context") <- data_dot_json$`@context`
@@ -389,7 +447,7 @@ ls.socrata <- function(url) {
 #' @param password - password associated with Socrata account (will need write access to dataset)
 #' @param app_token - optional app_token associated with Socrata account
 #' @return httr a response object
-#' @importFrom httr GET
+#' @importFrom httr GET POST PUT authenticate user_agent add_headers
 #' 
 #' @noRd
 checkUpdateResponse <- function(json_data_to_upload, url, http_verb, email, password, app_token = NULL) {
@@ -397,12 +455,14 @@ checkUpdateResponse <- function(json_data_to_upload, url, http_verb, email, pass
     response <- httr::POST(url,
                            body = json_data_to_upload,
                            httr::authenticate(email, password),
+                           httr::user_agent(fetch_user_agent()),
                            httr::add_headers("X-App-Token" = app_token,
                                              "Content-Type" = "application/json")) #, verbose())
   } else if(http_verb == "PUT"){
     response <- httr::PUT(url,
                           body = json_data_to_upload,
                           httr::authenticate(email, password),
+                          httr::user_agent(fetch_user_agent()),
                           httr::add_headers("X-App-Token" = app_token,
                                             "Content-Type" = "application/json")) # , verbose())
   }

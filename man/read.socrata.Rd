@@ -46,6 +46,7 @@ token <- "ew2rEMuESuzWPqMkyPfOSGJgE"
 df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv", 
                    app_token = token)
 nrow(df)
+closeAllConnections()
 }
 \author{
 Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@cityofchicago.org}

@@ -4,7 +4,7 @@
 \alias{export.socrata}
 \title{Exports CSVs from Socrata data portals}
 \usage{
-export.socrata(url, app_token = NULL)
+export.socrata(url, path = getwd(), app_token = NULL)
 }
 \arguments{
 \item{url}{- the base URL of a domain (e.g., "data.cityofchicago.org")}
@@ -16,11 +16,14 @@ portal \url{http://dev.socrata.com/consumers/getting-started.html}}
 a Gzipped file with the four-by-four and timestamp of when the download began in filename
 }
 \description{
-Input the URL of a data portal (e.g., "data.cityofchicago.org") and
-will download all CSV files (no other files supported) and saved in
-a single directory named after the root URL (e.g., "data.cityofchicago.org/").
-Downloaded files are compressed to GZip format and timestamped so the download
-time is saved. No data is saved within the R workspace.
+Input the base URL of a data portal (e.g., "data.cityofchicago.org") and
+will download CSVs, PDFs, Word, Excel,  and PowerPoint files contained on
+the respective data portal into a single directory named after the root URL.
+Downloaded CSV files are compressed to GZip format and each file timestamped 
+so the download time is cataloged. The site's data.json file is downloaded 
+as a canonical index of data saved from the website. Users can cross-reference 
+the data.json file by matching the "four-by-four" in data.json with the first 
+5 letters of downloaded files.
 }
 \author{
 Tom Schenk Jr \email{tom.schenk@cityofchicago.org}
