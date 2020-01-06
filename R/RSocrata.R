@@ -523,12 +523,12 @@ write.socrata <- function(dataframe, dataset_json_endpoint, update_mode, email, 
 #' 
 #' Input the base URL of a data portal (e.g., "data.cityofchicago.org") and
 #' will download CSVs, PDFs, Word, Excel,  and PowerPoint files contained on
-#' the respective data portal into a single directory named after the root URL.
-#' Downloaded CSV files are compressed to GZip format and each file timestamped 
-#' so the download time is cataloged. The site's data.json file is downloaded 
-#' as a canonical index of data saved from the website. Users can cross-reference 
-#' the data.json file by matching the "four-by-four" in data.json with the first 
-#' 5 letters of downloaded files.
+#' the respective data portal into a single directory named after the root URL
+#' in the current working directory. Downloaded CSV files are compressed to GZip 
+#' format and each file timestamped  so the download time is cataloged. The site's 
+#' data.json file is downloaded as a canonical index of data saved from the website. 
+#' Users can cross-reference the data.json file by matching the "four-by-four" in 
+#' data.json with the first 5 letters of downloaded files.
 #' @param url - the base URL of a domain (e.g., "data.cityofchicago.org")
 #' @param app_token - a string; SODA API token used to query the data 
 #' portal \url{http://dev.socrata.com/consumers/getting-started.html} 
@@ -538,7 +538,7 @@ write.socrata <- function(dataframe, dataset_json_endpoint, update_mode, email, 
 #' @importFrom jsonlite write_json
 #' @importFrom utils write.csv
 #' @export
-export.socrata <- function(url, path = getwd(), app_token = NULL) {
+export.socrata <- function(url, app_token = NULL) {
   dir.create(basename(url), showWarnings = FALSE) # Create directory based on URL
   
   downloadTime <- Sys.time()     # Grab timestamp when data.json was downloaded
@@ -557,7 +557,7 @@ export.socrata <- function(url, path = getwd(), app_token = NULL) {
     
     # Download data
     downloadUrl <- ls$distribution[[i]]$downloadURL[1] # Currently grabs CSV, which is the first element
-    mediaType <- ls$distribution[[i]]$mediaType
+    mediaType <- ls$distribution[[i]]$mediaType[1]     # Grabs the first 
     if(is.null(downloadUrl)) {                         # Skips if there is no data or file
       next
     } else if(mediaType[1] == "text/csv") {            # Downloads if it's a CSV
