@@ -518,3 +518,82 @@ write.socrata <- function(dataframe, dataset_json_endpoint, update_mode, email, 
   return(response)
   
 }
+
+#' Exports CSVs from Socrata data portals
+#' 
+#' Input the base URL of a data portal (e.g., "data.cityofchicago.org") and
+#' will download CSVs, PDFs, Word, Excel,  and PowerPoint files contained on
+#' the respective data portal into a single directory named after the root URL
+#' in the current working directory. Downloaded CSV files are compressed to GZip 
+#' format and each file timestamped  so the download time is cataloged. The site's 
+#' data.json file is downloaded as a canonical index of data saved from the website. 
+#' Users can cross-reference the data.json file by matching the "four-by-four" in 
+#' data.json with the first 5 letters of downloaded files.
+#' @param url - the base URL of a domain (e.g., "data.cityofchicago.org")
+#' @param app_token - a string; SODA API token used to query the data 
+#' portal \url{http://dev.socrata.com/consumers/getting-started.html} 
+#' @return a Gzipped file with the four-by-four and timestamp of when the download began in filename
+#' @author Tom Schenk Jr \email{tom.schenk@@cityofchicago.org}
+#' @importFrom httr GET
+#' @importFrom jsonlite write_json
+#' @importFrom utils write.csv
+#' @export
+export.socrata <- function(url, app_token = NULL) {
+  dir.create(basename(url), showWarnings = FALSE) # Create directory based on URL
+  
+  downloadTime <- Sys.time()     # Grab timestamp when data.json was downloaded
+  downloadTz <- Sys.timezone()   # Timezone on system that downloaded data.json -- not used
+  ls <- ls.socrata(url = url)    # Downloads data.json file
+  
+  downloadTimeChr <- gsub('\\s+','_',downloadTime)  # Remove spaces and replaces with underscore
+  downloadTimeChr <- gsub(':', '', downloadTimeChr) # Removes colon from timestamp to be valid filename
+  ls_filename <- paste0(basename(url), "/", "data_json", "_", downloadTimeChr, ".json")  # Creates path and filename for data.json file
+  jsonlite::write_json(ls, path = ls_filename)      # Writes data.json contents to directory
+  
+  for (i in 1:dim(ls)[1]) {
+    # Track timestamp before download
+    downloadTime <- Sys.time()    # Denotes when data began download
+    downloadTz <- Sys.timezone()  # Timezone o n system that downloaded data.json -- not used
+    
+    # Download data
+    downloadUrl <- ls$distribution[[i]]$downloadURL[1] # Currently grabs CSV, which is the first element
+    mediaType <- ls$distribution[[i]]$mediaType[1]     # Grabs the first 
+    if(is.null(downloadUrl)) {                         # Skips if there is no data or file
+      next
+    } else if(mediaType[1] == "text/csv") {            # Downloads if it's a CSV
+      d <- RSocrata::read.socrata(downloadUrl, app_token)
+      
+      # Construct the filename output
+      default_format <- "csv"
+      downloadTimeChr <- gsub('\\s+','_',downloadTime)  # Remove spaces and replaces with underscore
+      downloadTimeChr <- gsub(':', '', downloadTimeChr) # Removes colon from timestamp to be valid filename
+      filename <- httr::parse_url(ls$identifier[i])     # Determines four-by-four for file name
+      filename$path <- substr(filename$path, 11, 19)    # Determines four-by-four for file name
+      filename <- paste0(filename$hostname, "/", filename$path, "_", downloadTimeChr, ".", default_format, ".gz")
+      
+      # Write file
+      write.csv(d, file = gzfile(filename))             # Writes g-zipped file
+    } else if(mediaType == "text/html") {               # Skips file if it's an HTML page
+      next
+    } else {
+      response <- httr::GET(downloadUrl)                # Downloads non-CSVs (e.g. PDF, Word, etc.)
+
+      # Construct the filename output
+      if(is.null(response$headers$`content-disposition`)) {
+        next
+      }
+      content_disposition <- response$headers$`content-disposition`
+      default_format_raw <- strsplit(content_disposition, "filename=")[[1]][2]
+      default_format_cleaned <- gsub('"', "", default_format_raw)
+      default_format <- tools::file_ext(default_format_cleaned)
+      downloadTimeChr <- gsub('\\s+','_',downloadTime) # Remove spaces and replaces with underscore
+      downloadTimeChr <- gsub(':', '', downloadTimeChr) # Removes colon from timestamp to be valid filename
+      filename <- httr::parse_url(ls$identifier[i])
+      filename$path <- substr(filename$path, 11, 19)
+      filename <- paste0(filename$hostname, "/", filename$path, "_", downloadTimeChr, ".", default_format)
+      
+      # Write file
+      writeBin(response$content, filename)              # Writes non-CSVs to directory
+    }
+  }
+}

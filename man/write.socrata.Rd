@@ -4,8 +4,8 @@
 \alias{write.socrata}
 \title{Write to a Socrata dataset (full replace or upsert)}
 \usage{
-write.socrata(dataframe, dataset_json_endpoint, update_mode, email, password,
-  app_token = NULL)
+write.socrata(dataframe, dataset_json_endpoint, update_mode, email,
+  password, app_token = NULL)
 }
 \arguments{
 \item{dataframe}{- dataframe to upload to Socrata}
@@ -42,4 +42,3 @@ write.socrata(df_in,datasetToAddToUrl,"UPSERT",socrataEmail,socrataPassword)
 \author{
 Mark Silverberg \email{mark.silverberg@socrata.com}
 }
-

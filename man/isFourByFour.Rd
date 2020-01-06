@@ -21,4 +21,3 @@ the validity of the syntax, but does not check if it actually exists.
 \author{
 Tom Schenk Jr \email{tom.schenk@cityofchicago.org}
 }
-
