@@ -26,4 +26,3 @@ resolve conflicting API token by deferring to original URL.
 \author{
 Tom Schenk Jr \email{tom.schenk@cityofchicago.org}
 }
-
