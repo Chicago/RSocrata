@@ -130,12 +130,16 @@ test_that("read Socrata CSV from New Backend (NBE) endpoint", {
 
 test_that("Warn instead of fail if X-SODA2-* headers are missing", {
   
+  ## Note: The examples with missing Soda2 headers are missing and need to be replaced
+  ## or the issue should be fixed with Socrata / Tyler.
+  ## See issue 196
+  
   ## These data sets are identified in #118 as data sets with missing soda 
   ## headers. The missing header should cause the data set to return character 
   ## columns instead of columns cast into their appropriate classes.
   ## RSocrata should also warn the user when the header is missing.
-  url_csv_missing <- "https://data.healthcare.gov/resource/enx3-h2qp.csv?$limit=1000"
-  url_json_missing <- "https://data.healthcare.gov/resource/enx3-h2qp.json?$limit=1000"
+  # url_csv_missing <- "https://data.healthcare.gov/resource/enx3-h2qp.csv?$limit=1000"
+  # url_json_missing <- "https://data.healthcare.gov/resource/enx3-h2qp.json?$limit=1000"
   ## These URLs should have soda types in the header
   url_csv_complete <- "https://odn.data.socrata.com/resource/pvug-y23y.csv"
   url_json_complete <- "https://odn.data.socrata.com/resource/pvug-y23y.json"
@@ -143,13 +147,13 @@ test_that("Warn instead of fail if X-SODA2-* headers are missing", {
   msg <- "https://github.com/Chicago/RSocrata/issues/118"
   
   ## Check that the soda2 headers are missing
-  expect_null(RSocrata:::getResponse(url_csv_missing)$headers[['x-soda2-types']], info=msg)
-  expect_null(RSocrata:::getResponse(url_json_missing)$headers[['x-soda2-types']], info=msg)
-  
+  # expect_null(RSocrata:::getResponse(url_csv_missing)$headers[['x-soda2-types']], info=msg)
+  # expect_null(RSocrata:::getResponse(url_json_missing)$headers[['x-soda2-types']], info=msg)
+  # 
   ## Check for warning that the header is missing, which causes the column 
   ## classes to be returned as character
-  expect_warning(dfCsv <- read.socrata(url_csv_missing), info=msg)
-  expect_warning(dfJson <- read.socrata(url_json_missing), info=msg)
+  # expect_warning(dfCsv <- read.socrata(url_csv_missing), info=msg)
+  # expect_warning(dfJson <- read.socrata(url_json_missing), info=msg)
   
   ## Check that the soda2 headers are present
   expect_false(is.null(RSocrata:::getResponse(url_csv_complete)$headers[['x-soda2-types']]), info=msg)
