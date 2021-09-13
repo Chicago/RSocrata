@@ -2,8 +2,8 @@ RSocrata
 ========
 
 [![Gitter](https://badges.gitter.im/gitterHQ/gitter.svg)](https://gitter.im/Chicago/RSocrata)
-[![downloads](http://cranlogs.r-pkg.org/badges/RSocrata)](https://CRAN.R-project.org/package=RSocrata)
-[![cran version](http://www.r-pkg.org/badges/version/RSocrata)](https://CRAN.R-project.org/package=RSocrata)
+[![downloads](https://cranlogs.r-pkg.org/badges/RSocrata)](https://CRAN.R-project.org/package=RSocrata)
+[![cran version](https://www.r-pkg.org/badges/version/RSocrata)](https://CRAN.R-project.org/package=RSocrata)
 
 **Master** 
 
@@ -20,11 +20,11 @@ Stable beta branch. Test about-to-be-released features in a stable pre-release b
 A tool for downloading and uploading Socrata datasets
 -----------------------------------------------------
 
-Provided with a URL to a dataset resource published on a [Socrata](http://www.socrata.com) webserver,
+Provided with a URL to a dataset resource published on a [Socrata](https://www.socrata.com) webserver,
 or a Socrata [SoDA (Socrata Open Data Application Program Interface) web API](https://dev.socrata.com) query,
 or a Socrata "human-friendly" URL, ```read.socrata()```
-returns an [R data frame](http://stat.ethz.ch/R-manual/R-devel/library/base/html/data.frame.html).
-Converts dates to [POSIX](http://stat.ethz.ch/R-manual/R-devel/library/base/html/DateTimeClasses.html) format.
+returns an [R data frame](https://stat.ethz.ch/R-manual/R-devel/library/base/html/data.frame.html).
+Converts dates to [POSIX](https://stat.ethz.ch/R-manual/R-devel/library/base/html/DateTimeClasses.html) format.
 Supports CSV and JSON download file formats from Socrata.
 Manages the throttling of data returned from Socrata and allows users to provide an [application token](https://dev.socrata.com/docs/app-tokens.html).
 Supports [SoDA query parameters](https://dev.socrata.com/docs/queries.html) in the URL string for further filtering, sorting, and queries.
@@ -62,7 +62,7 @@ Examples
 
 ### Reading SoDA valid URLs
 ```r
-earthquakesDataFrame <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv")
+earthquakesDataFrame <- read.socrata("https://soda.demo.socrata.com/resource/4334-bgaj.csv")
 nrow(earthquakesDataFrame) # 1007 (two "pages")
 class(earthquakesDataFrame$Datetime[1]) # POSIXlt
 ```
@@ -77,7 +77,7 @@ class(earthquakesDataFrame$Datetime[1]) # POSIXlt
 ### Using API key to read datasets
 ```r
 token <- "ew2rEMuESuzWPqMkyPfOSGJgE"
-earthquakesDataFrame <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv", app_token = token)
+earthquakesDataFrame <- read.socrata("https://soda.demo.socrata.com/resource/4334-bgaj.csv", app_token = token)
 nrow(earthquakesDataFrame)
 ```
 

@@ -308,7 +308,7 @@ getSodaTypes <- function(response) {
 #' url <- "https://soda.demo.socrata.com/dataset/USGS-Earthquakes-for-2012-11-01-API/4334-bgaj"
 #' df <- read.socrata(url)
 #' # SoDA URL:
-#' df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv")
+#' df <- read.socrata("https://soda.demo.socrata.com/resource/4334-bgaj.csv")
 #' # Download private dataset
 #' socrataEmail <- Sys.getenv("SOCRATA_EMAIL", "mark.silverberg+soda.demo@@socrata.com")
 #' socrataPassword <- Sys.getenv("SOCRATA_PASSWORD", "7vFDsGFDUG")
@@ -316,7 +316,7 @@ getSodaTypes <- function(response) {
 #' read.socrata(url = privateResourceToReadCsvUrl, email = socrataEmail, password = socrataPassword)
 #' # Using an API key to read datasets (reduces throttling)
 #' token <- "ew2rEMuESuzWPqMkyPfOSGJgE"
-#' df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.csv", 
+#' df <- read.socrata("https://soda.demo.socrata.com/resource/4334-bgaj.csv", 
 #'                    app_token = token)
 #' nrow(df)
 #' closeAllConnections()
@@ -396,7 +396,7 @@ read.socrata <- function(url, app_token = NULL, email = NULL, password = NULL,
 #' @author Peter Schmiedeskamp \email{pschmied@@uw.edu}
 #' @examples
 #' # Download list of data sets
-#' df <- ls.socrata("http://soda.demo.socrata.com")
+#' df <- ls.socrata("https://soda.demo.socrata.com")
 #' # Check schema definition for metadata
 #' attributes(df)
 #' @importFrom jsonlite fromJSON

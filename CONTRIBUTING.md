@@ -23,7 +23,7 @@ When you want to make a change, either to fix a bug or introduce a new feature, 
 * Add unit tests for any new features.
 * Document any new functions or new arguments within any existing function.
 * Iterate either version or build number in the `DESCRIPTION` file:
-  * The version number follows the `x.y.z-build` format and increments based on [semantic versioning 2.0.0](http://semver.org/spec/v2.0.0.html). Please update versions corresponding to those guidelines.
+  * The version number follows the `x.y.z-build` format and increments based on [semantic versioning 2.0.0](https://semver.org/spec/v2.0.0.html). Please update versions corresponding to those guidelines.
   * If your contribution takes several commits, please increment the build number (e.g., x.y.z-build) so there is a unique relationship of the version-build number to each commit.
 * Update the DESCRIPTION file for any new dependencies on packages or minimum verson of R required (up to the current release of R).
 * Run all tests in `tests/testthat/`.
