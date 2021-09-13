@@ -80,7 +80,7 @@ isFourByFour <- function(fourByFour) {
 #' resolve conflicting API token by deferring to original URL.
 #' @param url - a string; character vector of length one
 #' @param app_token - a string; SODA API token used to query the data 
-#' portal \url{http://dev.socrata.com/consumers/getting-started.html}
+#' portal \url{https://dev.socrata.com/consumers/getting-started.html}
 #' @return a - valid Url
 #' @importFrom httr parse_url build_url
 #' @author Tom Schenk Jr \email{tom.schenk@@cityofchicago.org}
@@ -296,7 +296,7 @@ getSodaTypes <- function(response) {
 #' May include SoQL parameters, 
 #' but is assumed to not include a SODA offset parameter
 #' @param app_token - a string; SODA API token used to query the data 
-#' portal \url{http://dev.socrata.com/consumers/getting-started.html}
+#' portal \url{https://dev.socrata.com/consumers/getting-started.html}
 #' @param email - Optional. The email to the Socrata account with read access to the dataset
 #' @param password - Optional. The password associated with the email to the Socrata account
 #' @param stringsAsFactors - Optional. Should character columns be converted to factor (TRUE or FALSE)?
@@ -466,11 +466,11 @@ checkUpdateResponse <- function(json_data_to_upload, url, http_verb, email, pass
 #'
 #' @param dataframe - dataframe to upload to Socrata
 #' @param dataset_json_endpoint - Socrata Open Data Application Program Interface (SODA) endpoint (JSON only for now)
-#' @param update_mode - "UPSERT" or "REPLACE"; consult http://dev.socrata.com/publishers/getting-started.html 
+#' @param update_mode - "UPSERT" or "REPLACE"; consult https://dev.socrata.com/publishers/getting-started.html 
 #' @param email - The email to the Socrata account with read access to the dataset
 #' @param password - The password associated with the email to the Socrata account
 #' @param app_token - a (non-required) string; SODA API token can be used to query the data 
-#' portal \url{http://dev.socrata.com/consumers/getting-started.html}
+#' portal \url{https://dev.socrata.com/consumers/getting-started.html}
 #' @author Mark Silverberg \email{mark.silverberg@@socrata.com}
 #' @importFrom httr parse_url build_url
 #' @examples

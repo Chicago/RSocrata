@@ -10,7 +10,7 @@ validateUrl(url, app_token)
 \item{url}{- a string; character vector of length one}
 
 \item{app_token}{- a string; SODA API token used to query the data 
-portal \url{http://dev.socrata.com/consumers/getting-started.html}}
+portal \url{https://dev.socrata.com/consumers/getting-started.html}}
 }
 \value{
 a - valid Url

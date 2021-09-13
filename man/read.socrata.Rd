@@ -16,7 +16,7 @@ May include SoQL parameters,
 but is assumed to not include a SODA offset parameter}
 
 \item{app_token}{- a string; SODA API token used to query the data 
-portal \url{http://dev.socrata.com/consumers/getting-started.html}}
+portal \url{https://dev.socrata.com/consumers/getting-started.html}}
 
 \item{email}{- Optional. The email to the Socrata account with read access to the dataset}
 
