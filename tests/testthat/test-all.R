@@ -14,7 +14,7 @@ socrataPassword <- Sys.getenv("SOCRATA_PASSWORD", "7vFDsGFDUG")
 context("posixify function")
 
 test_that("read Socrata CSV is compatible with posixify", {
-  df <- read.socrata('http://soda.demo.socrata.com/resource/4334-bgaj.csv')
+  df <- read.socrata('https://soda.demo.socrata.com/resource/4334-bgaj.csv')
   dt <- posixify("09/14/2012 10:38:01 PM")
   expect_equal(dt, df$datetime[1])  ## Check that download matches test
 })
@@ -57,7 +57,7 @@ test_that("posixify returns Short format", {
 context("Socrata Calendar")
 
 test_that("Calendar Date Short", {
-  df <- read.socrata('http://data.cityofchicago.org/resource/y93d-d9e3.csv?$order=debarment_date')
+  df <- read.socrata('https://data.cityofchicago.org/resource/y93d-d9e3.csv?$order=debarment_date')
   dt <- df$debarment_date[1] # "05/21/1981"
   expect_equal("POSIXct", class(dt)[1], label="data type of a date")
   expect_equal("81", format(dt, "%y"), label="year")
@@ -71,7 +71,7 @@ test_that("Calendar Date Short", {
 test_that("Date is not entirely NA if the first record is bad (issue 68)", {
   
   ## Define and test issue 68
-  # df <- read.socrata('http://data.cityofchicago.org/resource/me59-5fac.csv')
+  # df <- read.socrata('https://data.cityofchicago.org/resource/me59-5fac.csv')
   # expect_false(object = all(is.na(df$Creation.Date)),
   #              "Testing issue 68 https://github.com/Chicago/RSocrata/issues/68")
   
@@ -228,13 +228,13 @@ test_that("read Socrata No Scheme", {
 })
 
 test_that("readSoQL", {
-  df <- read.socrata('http://soda.demo.socrata.com/resource/4334-bgaj.csv?$select=region')
+  df <- read.socrata('https://soda.demo.socrata.com/resource/4334-bgaj.csv?$select=region')
   expect_equal(1007, nrow(df), label="rows")
   expect_equal(1, ncol(df), label="columns")
 })
 
 test_that("URL is private (Unauthorized) (will fail)", {
-  expect_error(read.socrata('http://data.cityofchicago.org/resource/j8vp-2qpg.json'))
+  expect_error(read.socrata('https://data.cityofchicago.org/resource/j8vp-2qpg.json'))
 })
 
 test_that("readSocrataHumanReadable", {
@@ -268,7 +268,7 @@ test_that("Read URL provided by data.json from ls.socrata() - JSON", {
 
 test_that("format is not supported", {
   # Unsupported data formats
-  expect_error(read.socrata('http://soda.demo.socrata.com/resource/4334-bgaj.xml'))
+  expect_error(read.socrata('https://soda.demo.socrata.com/resource/4334-bgaj.xml'))
 })
 
 test_that("read Socrata JSON with missing fields (issue 19 - bind within page)", {
@@ -290,16 +290,16 @@ test_that("read Socrata JSON with missing fields (issue 19 - binding pages toget
 
 test_that("Accept a URL with a $limit= clause and properly limit the results", {
   ## Define and test issue 83
-  df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.json?$LIMIT=500") # uppercase
+  df <- read.socrata("https://soda.demo.socrata.com/resource/4334-bgaj.json?$LIMIT=500") # uppercase
   expect_equal(500, nrow(df), label="rows", 
                info = "$LIMIT in uppercase https://github.com/Chicago/RSocrata/issues/83")
-  df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.json?$limit=500") # lowercase
+  df <- read.socrata("https://soda.demo.socrata.com/resource/4334-bgaj.json?$limit=500") # lowercase
   expect_equal(500, nrow(df), label="rows", 
                info = "$limit in lowercase https://github.com/Chicago/RSocrata/issues/83")
-  df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.json?$LIMIT=1001&$order=:id") # uppercase
+  df <- read.socrata("https://soda.demo.socrata.com/resource/4334-bgaj.json?$LIMIT=1001&$order=:id") # uppercase
   expect_equal(1001, nrow(df), label="rows", 
                info = "$LIMIT in uppercase with 2 queries https://github.com/Chicago/RSocrata/issues/83")
-  df <- read.socrata("http://soda.demo.socrata.com/resource/4334-bgaj.json?$limit=1001&$order=:id") # lowercase
+  df <- read.socrata("https://soda.demo.socrata.com/resource/4334-bgaj.json?$limit=1001&$order=:id") # lowercase
   expect_equal(1001, nrow(df), label="rows lowercase", 
                info = "$LIMIT in lowercase with 2 queries https://github.com/Chicago/RSocrata/issues/83")
 })

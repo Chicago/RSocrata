@@ -2,7 +2,7 @@
 #
 # See README.md for instructions, or for more configuration options,
 # see the wiki:
-#   http://docs.travis-ci.com/user/languages/r/
+#   https://docs.travis-ci.com/user/languages/r/
 sudo: false
 
 language: r
@@ -14,7 +14,7 @@ r:
 warnings_are_errors: true
 
 before_script:
-  - Rscript -e 'install.packages("covr", repos="http://mirror.las.iastate.edu/CRAN/")'
+  - Rscript -e 'install.packages("covr", repos="https://mirror.las.iastate.edu/CRAN/")'
 
 after_success:
   - Rscript -e 'library(covr);coveralls()'

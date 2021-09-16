@@ -12,14 +12,14 @@ write.socrata(dataframe, dataset_json_endpoint, update_mode, email, password,
 
 \item{dataset_json_endpoint}{- Socrata Open Data Application Program Interface (SODA) endpoint (JSON only for now)}
 
-\item{update_mode}{- "UPSERT" or "REPLACE"; consult http://dev.socrata.com/publishers/getting-started.html}
+\item{update_mode}{- "UPSERT" or "REPLACE"; consult https://dev.socrata.com/publishers/getting-started.html}
 
 \item{email}{- The email to the Socrata account with read access to the dataset}
 
 \item{password}{- The password associated with the email to the Socrata account}
 
 \item{app_token}{- a (non-required) string; SODA API token can be used to query the data 
-portal \url{http://dev.socrata.com/consumers/getting-started.html}}
+portal \url{https://dev.socrata.com/consumers/getting-started.html}}
 }
 \description{
 Method for updating Socrata datasets

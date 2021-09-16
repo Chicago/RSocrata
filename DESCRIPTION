@@ -2,7 +2,7 @@ Package: RSocrata
 Type: Package
 Title: Download or Upload 'Socrata' Data Sets
 Description: Provides easier interaction with
-    'Socrata' open data portals <http://dev.socrata.com>.
+    'Socrata' open data portals <https://dev.socrata.com>.
     Users can provide a 'Socrata' data set resource URL,
     or a 'Socrata' Open Data API (SoDA) web query,
     or a 'Socrata' "human-friendly" URL,
@@ -10,8 +10,8 @@ Description: Provides easier interaction with
     format and manages throttling by 'Socrata'.
     Users can upload data to 'Socrata' portals directly
     from R.
-Version: 1.7.11-1
-Date: 2021-09-10
+Version: 1.7.11-2
+Date: 2021-09-13
 Author: Hugh Devlin, Ph. D., Tom Schenk, Jr., Gene Leynes, Nick Lucius, John Malc, Mark Silverberg, and Peter Schmeideskamp
 Maintainer: "Tom Schenk Jr." <developers@cityofchicago.org>
 Depends:
