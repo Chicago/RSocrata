@@ -280,6 +280,7 @@ test_that("read Socrata JSON with missing fields (issue 19 - bind within page)",
 })
 
 test_that("read Socrata JSON with missing fields (issue 19 - binding pages together)", {
+  skip('See Issue #205')
   ## Define and test issue 19
   df <- read.socrata(paste0("https://data.smgov.net/resource/ia9m-wspt.json?",
                             "$where=incident_date>='2011-01-01'%20AND%20incident_date<'2011-01-15'"))
@@ -544,6 +545,7 @@ test_that("fully replace a dataset", {
 context("getContentAsDataFrame")
 
 test_that("getContentAsDataFrame does not get caught in infinite loop", {
+  skip('See Issue #205')
   
   ## This is the original url suggested, but it causes the rbind issue
   # u <- paste0("https://data.smgov.net/resource/xx64-wi4x.json?$",
