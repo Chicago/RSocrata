@@ -20,7 +20,7 @@ Stable beta branch. Test about-to-be-released features in a stable pre-release b
 A tool for downloading and uploading Socrata datasets
 -----------------------------------------------------
 
-Provided with a URL to a dataset resource published on a [Socrata](https://www.socrata.com) webserver,
+Provided with a URL to a dataset resource published on a [Socrata](https://www.tylertech.com/products/data-insights) webserver,
 or a Socrata [SoDA (Socrata Open Data Application Program Interface) web API](https://dev.socrata.com) query,
 or a Socrata "human-friendly" URL, ```read.socrata()```
 returns an [R data frame](https://stat.ethz.ch/R-manual/R-devel/library/base/html/data.frame.html).
