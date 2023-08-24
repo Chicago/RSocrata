@@ -1,9 +1,3 @@
-library(testthat)
-library(RSocrata)
-library(httr)
-library(jsonlite)
-library(mime)
-library(plyr)
 
 context("posixify function")
 
