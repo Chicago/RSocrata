@@ -18,4 +18,3 @@ Convert Socrata calendar_date string to POSIX
 \author{
 Hugh J. Devlin, Ph. D. \email{Hugh.Devlin@cityofchicago.org}
 }
-
