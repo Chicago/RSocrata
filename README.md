@@ -29,7 +29,7 @@ Stable beta branch. Test about-to-be-released features in a stable pre-release b
 
 "Nightly" alpha branch. Test the latest features and bug fixes -- enjoy at your own risk.
 
-[![Linux build - Dev](https://img.shields.io/travis/Chicago/RSocrata/dev.svg?style=flat-square&label=Linux%20build)](https://travis-ci.org/Chicago/RSocrata)[![Windows build - Dev](https://img.shields.io/appveyor/ci/tomschenkjr/RSocrata/dev.svg?style=flat-square&label=Windows%20build)](https://ci.appveyor.com/project/tomschenkjr/rsocrata/branch/dev)[![Coverage - Dev](https://img.shields.io/coveralls/Chicago/RSocrata/dev.svg?style=flat-square&label=Coverage)](https://coveralls.io/github/Chicago/RSocrata?branch=dev)
+[![Linux build - Dev](https://img.shields.io/travis/Chicago/RSocrata/dev.svg?style=flat-square&label=Linux%20build)](https://app.travis-ci.com/Chicago/RSocrata)[![Windows build - Dev](https://img.shields.io/appveyor/ci/tomschenkjr/RSocrata/dev.svg?style=flat-square&label=Windows%20build)](https://ci.appveyor.com/project/tomschenkjr/rsocrata/branch/dev)[![Coverage - Dev](https://img.shields.io/coveralls/Chicago/RSocrata/dev.svg?style=flat-square&label=Coverage)](https://coveralls.io/github/Chicago/RSocrata?branch=dev)
 
 A tool for downloading and uploading Socrata datasets
 -----------------------------------------------------
