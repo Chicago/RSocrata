@@ -1,7 +1,7 @@
 RSocrata
 ========
 
-[![Gitter](https://badges.gitter.im/gitterHQ/gitter.svg)](https://gitter.im/Chicago/RSocrata)
+[![Gitter](https://badges.gitter.im/repo.svg)](https://app.gitter.im/#/room/#Chicago_RSocrata:gitter.im)
 [![downloads](https://cranlogs.r-pkg.org/badges/RSocrata)](https://CRAN.R-project.org/package=RSocrata)
 [![cran version](https://www.r-pkg.org/badges/version/RSocrata)](https://CRAN.R-project.org/package=RSocrata)
 
@@ -23,7 +23,7 @@ We appreciate your understanding and patience as we work through this matter.
 
 Stable beta branch. Test about-to-be-released features in a stable pre-release build before it is submitted to CRAN.
 
-[![Linux build - Master](https://img.shields.io/travis/Chicago/RSocrata/master.svg?style=flat-square&label=Linux%20build)](https://travis-ci.org/Chicago/RSocrata)[![Windows build - Master](https://img.shields.io/appveyor/ci/tomschenkjr/RSocrata/master.svg?style=flat-square&label=Windows%20build)](https://ci.appveyor.com/project/tomschenkjr/rsocrata/branch/master)[![Coverage - Master](https://img.shields.io/coveralls/Chicago/RSocrata/master.svg?style=flat-square&label=Coverage)](https://coveralls.io/github/Chicago/RSocrata?branch=master)
+[![Linux build - Master](https://img.shields.io/travis/Chicago/RSocrata/master.svg?style=flat-square&label=Linux%20build)](https://app.travis-ci.com/Chicago/RSocrata)[![Windows build - Master](https://img.shields.io/appveyor/ci/tomschenkjr/RSocrata/master.svg?style=flat-square&label=Windows%20build)](https://ci.appveyor.com/project/tomschenkjr/rsocrata/branch/master)[![Coverage - Master](https://img.shields.io/coveralls/Chicago/RSocrata/master.svg?style=flat-square&label=Coverage)](https://coveralls.io/github/Chicago/RSocrata?branch=master)
 
 **Dev**
 
