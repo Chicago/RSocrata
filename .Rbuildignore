@@ -14,3 +14,4 @@ appveyor.yml
 CONTRIBUTING.md
 NEWS.md
 ^travis-tool\.sh$
+README.md
