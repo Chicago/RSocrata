@@ -5,20 +5,6 @@ RSocrata
 [![downloads](https://cranlogs.r-pkg.org/badges/RSocrata)](https://CRAN.R-project.org/package=RSocrata)
 [![cran version](https://www.r-pkg.org/badges/version/RSocrata)](https://CRAN.R-project.org/package=RSocrata)
 
-## :warning: Important Notice (Temporary -- August 24, 2023)
-
-RSocrata is temporarily unavailable on CRAN due to a recent removal related to complications when testing external URLs. We are actively working to address the issue and we may move to reduce the amount of testing that we perform until we can find a more robust solution for error handling. The team is committed to resolving this as quickly as possible, and we anticipate having RSocrata restored on CRAN within the next week or so.
-
-In the meantime, **please use devtools to install RSocrata directly from GitHub**:
-
-```R
-devtools::install_github("Chicago/RSocrata")
-```
-
-For detailed information on the issue, please refer to [#213 Fail gracefully when Socrata is down](https://github.com/Chicago/RSocrata/issues/213) and to [#214 Remove tests that rely on external URLs for CRAN tests (to address CRAN removal)](https://github.com/Chicago/RSocrata/issues/217). 
-
-We appreciate your understanding and patience as we work through this matter.
-
 **Master** 
 
 Stable beta branch. Test about-to-be-released features in a stable pre-release build before it is submitted to CRAN.
