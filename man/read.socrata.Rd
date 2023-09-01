@@ -4,8 +4,13 @@
 \alias{read.socrata}
 \title{Get a full Socrata data set as an R data frame}
 \usage{
-read.socrata(url, app_token = NULL, email = NULL, password = NULL,
-  stringsAsFactors = FALSE)
+read.socrata(
+  url,
+  app_token = NULL,
+  email = NULL,
+  password = NULL,
+  stringsAsFactors = FALSE
+)
 }
 \arguments{
 \item{url}{- A Socrata resource URL, 

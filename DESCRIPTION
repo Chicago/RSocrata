@@ -4,16 +4,16 @@ Title: Download or Upload 'Socrata' Data Sets
 Description: Provides easier interaction with
     'Socrata' open data portals <https://dev.socrata.com>.
     Users can provide a 'Socrata' data set resource URL,
-    or a 'Socrata' Open Data API (SoDA) web query,
+    or a 'Socrata' Open Data API (SODA) web query,
     or a 'Socrata' "human-friendly" URL,
     returns an R data frame. Converts dates to 'POSIX'
     format and manages throttling by 'Socrata'.
     Users can upload data to 'Socrata' portals directly
     from R.
-Version: 1.7.12-4
-Date: 2022-11-16
+Version: 1.7.15-1
+Date: 2023-08-13
 Author: Hugh Devlin, Ph. D., Tom Schenk, Jr., Gene Leynes, Nick Lucius, John Malc, Mark Silverberg, and Peter Schmeideskamp
-Maintainer: "Tom Schenk Jr." <developers@cityofchicago.org>
+Maintainer: "Gene Leynes" <developers@cityofchicago.org>
 Depends:
     R (>= 3.3.0)
 Imports:
@@ -28,4 +28,5 @@ Suggests:
 License: MIT + file LICENSE
 URL: https://github.com/Chicago/RSocrata
 BugReports: https://github.com/Chicago/RSocrata/issues
-RoxygenNote: 6.1.1
+RoxygenNote: 7.2.3
+Encoding: UTF-8
